@@ -1,1 +1,2 @@
+azure-storage-blob==12.19.0
 Flask==3.0.2
