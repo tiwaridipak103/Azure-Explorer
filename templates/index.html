@@ -1,52 +1,51 @@
-<!DOCTYPE html>   
-<html>   
-<head>  
-<meta name="viewport" content="width=device-width, initial-scale=1">  
-<title> Instacart Product prediction </title>  
-<style>   
-Body {  
-  font-family: "Times New Roman", Times, serif;  
-  background-image: url(https://www.supermarketnews.com/sites/supermarketnews.com/files/Instacart-Personal_Shopper-Bag_0_0_0.png);
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  background-size: 100% 100%;
-
-}  
-
- form {   
-    }   
- input[type=text], {   
-        width: 100%;   
-        margin: 10px 0px;  
-        padding: 12px 20px;   
-        display: inline-block;   
-        border: 2px solid green;   
-        box-sizing: border-box;   
-        background-image :url(https://www.zdnet.com/a/hub/i/2020/08/20/c7ff72fc-cd2a-4f7d-b099-d4becd45c564/instacart.jpg);
-    }  
- button:hover {   
-        opacity: 0;   
-    }   
-  .cancelbtn {   
-        width: auto;   
-        padding: 100px 18px;  
-        margin: 10px 5px;  
-    }   
-        
-     
-</style>   
-</head>    
-<body>    
-<div>
-
-    <center> <h1> Instacart Product prediction </h1> </center>   
-    <form action="/predict" method="POST">    
-        <label for = "Order_ID" >Order_ID : </label>    
-            <input  type="text" placeholder="Please Enter Order_id" rows = "1" cols = "30" name = "Order_ID" required>
-            <br>
-            <input type="submit" value = "predict items">   
-  
-    </form>     
-</body>     
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File List</title>
+    <link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+    <h1>Azure File Explorer</h1>
+    <div class="container">
+        <div class="left-buttons">
+            <button id="previousButton">&#9664;</button>
+            <button id="nextButton">&#9654;</button>
+            <form id="uploadForm" enctype="multipart/form-data">
+                <input type="file" name="file" id="fileInput">
+                <button type="submit" id="uploadButton">📤</button>
+            </form>
+            <span style="margin-right: 10px;">Current Path</span>
+            <span style="margin-right: 10px;">
+                <select id="pathDropdown">
+                    <option value="/" selected>/</option>
+                    <option value="/dipak/">/dipak/</option>
+                    <option value="/dipak/tiwari/">/dipak/tiwari/</option>
+                    <option value="/dipak/tiwari/kumar/">/dipak/tiwari/kumar/</option>
+                </select>
+            </span>
+        </div>
+    </div>
+    
+    <table id="sortable">
+        <thead>
+            <tr>
+                <th class="resizable">Name</th>
+                <th class="resizable">Date</th>
+                <th class="resizable">Size</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for file in file_list %}
+            <tr>
+                <td ondblclick="rowDoubleClick(this)" oncontextmenu="showContextMenu(event, this)">{{ file['name'] }}</td>
+                <td>{{ file['modified_date'] }}</td>
+                <td>{{ file['size'] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <script src="static/script.js"></script>
+</body>
 </html>
-
