@@ -15,10 +15,10 @@ copied_items = []
 pre_path = []
 post_path = []
 
-# @app.route('/')
-# def index():
-#     file_list = populate_files()
-#     return render_template('index.html', file_list=file_list)
+@app.route('/')
+def index():
+    file_list = populate_files()
+    return render_template('index.html', file_list=file_list)
 
 @app.route('/selected_value', methods=['POST'])
 def selected_value():
@@ -128,9 +128,9 @@ def populate_files():
     return table_lists
 
 
-@app.route('/')
-def index():
-    return render_template('index.html')
+# @app.route('/')
+# def index():
+#     return render_template('index.html')
 
 
 @app.route('/predict', methods=['POST'])
