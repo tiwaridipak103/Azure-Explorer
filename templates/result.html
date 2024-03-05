@@ -1,0 +1,23 @@
+<!DOCTYPE html>   
+<html>   
+<head>  
+<meta name="viewport" content="width=device-width, initial-scale=1">  
+<title> Instacart Product Prediction </title>  
+<style>   
+Body {  
+  font-family: "Times New Roman", Times, serif;  
+  background-image: url(https://www.wtvq.com/wp-content/uploads/2018/02/Instacart-e1493736219946.jpg);
+  background-repeat: no-repeat;
+    background-attachment: fixed;
+  background-size: cover;
+
+}
+li{color:blue}
+</style>   
+
+<ul>
+    {% for i in data: %}
+    <li>{{ i }}</li>
+    {% endfor %}
+</ul>
+<a href='/'>return</a>
