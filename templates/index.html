@@ -1,0 +1,51 @@
+<!DOCTYPE html>   
+<html>   
+<head>  
+<meta name="viewport" content="width=device-width, initial-scale=1">  
+<title> Instacart Product prediction </title>  
+<style>   
+Body {  
+  font-family: "Times New Roman", Times, serif;  
+  background-image: url(https://www.supermarketnews.com/sites/supermarketnews.com/files/Instacart-Personal_Shopper-Bag_0_0_0.png);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: 100% 100%;
+
+}  
+
+ form {   
+    }   
+ input[type=text], {   
+        width: 100%;   
+        margin: 10px 0px;  
+        padding: 12px 20px;   
+        display: inline-block;   
+        border: 2px solid green;   
+        box-sizing: border-box;   
+        background-image :url(https://www.zdnet.com/a/hub/i/2020/08/20/c7ff72fc-cd2a-4f7d-b099-d4becd45c564/instacart.jpg);
+    }  
+ button:hover {   
+        opacity: 0;   
+    }   
+  .cancelbtn {   
+        width: auto;   
+        padding: 100px 18px;  
+        margin: 10px 5px;  
+    }   
+        
+     
+</style>   
+</head>    
+<body>    
+<div>
+
+    <center> <h1> Instacart Product prediction </h1> </center>   
+    <form action="/predict" method="POST">    
+        <label for = "Order_ID" >Order_ID : </label>    
+            <input  type="text" placeholder="Please Enter Order_id" rows = "1" cols = "30" name = "Order_ID" required>
+            <br>
+            <input type="submit" value = "predict items">   
+  
+    </form>     
+</body>     
+</html>
