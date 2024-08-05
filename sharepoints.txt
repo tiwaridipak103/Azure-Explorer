@@ -1,25 +1,53 @@
-Install the required package:
-#!pip install Office365-REST-Python-Client
+#!/bin/bash
 
-Python code to download the file:
-from office365.runtime.auth.authentication_context import AuthenticationContext
-from office365.sharepoint.client_context import ClientContext
-from office365.sharepoint.files.file import File
+# Directory containing log files
+LOG_DIR="/path/to/your/log/directory"
 
-# Replace these variables with your SharePoint details
-site_url = 'https://yourtenant.sharepoint.com/sites/yoursite'
-username = 'yourusername@yourtenant.onmicrosoft.com'
-password = 'yourpassword'
-file_url = '/sites/yoursite/Shared Documents/yourfile.xlsx'
-local_path = 'yourfile.xlsx'
+# Email details
+TO_EMAIL="recipient@example.com"
+SUBJECT="Logs from $(hostname) on $(date +'%Y-%m-%d')"
+BODY="Please find the attached log files."
 
-# Authentication and client context setup
-ctx_auth = AuthenticationContext(site_url)
-if ctx_auth.acquire_token_for_user(username, password):
-    ctx = ClientContext(site_url, ctx_auth)
-    response = File.open_binary(ctx, file_url)
-    with open(local_path, "wb") as local_file:
-        local_file.write(response.content)
-    print("File downloaded successfully.")
-else:
-    print("Authentication failed.")
+# Temporary file to store the body of the email
+EMAIL_BODY_FILE=$(mktemp)
+
+# Write the body to the temporary file
+echo "$BODY" > "$EMAIL_BODY_FILE"
+
+# Attach log files and send email
+for LOG_FILE in "$LOG_DIR"/*.log; do
+    if [ -f "$LOG_FILE" ]; then
+        mailx -s "$SUBJECT" -a "$LOG_FILE" "$TO_EMAIL" < "$EMAIL_BODY_FILE"
+    fi
+done
+
+# Clean up temporary file
+rm "$EMAIL_BODY_FILE"
+
+#If you want to send all log files in a single email
+
+#!/bin/bash
+
+# Directory containing log files
+LOG_DIR="/path/to/your/log/directory"
+
+# Email details
+TO_EMAIL="recipient@example.com"
+SUBJECT="Logs from $(hostname) on $(date +'%Y-%m-%d')"
+BODY="Please find the attached log files."
+
+# Temporary file to store the body of the email
+EMAIL_BODY_FILE=$(mktemp)
+echo "$BODY" > "$EMAIL_BODY_FILE"
+
+# Archive file
+ARCHIVE_FILE="/tmp/logs_$(date +'%Y-%m-%d').tar.gz"
+
+# Create archive of log files
+tar -czf "$ARCHIVE_FILE" -C "$LOG_DIR" .
+
+# Send email with archive attached
+mailx -s "$SUBJECT" -a "$ARCHIVE_FILE" "$TO_EMAIL" < "$EMAIL_BODY_FILE"
+
+# Clean up temporary files
+rm "$EMAIL_BODY_FILE" "$ARCHIVE_FILE"
