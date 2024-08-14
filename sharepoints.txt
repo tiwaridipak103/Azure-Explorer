@@ -1,53 +1,44 @@
-#!/bin/bash
+from airflow import DAG
+from airflow.operators.dummy_operator import DummyOperator
+from airflow.sensors.filesystem import FileSensor
+from datetime import datetime, timedelta
 
-# Directory containing log files
-LOG_DIR="/path/to/your/log/directory"
+default_args = {
+    'owner': 'airflow',
+    'depends_on_past': False,
+    'start_date': datetime(2024, 1, 1),
+    'email_on_failure': False,
+    'email_on_retry': False,
+    'retries': 1,
+    'retry_delay': timedelta(minutes=5),
+}
 
-# Email details
-TO_EMAIL="recipient@example.com"
-SUBJECT="Logs from $(hostname) on $(date +'%Y-%m-%d')"
-BODY="Please find the attached log files."
+dag = DAG(
+    'file_triggered_dag',
+    default_args=default_args,
+    description='A DAG that triggers on new file updates in a folder',
+    schedule_interval=None,  # Set to None since it will be triggered by the sensor
+    catchup=False,
+)
 
-# Temporary file to store the body of the email
-EMAIL_BODY_FILE=$(mktemp)
+start_task = DummyOperator(
+    task_id='start_task',
+    dag=dag,
+)
 
-# Write the body to the temporary file
-echo "$BODY" > "$EMAIL_BODY_FILE"
+# FileSensor to monitor the directory
+file_sensor_task = FileSensor(
+    task_id='file_sensor_task',
+    filepath='/path/to/your/folder/*.csv',  # Replace with your directory and file pattern
+    fs_conn_id='fs_default',
+    poke_interval=10,  # Interval to check for the file
+    timeout=600,  # Timeout after 10 minutes if file is not found
+    dag=dag,
+)
 
-# Attach log files and send email
-for LOG_FILE in "$LOG_DIR"/*.log; do
-    if [ -f "$LOG_FILE" ]; then
-        mailx -s "$SUBJECT" -a "$LOG_FILE" "$TO_EMAIL" < "$EMAIL_BODY_FILE"
-    fi
-done
+process_file_task = DummyOperator(
+    task_id='process_file_task',
+    dag=dag,
+)
 
-# Clean up temporary file
-rm "$EMAIL_BODY_FILE"
-
-#If you want to send all log files in a single email
-
-#!/bin/bash
-
-# Directory containing log files
-LOG_DIR="/path/to/your/log/directory"
-
-# Email details
-TO_EMAIL="recipient@example.com"
-SUBJECT="Logs from $(hostname) on $(date +'%Y-%m-%d')"
-BODY="Please find the attached log files."
-
-# Temporary file to store the body of the email
-EMAIL_BODY_FILE=$(mktemp)
-echo "$BODY" > "$EMAIL_BODY_FILE"
-
-# Archive file
-ARCHIVE_FILE="/tmp/logs_$(date +'%Y-%m-%d').tar.gz"
-
-# Create archive of log files
-tar -czf "$ARCHIVE_FILE" -C "$LOG_DIR" .
-
-# Send email with archive attached
-mailx -s "$SUBJECT" -a "$ARCHIVE_FILE" "$TO_EMAIL" < "$EMAIL_BODY_FILE"
-
-# Clean up temporary files
-rm "$EMAIL_BODY_FILE" "$ARCHIVE_FILE"
+start_task >> file_sensor_task >> process_file_task
