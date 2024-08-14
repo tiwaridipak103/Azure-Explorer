@@ -3,6 +3,31 @@ from airflow.operators.dummy_operator import DummyOperator
 from airflow.sensors.filesystem import FileSensor
 from datetime import datetime, timedelta
 
+
+import os
+from airflow.sensors.base import BaseSensorOperator
+from airflow.utils.decorators import apply_defaults
+
+class FileModificationSensor(BaseSensorOperator):
+    @apply_defaults
+    def __init__(self, filepath, previous_mtime=None, *args, **kwargs):
+        super(FileModificationSensor, self).__init__(*args, **kwargs)
+        self.filepath = filepath
+        self.previous_mtime = previous_mtime
+
+    def poke(self, context):
+        if not os.path.exists(self.filepath):
+            return False
+        current_mtime = os.path.getmtime(self.filepath)
+        if self.previous_mtime is None:
+            self.previous_mtime = current_mtime
+            return False
+        if current_mtime > self.previous_mtime:
+            self.previous_mtime = current_mtime
+            return True
+        return False
+
+
 default_args = {
     'owner': 'airflow',
     'depends_on_past': False,
