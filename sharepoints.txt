@@ -112,3 +112,53 @@ while true; do
     break
   fi
 done
+
+#!/bin/bash
+
+# Directory to watch
+WATCHED_DIR="/path/to/your/folder"
+
+# File to watch
+WATCHED_FILE="yourfile.csv"
+
+# Time interval for checking in seconds
+CHECK_INTERVAL=10
+
+# Time to keep looking for changes (in seconds)
+WATCH_DURATION=300  # 5 minutes
+
+# Initialize the previous file modification time
+PREV_MOD_TIME=$(stat -c %Y "$WATCHED_DIR/$WATCHED_FILE" 2>/dev/null)
+
+# Function to check for file modification
+check_for_modification() {
+  CURRENT_MOD_TIME=$(stat -c %Y "$WATCHED_DIR/$WATCHED_FILE" 2>/dev/null)
+  
+  if [ "$CURRENT_MOD_TIME" != "$PREV_MOD_TIME" ]; then
+    echo "File change detected: $WATCHED_FILE"
+    PREV_MOD_TIME="$CURRENT_MOD_TIME"
+    return 1  # Indicates that a change was detected
+  fi
+  return 0  # Indicates no change
+}
+
+# Main loop
+START_TIME=$(date +%s)
+
+while true; do
+  if check_for_modification; then
+    # Exit after detecting a change
+    echo "Exiting after detecting a change."
+    exit 0  # Success exit code
+  else
+    # Check if the watch duration has been exceeded
+    CURRENT_TIME=$(date +%s)
+    ELAPSED_TIME=$((CURRENT_TIME - START_TIME))
+    
+    if [ $ELAPSED_TIME -ge $WATCH_DURATION ]; then
+      echo "No changes detected in $WATCHED_FILE within the last 5 minutes. Exiting."
+      exit 1  # Failure exit code
+    fi
+  fi
+  sleep $CHECK_INTERVAL
+done
