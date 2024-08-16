@@ -1,4 +1,4 @@
-from airflow import DAG
+hufrom airflow import DAG
 from airflow.operators.dummy_operator import DummyOperator
 from airflow.sensors.filesystem import FileSensor
 from datetime import datetime, timedelta
@@ -162,3 +162,60 @@ while true; do
   fi
   sleep $CHECK_INTERVAL
 done
+
+import os
+import time
+import sys
+
+# Directory to watch
+WATCHED_DIR = "/path/to/your/folder"
+
+# File to watch
+WATCHED_FILE = "yourfile.csv"
+
+# Time interval for checking in seconds
+CHECK_INTERVAL = 10
+
+# Time to keep looking for changes (in seconds)
+WATCH_DURATION = 300  # 5 minutes
+
+# Function to get file modification time
+def get_mod_time(filepath):
+    try:
+        return os.path.getmtime(filepath)
+    except OSError:
+        return None
+
+# Initialize the previous file modification time
+file_path = os.path.join(WATCHED_DIR, WATCHED_FILE)
+PREV_MOD_TIME = get_mod_time(file_path)
+
+if PREV_MOD_TIME is None:
+    print(f"File does not exist: {file_path}")
+    sys.exit(1)
+
+# Main loop
+START_TIME = time.time()
+print("Starting file watch...")
+
+while True:
+    CURRENT_MOD_TIME = get_mod_time(file_path)
+
+    if CURRENT_MOD_TIME is None:
+        print(f"File does not exist: {file_path}")
+        sys.exit(1)
+    
+    if CURRENT_MOD_TIME != PREV_MOD_TIME:
+        print(f"File change detected: {WATCHED_FILE}")
+        PREV_MOD_TIME = CURRENT_MOD_TIME
+        print("Exiting after detecting a change.")
+        sys.exit(0)  # Success exit code
+
+    CURRENT_TIME = time.time()
+    ELAPSED_TIME = CURRENT_TIME - START_TIME
+    
+    if ELAPSED_TIME >= WATCH_DURATION:
+        print(f"No changes detected in {WATCHED_FILE} within the last 5 minutes. Exiting.")
+        sys.exit(1)  # Failure exit code
+    
+    time.sleep(CHECK_INTERVAL)
