@@ -1,4 +1,4 @@
-hufrom airflow import DAG
+from airflow import DAG
 from airflow.operators.dummy_operator import DummyOperator
 from airflow.sensors.filesystem import FileSensor
 from datetime import datetime, timedelta
@@ -219,3 +219,71 @@ while True:
         sys.exit(1)  # Failure exit code
     
     time.sleep(CHECK_INTERVAL)
+
+
+import os
+import time
+from datetime import datetime
+from airflow import DAG
+from airflow.operators.dummy_operator import DummyOperator
+from airflow.operators.python_operator import PythonOperator
+from airflow.utils.dates import days_ago
+
+# Directory to watch
+WATCHED_DIR = "/path/to/your/directory"
+# Polling interval (15 minutes in seconds)
+POLL_INTERVAL = 15 * 60
+# Total polling duration (2 hours in seconds)
+TOTAL_POLL_DURATION = 2 * 60 * 60
+
+# Function to check for the file with today's date
+def check_file_and_trigger():
+    today = datetime.now().strftime('%Y-%m-%d')
+    files = sorted(os.listdir(WATCHED_DIR))
+    for file in files:
+        if today in file:
+            print(f"File found: {file}. Triggering Airflow DAG...")
+            trigger_airflow_dag()
+            return
+    print("File not found. Will check again after the next polling interval.")
+
+# Function to trigger the Airflow DAG
+def trigger_airflow_dag():
+    # Replace 'your_dag_id' with the actual DAG ID you want to trigger
+    dag_id = "your_dag_id"
+    dag = DAG(
+        dag_id=dag_id,
+        default_args={
+            'owner': 'airflow',
+            'start_date': days_ago(0),
+        },
+        description='Trigger DAG on file detection',
+        schedule_interval=None,
+    )
+
+    start_task = DummyOperator(task_id='start', dag=dag)
+    end_task = DummyOperator(task_id='end', dag=dag)
+
+    def process_file(ds, **kwargs):
+        print(f"Processing file on {ds}")
+
+    process_task = PythonOperator(
+        task_id='process_file',
+        python_callable=process_file,
+        provide_context=True,
+        dag=dag,
+    )
+
+    start_task >> process_task >> end_task
+
+    # You would normally trigger the DAG here, but for a real-world scenario, 
+    # you should implement triggering using the Airflow API.
+    # Example using Airflow REST API or CLI can be added as needed.
+
+# Polling loop
+start_time = time.time()
+while time.time() - start_time < TOTAL_POLL_DURATION:
+    check_file_and_trigger()
+    time.sleep(POLL_INTERVAL)
+
+print("Polling period ended.")
