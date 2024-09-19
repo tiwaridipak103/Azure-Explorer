@@ -18,3 +18,30 @@ session.commit()
 
 # Close the session
 session.close()
+
+
+Here's a suggested subject line and email for scheduling your Knowledge Transfer (KT) meeting as you're leaving the firm:
+
+Subject: Scheduling Knowledge Transfer (KT) Session: [Project/Role] Transition
+
+Email:
+
+Dear [Recipient's Name],
+
+I hope this message finds you well. As I will be leaving [Company Name] on [Last Working Day], I would like to schedule a Knowledge Transfer (KT) session to ensure a smooth transition of my responsibilities.
+
+The KT session will cover the following:
+
+[Briefly mention key areas of focus: e.g., project overview, ongoing tasks, key contacts, technical documentation, etc.]
+[Any specific tools, systems, or processes you'll be sharing]
+Could you kindly let me know your availability for the session within the coming [X days]? I am happy to accommodate the time that works best for you and the team.
+
+Looking forward to your confirmation.
+
+Best regards,
+Kalyan M.
+[Your Job Title]
+[Your Department]
+[Your Contact Information]
+
+This email sets a professional tone and highlights your proactive approach to ensuring a seamless handover
