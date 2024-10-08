@@ -1,43 +1,65 @@
-from airflow import settings
-from airflow.models import DagModel
-from sqlalchemy.orm import sessionmaker
-from airflow.models import DagBag
-from airflow.api.common.experimental import delete_dag
-import pandas as pd
+This code aims to calculate the appropriate font size factor for a title based on the figure size, layout, and title text width. Here's a breakdown of each part:
 
-def metadata_active():
-    # Create a session to interact with the database
-    Session = sessionmaker(bind=settings.engine)
-    session = Session()
+Function Definition
+python
+Copy code
+def Factor(figsize, fontsize, title, layout):
+figsize: Size of the figure in inches (width, height).
+fontsize: Initial font size for the title.
+title: Text that will be displayed as the title.
+layout: The layout width constraint to scale the title's font size accordingly.
+The function calculates a scaling factor to adjust the fontsize based on the available space for the title.
 
-    # Find the old DAGs that are inactive (is_active = False)
-    old_dags = session.query(DagModel).filter(DagModel.is_active == False).all()
+Creating the Figure and Axes
+python
+Copy code
+margin = 0.25
+fig, ax = plt.subplots(figsize=figsize)
+margin = 0.25: Defines a small margin around the text, giving some padding.
+fig, ax = plt.subplots(figsize=figsize): Creates a figure (fig) and an axis (ax) using the specified figure size.
+Rendering the Text and Calculating the Bounding Box
+python
+Copy code
+text = ax.text(0, 0, title, fontsize=fontsize, visible=True)
+bbox = text.get_window_extent(renderer=ax.figure.canvas.get_renderer())
+ax.text(0, 0, title, fontsize=fontsize, visible=True): Adds the title as a text element at coordinates (0,0) in the plot, setting it to visible and giving it the initial fontsize.
+bbox = text.get_window_extent(renderer=ax.figure.canvas.get_renderer()): Retrieves the bounding box (bbox) of the text object using a renderer. This bounding box tells how much space the text occupies in the plot.
+Getting Text Width
+python
+Copy code
+text_width = bbox.width
+text_width: This extracts the width of the title text (in pixels) from the bounding box.
+Getting the Figure Size in Pixels
+python
+Copy code
+size = fig.get_size_inches() * fig.dpi  # size in pixel
+size = fig.get_size_inches() * fig.dpi: Converts the figure size (in inches) to pixels by multiplying by the figure’s DPI (dots per inch). This returns the width and height of the figure in pixels.
+Calculating the Font Scaling Factor
+python
+Copy code
+factor = (size[0] / layout) * (12 - margin) / text_width
+size[0]: The width of the figure in pixels.
+layout: User-defined layout constraint.
+(12 - margin): A scaling factor for font size (12 is a base font size, and margin slightly reduces it).
+text_width: The actual width of the title in pixels.
+The factor scales the font size based on how much horizontal space the title occupies compared to the figure's width.
 
-    # Iterate through the results and activate the DAGs
-    for dag in old_dags:
-        dag.is_active = True  # Set is_active to True
-        dag.is_paused = False  # Unpause the DAG to allow execution
-        # You may also want to check for subdags if required
-        # dag.is_subdag = True
-
-        # Commit the changes for each DAG
-        session.commit()
-
-    # Close the session
-    session.close()
-
-    # Optionally, force a DAG run for each activated DAG if immediate execution is required
-    dag_bag = DagBag()
-    for dag_id in [dag.dag_id for dag in old_dags]:
-        dag = dag_bag.get_dag(dag_id)
-        if dag:
-            dag.create_dagrun(
-                state='running',  # Sets the DAG run to a running state
-                execution_date=timezone.utcnow(),
-                run_id='manual__' + timezone.utcnow().isoformat(),
-                conf={},  # Additional configuration if needed
-                external_trigger=True  # Mark this run as triggered manually
-            )
-
-if __name__ == '__main__':
-    metadata_active()
+Setting the Title with Adjusted Font Size
+python
+Copy code
+if text_width < (size[0] / layout):
+    ax.set_title(title, fontdict={'fontsize': factor * fontsize, 'fontweight': 'bold'}, pad=16)
+if text_width < (size[0] / layout): Checks if the title's width is less than the available layout width.
+ax.set_title(...): Sets the title for the plot with a new fontsize, which is the original font size scaled by the factor. It also applies bold formatting and sets a padding of 16 units between the title and the top of the plot.
+Closing the Figure
+python
+Copy code
+plt.close()
+plt.close(): Closes the figure to avoid displaying it since it's only needed for calculating the font size, not for rendering.
+Returning the Factor
+python
+Copy code
+return factor
+return factor: Returns the scaling factor for the font size, which can be used elsewhere in the program.
+Summary:
+The function calculates a scaling factor based on the width of the figure and the title's width. It adjusts the font size of the title so that it fits within the given layout constraint. This dynamic font scaling ensures that the title will fit in the figure while maintaining legibility.
