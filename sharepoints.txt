@@ -1,101 +1,44 @@
-This code attempts to create a decorator named debugger that wraps methods of the snowflake.snowpark.dataframe.DataFrame class. It decorates methods that return a DataFrame to apply debugging functionality, such as printing, logging, or inspecting execution details. However, there are numerous syntax and logical errors in the code. I'll explain the intended flow of the code and point out the issues:
+import os
+import pandas as pd
 
-High-Level Purpose:
-The debugger decorator wraps methods of the DataFrame class.
-It avoids recursion by checking if the method is already being decorated.
-It prints or inspects method outputs (currently commented out).
-It caches the result of the DataFrame operation, then returns the decorated method.
-Line-by-Line Explanation:
-1. debugger decorator function
-python
-Copy code
-def debugger(func):
-    def wrapper(*args, **kwargs):
-        # print("Print the func name, func._name_)
-debugger(func): This is the decorator function. It takes a function func as input.
-wrapper(*args, **kwargs): This inner function acts as the actual wrapper for the decorated function, accepting any number of arguments (*args for positional, **kwargs for keyword).
-2. Avoiding Recursion in Decorating
-python
-Copy code
-        # Check if already decorating to avoid recursion
-        if getattr(wrapper, '_decorating', False):
-            return func(*args, **kwargs)
-if getattr(wrapper, '_decorating', False): This line checks if the _decorating attribute is set to True to avoid recursion. If wrapper is already being decorated, it directly calls the original func with the provided arguments, avoiding double decoration.
-3. Setting the Decorator Flag
-python
-Copy code
-        setattr(wrapper, '_decorating', True)  # set flag to indicate decorating
-setattr(wrapper, '_decorating', True): This sets a flag on the wrapper to indicate that the decoration is in progress.
-4. Trying to Execute the Function
-python
-Copy code
-        try:
-            df = func(*args, **kwargs)
-Inside the try block, df = func(*args, **kwargs) calls the original func (the decorated method) and stores the result (presumably a DataFrame) in df.
-5. Caching and Printing Debug Information
-python
-Copy code
-            # df.show(1)
-            # print(df.explain())
-            df = df.cache_result()
-            return df
-The commented-out lines df.show(1) and print(df.explain()) are meant for debugging purposes to show one row of the DataFrame and print its logical execution plan, respectively.
-df = df.cache_result(): The result of the method (presumably a DataFrame) is cached, which improves performance by storing the result of transformations.
-return df: The decorated function returns the cached DataFrame.
-6. Finally Block (Resetting the Flag)
-python
-Copy code
-        finally:
-            setattr(wrapper, '_decorating', False)  # Reset decorating flag to False
-The finally block ensures that the _decorating flag is reset to False after the function execution finishes, whether successful or not. This prevents the decorator from staying in the decorated state after execution.
-7. Returning the Wrapper
-python
-Copy code
-    return wrapper
-The wrapper function is returned, effectively wrapping the decorated function.
-8. Iterating Over Methods of DataFrame
-python
-Copy code
-for func_name in dir(snowflake.snowpark.dataframe.DataFrame):
-    func = getattr(snowflake.snowpark.dataframe.DataFrame, func_name)
-    try:
-        resulttype = inspect.signature(func).return_annotation
-        if resulttype == 'DataFrame':
-            setattr(snowflake.snowpark.dataframe.DataFrame, func_name, debugger(func))
-    except:
-        pass
-for func_name in dir(snowflake.snowpark.dataframe.DataFrame): This loop iterates over all the method names of the DataFrame class.
-func = getattr(snowflake.snowpark.dataframe.DataFrame, func_name): This retrieves the actual method (function object) from the DataFrame class using getattr.
-9. Checking the Return Type of Each Method
-python
-Copy code
-    resulttype = inspect.signature(func).return_annotation
-    if resulttype == 'DataFrame':
-inspect.signature(func).return_annotation: This gets the return type annotation of the function signature using Python’s inspect module.
-if resulttype == 'DataFrame': If the function is annotated to return a DataFrame, it will be decorated.
-10. Applying the Decorator
-python
-Copy code
-    setattr(snowflake.snowpark.dataframe.DataFrame, func_name, debugger(func))
-This applies the debugger decorator to the function if its return type is a DataFrame. It uses setattr to replace the original method with the decorated version.
-11. Exception Handling
-python
-Copy code
-    except:
-        pass
-Any exceptions raised (e.g., methods without return type annotations) are ignored due to the pass in the except block.
-Issues in the Code:
-Syntax Errors:
+# Folder path where your CSV files are stored
+folder_path = '/path/to/csv/folder'
 
-#print("Print the func name, func._name_) should use proper string formatting or syntax like print(f"Function name: {func.__name__}").
-setattr(wrapper', ...): The quote is misplaced, it should be setattr(wrapper, ...).
-dffunc(*args, **kwargs) should be df = func(*args, **kwargs).
-df- df.cache_result() should be df = df.cache_result().
-Logic Issues:
+# Initialize lists to store the dataframes
+hadoop_dfs = []
+snowflake_dfs = []
 
-The return annotation check if resulttype == 'DataFrame' should compare against the actual class, not a string. Use if resulttype is snowflake.snowpark.dataframe.DataFrame instead.
-Functionality:
+# Loop through all the files in the folder
+for filename in os.listdir(folder_path):
+    if filename.endswith('.csv'):
+        # Determine if it's a Hadoop or Snowflake file based on the filename
+        if 'hadoop' in filename.lower():
+            df = pd.read_csv(os.path.join(folder_path, filename))
+            df['source_table'] = filename  # Add filename to identify which table this row came from
+            hadoop_dfs.append(df)
+        elif 'snowflake' in filename.lower():
+            df = pd.read_csv(os.path.join(folder_path, filename))
+            df['source_table'] = filename  # Add filename to identify which table this row came from
+            snowflake_dfs.append(df)
 
-The debugging actions (e.g., print(df.explain())) are currently commented out, so they won’t be executed.
-Final Thoughts:
-This code aims to dynamically apply the debugger decorator to methods that return DataFrame objects. It needs debugging and refinement to handle the functionality effectively.
+# Concatenate all the Hadoop and Snowflake DataFrames
+hadoop_df = pd.concat(hadoop_dfs, ignore_index=True)
+snowflake_df = pd.concat(snowflake_dfs, ignore_index=True)
+
+# Perform a left join based on the 'id' column (you can specify any other common columns)
+# Assuming 'id' is the common key
+merged_df = hadoop_df.merge(snowflake_df, how='left', on='id', suffixes=('_hadoop', '_snowflake'))
+
+# Compare columns from both tables and fill 'Yes' if they match, 'No' otherwise
+# Loop through all common columns to compare
+for column in hadoop_df.columns:
+    if column in snowflake_df.columns and column != 'id':  # Exclude 'id' from comparison
+        merged_df[f'{column}_comparison'] = merged_df[f'{column}_hadoop'] == merged_df[f'{column}_snowflake']
+        merged_df[f'{column}_comparison'] = merged_df[f'{column}_comparison'].replace({True: 'Yes', False: 'No'})
+
+# Drop the original columns (optional) to keep only the comparison results
+comparison_columns = [col for col in merged_df.columns if '_comparison' in col]
+result_df = merged_df[['id', 'source_table_hadoop', 'source_table_snowflake'] + comparison_columns]
+
+# Output result
+print(result_df.head())
