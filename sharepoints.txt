@@ -1,44 +1,51 @@
-import os
 import pandas as pd
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
-# Folder path where your CSV files are stored
-folder_path = '/path/to/csv/folder'
+# Function to read the CSV file and convert it into an HTML table
+def csv_to_html(file_path):
+    df = pd.read_csv(file_path)
+    return df.to_html(index=False)  # Convert DataFrame to HTML table (without index)
 
-# Initialize lists to store the dataframes
-hadoop_dfs = []
-snowflake_dfs = []
+# Email sending function
+def send_email(subject, body, to_email):
+    # Set up email parameters
+    from_email = "your_email@example.com"  # Replace with your email address
+    password = "your_password"  # Replace with your email password or app-specific password
 
-# Loop through all the files in the folder
-for filename in os.listdir(folder_path):
-    if filename.endswith('.csv'):
-        # Determine if it's a Hadoop or Snowflake file based on the filename
-        if 'hadoop' in filename.lower():
-            df = pd.read_csv(os.path.join(folder_path, filename))
-            df['source_table'] = filename  # Add filename to identify which table this row came from
-            hadoop_dfs.append(df)
-        elif 'snowflake' in filename.lower():
-            df = pd.read_csv(os.path.join(folder_path, filename))
-            df['source_table'] = filename  # Add filename to identify which table this row came from
-            snowflake_dfs.append(df)
+    # Create the email message
+    msg = MIMEMultipart()
+    msg['From'] = from_email
+    msg['To'] = to_email
+    msg['Subject'] = subject
 
-# Concatenate all the Hadoop and Snowflake DataFrames
-hadoop_df = pd.concat(hadoop_dfs, ignore_index=True)
-snowflake_df = pd.concat(snowflake_dfs, ignore_index=True)
+    # Attach the body as HTML content
+    msg.attach(MIMEText(body, 'html'))
 
-# Perform a left join based on the 'id' column (you can specify any other common columns)
-# Assuming 'id' is the common key
-merged_df = hadoop_df.merge(snowflake_df, how='left', on='id', suffixes=('_hadoop', '_snowflake'))
+    # Send the email using SMTP
+    try:
+        with smtplib.SMTP_SSL('smtp.gmail.com', 465) as server:  # Using Gmail's SMTP server
+            server.login(from_email, password)
+            server.sendmail(from_email, to_email, msg.as_string())
+        print(f"Email sent to {to_email}")
+    except Exception as e:
+        print(f"Failed to send email: {e}")
 
-# Compare columns from both tables and fill 'Yes' if they match, 'No' otherwise
-# Loop through all common columns to compare
-for column in hadoop_df.columns:
-    if column in snowflake_df.columns and column != 'id':  # Exclude 'id' from comparison
-        merged_df[f'{column}_comparison'] = merged_df[f'{column}_hadoop'] == merged_df[f'{column}_snowflake']
-        merged_df[f'{column}_comparison'] = merged_df[f'{column}_comparison'].replace({True: 'Yes', False: 'No'})
+# Main function to read CSV, convert to HTML, and send email
+def main():
+    csv_file_path = 'your_file.csv'  # Path to your CSV file
+    to_email = "recipient@example.com"  # Replace with recipient's email address
 
-# Drop the original columns (optional) to keep only the comparison results
-comparison_columns = [col for col in merged_df.columns if '_comparison' in col]
-result_df = merged_df[['id', 'source_table_hadoop', 'source_table_snowflake'] + comparison_columns]
+    # Read CSV and convert to HTML
+    html_table = csv_to_html(csv_file_path)
 
-# Output result
-print(result_df.head())
+    # Define email subject and body
+    subject = "CSV Records"
+    body = f"<p>Here are the records from the CSV file:</p>{html_table}"
+
+    # Send the email
+    send_email(subject, body, to_email)
+
+if __name__ == "__main__":
+    main()
