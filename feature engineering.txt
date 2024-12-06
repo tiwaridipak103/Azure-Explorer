@@ -265,3 +265,47 @@ kmeans = KMeans(n_clusters=3)
 clusters = kmeans.fit_predict(X)
 sns.scatterplot(x=X['feature1'], y=X['feature2'], hue=clusters)
 This approach ensures you explore the data comprehensively, laying the foundation for robust feature engineering and model building. Let me know if you’d like any part of this tailored further!
+
+
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from matplotlib import colors
+
+# Example correlation dataframe
+# Replace this with your actual dataframe
+df = pd.DataFrame(np.random.rand(8, 8), columns=list('ABCDEFGH'))
+
+# Calculate correlation matrix
+corr = df.corr()
+
+# Define a custom colormap
+colors_list = ['#0099ff', '#33cc33']
+cmap = colors.ListedColormap(colors_list)
+
+# Create the heatmap
+plt.figure(figsize=(10, 8))
+plt.imshow(corr, cmap='coolwarm', vmin=-1, vmax=1)
+
+# Annotate the heatmap with correlation values
+for i in range(corr.shape[0]):
+    for j in range(corr.shape[1]):
+        plt.annotate(f"{corr.values[i, j]:.2f}", xy=(j, i), ha='center', va='center', color='white')
+
+# Add a colorbar
+cbar = plt.colorbar(ticks=[-1, 0, 1])
+cbar.ax.set_yticklabels(['-1', '0', '1'])
+cbar.set_label("Correlation Coefficient", rotation=270, labelpad=20)
+
+# Set plot title
+plt.title("Customized Correlation Heatmap with Annotations")
+
+# Set x-axis and y-axis labels
+plt.xticks(ticks=np.arange(corr.shape[1]), labels=corr.columns, rotation=45, ha='right')
+plt.yticks(ticks=np.arange(corr.shape[0]), labels=corr.index)
+
+# Adjust layout for better label visibility
+plt.tight_layout()
+
+# Display the plot
+plt.show()
