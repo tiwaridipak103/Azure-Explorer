@@ -279,18 +279,23 @@ df = pd.DataFrame(np.random.rand(8, 8), columns=list('ABCDEFGH'))
 # Calculate correlation matrix
 corr = df.corr()
 
-# Define a custom colormap
-colors_list = ['#0099ff', '#33cc33']
-cmap = colors.ListedColormap(colors_list)
+# Custom function to map colors based on conditions
+def custom_colormap(value):
+    if value > 0.8:
+        return '#33cc33'  # Green for values > 0.8
+    else:
+        return '#0099ff'  # Blue for other values
 
 # Create the heatmap
 plt.figure(figsize=(10, 8))
 plt.imshow(corr, cmap='coolwarm', vmin=-1, vmax=1)
 
-# Annotate the heatmap with correlation values
+# Annotate the heatmap with correlation values and custom colors
 for i in range(corr.shape[0]):
     for j in range(corr.shape[1]):
-        plt.annotate(f"{corr.values[i, j]:.2f}", xy=(j, i), ha='center', va='center', color='white')
+        value = corr.values[i, j]
+        color = custom_colormap(value)
+        plt.annotate(f"{value:.2f}", xy=(j, i), ha='center', va='center', color=color)
 
 # Add a colorbar
 cbar = plt.colorbar(ticks=[-1, 0, 1])
@@ -298,7 +303,7 @@ cbar.ax.set_yticklabels(['-1', '0', '1'])
 cbar.set_label("Correlation Coefficient", rotation=270, labelpad=20)
 
 # Set plot title
-plt.title("Customized Correlation Heatmap with Annotations")
+plt.title("Correlation Heatmap with Custom Colors")
 
 # Set x-axis and y-axis labels
 plt.xticks(ticks=np.arange(corr.shape[1]), labels=corr.columns, rotation=45, ha='right')
@@ -309,3 +314,4 @@ plt.tight_layout()
 
 # Display the plot
 plt.show()
+
