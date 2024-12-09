@@ -83,4 +83,24 @@ model = make_pipeline(PolynomialFeatures(degree), LinearRegression())
 scores = cross_val_score(model, X, y, scoring='neg_mean_squared_error', cv=5)
 print(f'Cross-validated MSE for degree {degree}: {-scores.mean()}')
 
+============================================================================================
+
+# Example using Pandas DataFrame
+df = pd.DataFrame({"Date": date_range, "Value": values})
+
+# Plot directly from DataFrame
+df.plot(x="Date", y="Value", figsize=(10, 6))
+
+# Format x-axis to show only the year
+plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
+plt.gca().xaxis.set_major_locator(mdates.YearLocator())
+
+plt.xlabel("Year")
+plt.ylabel("Values")
+plt.title("Pandas Plot with Year-Only X-Axis Labels")
+plt.xticks(rotation=45)
+plt.tight_layout()
+plt.show()
+
+
 
