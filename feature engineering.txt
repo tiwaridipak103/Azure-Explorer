@@ -102,5 +102,41 @@ plt.xticks(rotation=45)
 plt.tight_layout()
 plt.show()
 
+__-------------------------------------
+
+import pandas as pd
+import numpy as np
+
+# Example training data
+train_data = pd.DataFrame({
+    'group1': ['A', 'A', 'B', 'B', 'C'],
+    'group2': ['X', 'Y', 'X', 'Y', 'X'],
+    'feature': [1, 2, np.nan, 4, 5]
+})
+
+# Example test data
+test_data = pd.DataFrame({
+    'group1': ['A', 'B', 'C', 'B', 'C'],
+    'group2': ['X', 'Y', 'X', 'X', 'Y'],
+    'feature': [np.nan, 3, np.nan, 7, np.nan]
+})
+
+# Calculate the mean for each group in training data
+group_means = train_data.groupby(['group1', 'group2'])['feature'].mean()
+
+# Define a function to fetch group mean
+def impute_with_group_mean(row):
+    if pd.isna(row['feature']):
+        return group_means.get((row['group1'], row['group2']), np.nan)
+    return row['feature']
+
+# Apply the function to the test data
+test_data['feature'] = test_data.apply(impute_with_group_mean, axis=1)
+
+print("Train Data:")
+print(train_data)
+print("\nTest Data After Imputation:")
+print(test_data)
+
 
 
