@@ -139,4 +139,45 @@ print("\nTest Data After Imputation:")
 print(test_data)
 
 
+_-----------------------------------
+
+import pandas as pd
+import numpy as np
+
+# Left DataFrame
+left_df = pd.DataFrame({
+    'id': [1, 2, 3, 4],
+    'value1': [10, np.nan, 30, np.nan],
+    'value2': [50, 60, np.nan, np.nan]
+})
+
+# Right DataFrame
+right_df = pd.DataFrame({
+    'id': [2, 3, 4],
+    'value1': [20, 35, 40],
+    'value2': [55, 65, 70]
+})
+
+# Add suffix to left table columns (excluding the join key 'id')
+left_df = left_df.rename(columns={col: col + '_left' for col in left_df.columns if col != 'id'})
+
+# Perform the merge
+merged_df = pd.merge(left_df, right_df, on='id', how='inner')
+
+# List of columns to impute
+columns_to_impute = ['value1', 'value2']
+
+# Impute missing values in left columns with values from the right table
+for col in columns_to_impute:
+    left_col = col + '_left'
+    merged_df[left_col] = merged_df[left_col].fillna(merged_df[col])
+
+# Rename columns back to their original names
+merged_df = merged_df.rename(columns={col + '_left': col for col in columns_to_impute})
+
+# Drop the right table columns if not needed
+merged_df.drop(columns=columns_to_impute, inplace=True)
+
+print(merged_df)
+
 
