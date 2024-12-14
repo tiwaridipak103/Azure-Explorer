@@ -236,3 +236,26 @@ class GroupwiseOutlierHandler:
         self.fit(train_df, group_col, feature_col)
         return self.transform(train_df)
 
+
+SAS_OUTPUT_DF = SAS_OUTPUT_DF.sort_values(list(SAS_OUTPUT_DF.columns)).reset_index(drop=True).fillna("None")
+DATAIKU_OUTPUT_DF = DATAIKU_OUTPUT_DF.sort_values(list(DATAIKU_OUTPUT_DF.columns)).reset_index(drop=True).fillna("None")
+
+# Top rows to compare
+top = 10
+
+ctr = 0
+
+for col in SAS_OUTPUT_DF.columns:
+    print(col, ":")
+    for i in range(min(DATAIKU_OUTPUT_DF.shape[0], SAS_OUTPUT_DF.shape[0])):
+        if str(DATAIKU_OUTPUT_DF.loc[i, col]).strip() != str(SAS_OUTPUT_DF.loc[i, col]).strip():
+            if (DATAIKU_OUTPUT_DF.loc[i, col] == '0.00%') and (SAS_OUTPUT_DF.loc[i, col] == '0.00%'):
+                pass
+            else:
+                print(DATAIKU_OUTPUT_DF.loc[i, col], "<<--(DATAIKU)-->>", SAS_OUTPUT_DF.loc[i, col], "at index:", i)
+                ctr += 1
+        if ctr >= top:
+            break
+
+if ctr == 0:
+    print("100% matched.")
