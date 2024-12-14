@@ -180,4 +180,59 @@ merged_df.drop(columns=columns_to_impute, inplace=True)
 
 print(merged_df)
 
+---------------------------------
+
+
+import numpy as np
+import pandas as pd
+
+class GroupwiseOutlierHandler:
+    def __init__(self):
+        self.group_bounds = None
+
+    def calculate_bounds(self, group):
+        """Calculate IQR-based bounds for a group."""
+        Q1 = group['feature'].quantile(0.25)
+        Q3 = group['feature'].quantile(0.75)
+        IQR = Q3 - Q1
+        lower_bound = Q1 - 1.5 * IQR
+        upper_bound = Q3 + 1.5 * IQR
+        return lower_bound, upper_bound
+
+    def fit(self, train_df, group_col, feature_col):
+        """Calculate bounds for outlier detection based on the training set."""
+        self.group_col = group_col
+        self.feature_col = feature_col
+
+        # Calculate bounds for each group in the training set
+        bounds = {}
+        for group, group_data in train_df.groupby(group_col):
+            lower_bound, upper_bound = self.calculate_bounds(group_data)
+            bounds[group] = {'lower_bound': lower_bound, 'upper_bound': upper_bound}
+
+        # Store the bounds
+        self.group_bounds = pd.DataFrame(bounds).T
+        return self
+
+    def transform(self, df):
+        """Apply the calculated bounds to cap outliers in a dataset."""
+        if self.group_bounds is None:
+            raise ValueError("You must fit the handler before transforming data.")
+
+        def cap_outliers(group):
+            group_name = group.name
+            lower_bound = self.group_bounds.loc[group_name, 'lower_bound']
+            upper_bound = self.group_bounds.loc[group_name, 'upper_bound']
+            group[self.feature_col + '_capped'] = np.where(
+                group[self.feature_col] < lower_bound, lower_bound,
+                np.where(group[self.feature_col] > upper_bound, upper_bound, group[self.feature_col])
+            )
+            return group
+
+        return df.groupby(self.group_col, group_keys=False).apply(cap_outliers)
+
+    def fit_transform(self, train_df, group_col, feature_col):
+        """Fit the bounds on the training set and transform it."""
+        self.fit(train_df, group_col, feature_col)
+        return self.transform(train_df)
 
