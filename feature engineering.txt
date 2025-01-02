@@ -1,12 +1,35 @@
-import os
-import argparse
-import yaml
-import logging
+import numpy as np
+from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import train_test_split
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--config", default="default")
-    parser.add_argument("--datasource", default=None)
+# Example data
+X = np.random.rand(100, 1) * 10
+y = 3 * X.flatten() + np.random.randn(100) * 2
 
-    args = parser.parse_args()
-    print(args.config, args.datasource)
+# Train-Test Split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Train Model
+model = LinearRegression()
+model.fit(X_train, y_train)
+
+# Predictions
+y_pred = model.predict(X_test)
+
+# Compute Residuals
+residuals = y_train - model.predict(X_train)
+std_dev = np.std(residuals)
+
+# Compute Prediction Interval
+from scipy.stats import t
+confidence = 0.95
+t_value = t.ppf((1 + confidence) / 2, df=len(X_train) - 2)
+margin_of_error = t_value * std_dev * np.sqrt(1 + 1 / len(X_train))
+
+# Interval for each prediction
+lower_bound = y_pred - margin_of_error
+upper_bound = y_pred + margin_of_error
+
+print("Prediction intervals:")
+for i in range(len(y_pred)):
+    print(f"Prediction: {y_pred[i]:.2f}, Interval: [{lower_bound[i]:.2f}, {upper_bound[i]:.2f}]")
