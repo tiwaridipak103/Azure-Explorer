@@ -33,3 +33,48 @@ upper_bound = y_pred + margin_of_error
 print("Prediction intervals:")
 for i in range(len(y_pred)):
     print(f"Prediction: {y_pred[i]:.2f}, Interval: [{lower_bound[i]:.2f}, {upper_bound[i]:.2f}]")
+
+
+import numpy as np
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Sample data (replace with your own data)
+np.random.seed(42)
+data = pd.DataFrame(np.random.rand(10, 5), columns=['A', 'B', 'C', 'D', 'E'])
+
+# Compute correlation matrix
+corr = data.corr()
+
+# Create a custom colormap
+def custom_colormap(val):
+    if val >= 0.8 or val <= -0.8:
+        return 'red'
+    else:
+        return 'blue'
+
+# Apply custom coloring
+colors = np.vectorize(custom_colormap)(corr)
+
+# Plot
+plt.figure(figsize=(8, 6))
+sns.heatmap(
+    corr,
+    annot=True,
+    fmt=".2f",
+    cmap='coolwarm',  # Use any base colormap
+    mask=np.zeros_like(corr, dtype=bool),  # No mask
+    cbar_kws={'label': 'Correlation Coefficient'},
+    linewidths=0.5,
+    linecolor='gray'
+)
+
+# Highlight the custom colors
+for i in range(len(corr)):
+    for j in range(len(corr)):
+        plt.text(j + 0.5, i + 0.5, f'{corr.iloc[i, j]:.2f}', color=colors[i][j], 
+                 ha='center', va='center', fontsize=10)
+
+plt.title('Customized Correlation Heatmap')
+plt.show()
