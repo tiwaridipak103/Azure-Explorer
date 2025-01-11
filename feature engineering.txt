@@ -127,3 +127,75 @@ class CurveModels:
     def fit_transform(self, train_df , group_col):
         self.fit(train_df , group_col)
         return self.transform(train_df)
+
+
+{
+    "workbench.colorCustomizations": {
+
+
+    "editor.background": "#020218"  // Changes the editor background to white
+
+}
+
+
+,
+
+
+
+
+"editor.tokenColorCustomizations": {
+    "textMateRules": [
+        {
+            "scope": [
+             "support.function.session.php", 
+             ],
+             "settings": {
+             "foreground": "#569CD6",
+             }
+        },
+        {
+            "scope": "source.python",
+            "settings": {
+                "foreground": "#00ffff" // Blue color
+            }
+        },
+        {
+            "scope": "string",
+            "settings": {
+                "foreground": "#15ff00" // Blue color
+            }
+        },
+        {
+            "scope": "keyword.control",
+            "settings": {
+                "foreground": "#ff008c" // Blue color
+            }
+        },
+        {
+            "scope": "comment",
+            "settings": {
+                "foreground": "#00ff62" // Blue color
+            }
+        },
+        {
+            "scope": "constant.other.caps.python",
+            "settings": {
+                "foreground": "#FFFFFF" // Bright cyan for constantss
+            }
+        },
+        {
+            "scope": "entity.name.function",
+            "settings": {
+                "foreground": "#ff0000" // Bright cyan for constants
+            }
+        }
+    ]
+},
+"editor.fontSize": 18,
+"python.createEnvironment.trigger": "off",
+"terminal.integrated.fontSize": 18,
+"workbench.editor.enablePreview": false,
+"python.defaultInterpreterPath": "C:\\Users\\DELL\\anaconda3\\envs\\conda_env\\python.exe"
+
+
+}
