@@ -1,256 +1,43 @@
 import numpy as np
 import pandas as pd
-from scipy.optimize import curve_fit
-from sklearn.metrics import mean_absolute_error as mae
+import lightgbm as lgb
+from sklearn.metrics import mean_absolute_error
+from sklearn.model_selection import train_test_split
 
-RESPONSE = 'Target'
+# Example Data (replace with your data)
+X = pd.DataFrame(np.random.rand(100, 20))  # 100 samples, 20 features
+y = np.random.rand(100)  # Target variable
 
-class CurveModels:
+# Split into training and test sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-    def __init__(self):
-        self.group_bounds = {}
-        self.all_model = [self.linear, self.quadratic , self.cubic , self.linear_reciprocal , \
-                          self.quadratic_reciprocal, self.logarithmic , self.double_log , \
-                          self.exponential_growth, self.exponential_decay , self.power_curve , \
-                          self.logistic_function , self.sine_wave , self.cosine_wave ,self.power_law ,\
-                          self.logistic_growth]  
-         
-        
-    # The relationship between x and y is a straight line
-    def linear(self, x, a, b):
-        return a + b * x
-    
-    # The data shows a single curve (parabolic shape).
-    def quadratic(self , x, a, b, c):
-        return a + b * x + c * x**2
+# Train a LightGBM model
+model = lgb.LGBMRegressor()
+model.fit(X_train, y_train)
 
-    # The data has multiple inflection points.
-    def cubic(self , x, a, b, c, d):
-        return a + b * x + c * x**2 + d * x**3
+# Get predictions
+y_pred = model.predict(X_train)
 
-    # y decreases sharply as x increases.
-    def linear_reciprocal(self , x, a, b):
-        return a + b / x
+# Compute residuals
+residuals = y_train - y_pred
 
-    # y decreases non-linearly with x.
-    def quadratic_reciprocal(self , x, a, b, c):
-        return a + b / x + c / x**2
+# Step 1: Define a threshold for capping residuals (e.g., 95th and 5th percentile)
+lower_threshold = np.percentile(residuals, 5)  # 5th percentile
+upper_threshold = np.percentile(residuals, 95)  # 95th percentile
 
-    # y grows or decays at a decreasing rate.
-    def logarithmic(self , x, a, b):
-        return a + b * np.log(x)
+# Step 2: Cap the residuals
+capped_residuals = np.clip(residuals, lower_threshold, upper_threshold)
 
-    # Both x and y grow or decay exponentially.
-    def double_log(self , x, a, b):
-        return np.exp(a + b * np.log(x))
+# Step 3: Adjust target variable (y_train) by adding capped residuals to predictions
+y_train_capped = y_pred + capped_residuals
 
-    # y increases rapidly as x grows.
-    def exponential_growth(self , x, a, b):
-        return a * np.exp(b * x)
+# Step 4: Retrain the model using the adjusted target variable (y_train_capped)
+model_capped = lgb.LGBMRegressor()
+model_capped.fit(X_train, y_train_capped)
 
-    # y decreases rapidly as x grows.
-    def exponential_decay(self , x, a, b):
-        return a * np.exp(-b * x)
+# Make predictions with the cleaned model
+y_pred_capped = model_capped.predict(X_test)
 
-    # y increases or decreases as a power of x.
-    def power_curve(self , x, a, b):
-        return a * x**b
-
-    # y grows or decays but saturates at a certain value (𝐿L).
-    def logistic_function(self , x, L, k, x0):
-        return L / (1 + np.exp(-k * (x - x0)))
-
-    # y oscillates periodically with a sinusoidal pattern.
-    def sine_wave(self , x, a, b, c, d):
-        return a * np.sin(b * x + c) + d
-
-    # y oscillates periodically with a cosinusoidal pattern.
-    def cosine_wave(self , x, a, b, c, d):
-        return a * np.cos(b * x + c) + d
-
-    # Observing self-similarity or scale-invariance.
-    def power_law(self , x, k, alpha):
-        return k * x**alpha
-
-    # Growth starts exponentially but slows and saturates at K (e.g., population models).
-    def logistic_growth(self , x, K, r, x0):
-        return K / (1 + np.exp(-r * (x - x0)))
-    
-
-    def fit(self,X, group_col):
-        self.group_col = group_col
-        self.all_numeric_column = [col for col in X.columns if col not in [RESPONSE] + self.group_col]
-
-        bounds = {}
-        for feature in self.all_numeric_column:
-            for name, group_data in X.groupby(self.group_col):
-                x , y = group_data[feature], group_data[RESPONSE]
-
-                all_mae = [mae(mod(x, *curve_fit(mod, x, y)[0]) , y) for mod in self.all_model]
-
-                # Find the index of the minimum value
-                best_model_index = all_mae.index(min(all_mae))
-
-                params, _ = curve_fit(self.all_model[best_model_index], x, y)
-                model_name = self.all_model[best_model_index].__name__
-
-                bounds[name] = {'params' : params , 'model_name' : model_name}
-            
-            # Store the bounds
-            self.group_bounds[feature] = pd.DataFrame(bounds).T
-
-        return self
-
-    def transform(self, df):
-
-        if self.group_bounds is None:
-            raise ValueError("You must fit the handler before transforming data")
-
-        def curve_finding(group):
-
-            for feat in self.all_numeric_column:
-                if group.name not in self.group_bounds[feat].index:
-                    break
-
-                else:
-                    parameter = self.group_bounds[feat].loc[group.name, 'params']
-                    model_name = self.group_bounds[feat].loc[group.name, 'model_name']
-
-                    for mod in self.all_model:
-
-                        if mod.__name__ == model_name:
-                            group[feat] = mod(group[feat], *parameter)
-            return group
-
-        return df.groupby(self.group_col, group_keys = False).apply(curve_finding)
-
-    def fit_transform(self, train_df , group_col):
-        self.fit(train_df , group_col)
-        return self.transform(train_df)
-
-
-{
-    "workbench.colorCustomizations": {
-
-
-    "editor.background": "#020218"  // Changes the editor background to white
-
-}
-
-
-,
-
-
-
-
-"editor.tokenColorCustomizations": {
-    "textMateRules": [
-        {
-            "scope": [
-             "support.function.session.php", 
-             ],
-             "settings": {
-             "foreground": "#569CD6",
-             }
-        },
-        {
-            "scope": "source.python",
-            "settings": {
-                "foreground": "#00ffff" // Blue color
-            }
-        },
-        {
-            "scope": "string",
-            "settings": {
-                "foreground": "#15ff00" // Blue color
-            }
-        },
-        {
-            "scope": "keyword.control",
-            "settings": {
-                "foreground": "#ff008c" // Blue color
-            }
-        },
-        {
-            "scope": "comment",
-            "settings": {
-                "foreground": "#00ff62" // Blue color
-            }
-        },
-        {
-            "scope": "constant.other.caps.python",
-            "settings": {
-                "foreground": "#FFFFFF" // Bright cyan for constantss
-            }
-        },
-        {
-            "scope": "entity.name.function",
-            "settings": {
-                "foreground": "#ff0000" // Bright cyan for constants
-            }
-        }
-    ]
-},
-"editor.fontSize": 18,
-"python.createEnvironment.trigger": "off",
-"terminal.integrated.fontSize": 18,
-"workbench.editor.enablePreview": false,
-"python.defaultInterpreterPath": "C:\\Users\\DELL\\anaconda3\\envs\\conda_env\\python.exe"
-
-
-}
-
-
-
-import numpy as np
-
-def calculate_mae(y_true, y_pred):
-    """
-    Calculate the Mean Absolute Error (MAE) after removing np.nan values.
-    
-    Parameters:
-    - y_true: array-like, true values
-    - y_pred: array-like, predicted values
-    
-    Returns:
-    - mae: float, the Mean Absolute Error, or np.nan if not computable
-    """
-    # Convert inputs to numpy arrays if they aren't already
-    y_true = np.array(y_true)
-    y_pred = np.array(y_pred)
-    
-    # Create a mask to exclude np.nan values in both arrays
-    mask = ~np.isnan(y_true) & ~np.isnan(y_pred)
-    
-    # Check if there are any valid pairs to compute MAE
-    if not np.any(mask):
-        # No valid data points
-        return np.nan
-    
-    # Filter the arrays
-    y_true_filtered = y_true[mask]
-    y_pred_filtered = y_pred[mask]
-    
-    # Calculate MAE
-    mae = np.mean(np.abs(y_true_filtered - y_pred_filtered))
-    return mae
-
-# Example usage
-y_true = [3.0, np.nan, 2.5, 7.0, 4.0]
-y_pred = [np.nan, np.nan, np.nan, np.nan, np.nan]  # All predictions are null
-
-mae = calculate_mae(y_true, y_pred)
-print(f"Mean Absolute Error (MAE): {mae}")
-
-
-import numpy as np
-
-k = [1, np.nan, 0]
-result = min(k)
-print(result)  # Output: nan
-
-
-
-result = np.nanmin(k)
-print(result)  # Output: 0
-
+# Evaluate model performance
+mae_capped = mean_absolute_error(y_test, y_pred_capped)
+print(f"Capped Model MAE: {mae_capped}")
