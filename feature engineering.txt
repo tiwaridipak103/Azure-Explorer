@@ -1,24 +1,279 @@
-# Feature transformation function
-feature = ['price', 'tax']
-groupby_col = ['fips_code', 'property_type']
-columns_to_pct_change = {f: f + '_yoy' for f in feature}
+import pandas as pd
 
-def feature_transformation(df, groupby_col):
-    df = df.sort_values(groupby_col + ['date'])  # Ensure proper sorting
+# Data
+data = {
+    "MOODYS ROOT": ["FHOFHOPI", "FLBF", "FBKPY", "FRTFSQ", "FGGDEBTGDPQ", "FIP", "FEZTECQ", "FLBR", "FEFI", "FSP500Q",
+                    "FLBU", "FGDPSQ", "FE23", "FHCMP1Q", "FRGT10YTQ", "FYPCPIQ", "FYPDPIQ", "FZFL0750355030",
+                    "FPOPQ", "FHX1", "FEPS", "FLBT", "FETL", "FAHETP"],
+    "LOGIA WO": ["e"] * 24,
+    "DESCRIPTION": [
+        "FHFA All Transactions Home Price Index, (Index 199501-100, SA)",
+        "Employment (Household Survey): Labor Force, (Ths, SA)",
+        "Bankruptcies: Personal - Total, (#, 12-Month Ending)",
+        "Retail Sales: Total, (Bil. S, SAAR)",
+        "Public Debt Outstanding: Total to GDP (%, SA)",
+        "Industrial Production: Total, (Index 2012=100, SA)",
+        "Employment: High-tech",
+        "Employment (Household Survey): Unemployment Rate, (%, SA)",
+        "Employment: Financial Activities, (Ths., SA)",
+        "S&P 500 Composite: Price Index - Average, (Index 1941-43-10, NSA)",
+        "Employment (Household Survey): Total Unemployed, (Ths., SA)",
+        "Gross Metro Product: Total; (Bil. Ch. 2012 USD, SAAR)",
+        "Employment: Construction, (Ths, SA)",
+        "Housing completions: Single-family, (#, SAAR)",
+        "Equilibrium value: 10-Year Treasury Constant Maturities",
+        "Income: Per Capita, (5, SAAR)",
+        "Disposable Personal Income, (Mil. S. SAAR)",
+        "Flow of Funds: Commercial real estate price index, (Index, SA)",
+        "Population: Total, (Ths.)",
+        "Home Sales: Existing Single-Family, (Ths. SAAR)",
+        "Employment: Professional & Business Services, (Ths, SA)",
+        "Labor Force Participation, (%, SA)",
+        "Employment: Trade, Transportation & Utilities, (Ths, SA)",
+        "Avg. Hourly Earnings: Private - Total (USD per hr.: SA)"
+    ],
+    "Detailed Description": [
+        "Tracks changes in housing prices across all transactions to gauge the housing market's health.",
+        "Measures the total labor force (employed and unemployed individuals actively seeking work).",
+        "Counts the total number of personal bankruptcies filed in a 12-month period, indicating economic stress.",
+        "Monitors total retail sales activity, showing consumer spending trends.",
+        "Measures the ratio of public debt outstanding to GDP, showing a country's debt sustainability.",
+        "Tracks overall industrial production levels, reflecting manufacturing and industrial activity.",
+        "Monitors employment trends in the high-tech sector, a key economic driver.",
+        "Measures the unemployment rate among the labor force, reflecting job market conditions.",
+        "Tracks employment in financial activities, including banking, real estate, and insurance sectors.",
+        "Reflects the performance of the S&P 500 Index, indicating stock market trends.",
+        "Counts the total number of unemployed individuals seeking jobs.",
+        "Measures the total output of metro areas in constant USD, showing economic performance regionally.",
+        "Tracks employment in construction, reflecting trends in the building and infrastructure sectors.",
+        "Monitors the number of single-family housing completions, a key housing market indicator.",
+        "Represents the equilibrium interest rate for 10-Year Treasury Bonds.",
+        "Tracks average per capita income, showing individual economic well-being.",
+        "Monitors disposable income levels, reflecting household financial capacity for spending and saving.",
+        "Tracks prices for commercial real estate, showing investment trends in this sector.",
+        "Represents the total population, essential for demographic and economic analysis.",
+        "Monitors existing single-family home sales, reflecting housing demand and supply.",
+        "Tracks employment in professional and business services, a diverse sector of the economy.",
+        "Measures the percentage of the population that is either working or actively seeking work.",
+        "Tracks employment in trade, transportation, and utilities sectors, key to economic activity.",
+        "Measures average hourly earnings in private-sector industries, reflecting wage trends."
+    ]
+}
 
-    columns_to_pct_change_qoq = {f: f + '_qoq' for f in feature}
-    pct_change_qoq = df.groupby(groupby_col)[feature].pct_change(periods=1) 
+# Create DataFrame
+df = pd.DataFrame(data)
+print(df)
 
-    pct_change_qoq.rename(columns=columns_to_pct_change_qoq, inplace=True)  # Rename columns
 
-    columns_to_pct_change_yoy = {f: f + '_yoy' for f in feature}
-    pct_change_yoy = df.groupby(groupby_col)[feature].pct_change(periods=4) 
-    pct_change_yoy.rename(columns=columns_to_pct_change_yoy, inplace=True)  # Rename columns
+import pandas as pd
 
-    df_new = pd.concat([df, pct_change_qoq, pct_change_yoy ] , axis=1) 
-    return df_new
+# Data
+data = {
+    "MOODYS ROOT": [
+        "FEPS", "FLBT", "FETL", "FAHETP", "FYPEWSQ", "FEGVS", "FPOP65GQ", "FEXSS", 
+        "FZFLHHNWSQ", "FEXS", "FPOP0004Q", "FXZFL104104005Q", "FIMGS", "FPOP1564Q", 
+        "FERM", "FEB1", "FSDEBTCQ", "FTWDBRD", "FBKBY", "FPOP45490", "FHXAFF", 
+        "FMOF14PQ", "FHHOLDQ", "FRFHLMCFM", "FE51"
+    ],
+    "DESCRIPTION": [
+        "Employment: Professional & Business Services, (Ths, SA)",
+        "Labor Force Participation, (%, SA)",
+        "Employment: Trade, Transportation & Utilities, (Ths, SA)",
+        "Avg. Hourly Earnings: Private - Total, (USD per hr., SA)",
+        "Income: Wage & Salary Disbursements, (Mil. S, SAAR)",
+        "Employment: Government - State, (Ths, SA)",
+        "Population: Ages 65 and greater, (Ths.)",
+        "NIPA: Exports of Services, (Bil. Ch. 2012 USD, SAAR)",
+        "Balance Sheet of Households and Nonprofit Organizations: Net Worth - Total, (Bil. Ch. 2012 USD, SA)",
+        "NIPA Exports of Goods and Services, (Bil. Ch. 2012 USD, SAAR)",
+        "Population: Ages 0-4, (Ths.)",
+        "Financial Accounts: Nonfinancial corporate business, debt securities and loans: liability (Mil. USD, NSA)",
+        "NIPA: Imports of Goods, (Bil. Ch. 2012 USD, SAAR)",
+        "Population: Ages 15-64; (Ths., NSA)",
+        "Employment: Natural Resources & Mining (Ths, SA)",
+        "Employment: Other Services, (Ths, SA)",
+        "Household Debt Service Ratio: Consumer (% of Disposable Inc., SA)",
+        "Weighted Average Exchange Value of U.S. Dollar: Broad Index - Nominal, (Index Jan1997-100, NSA)",
+        "Bankruptcies: Business Total 12 months ending, (#SA)",
+        "Population: Ages 45-49, (Ths.)",
+        "Housing Affordability Index, (Index, SA)",
+        "Mortgage Originations: 1-4 Family - Purchase (Bil USD, SAAR)",
+        "Households Total (Ths)",
+        "FHLMC: 30-Year Commitment Rate - Fixed Rate - National, (%, NSA)",
+        "Employment: Information, (Ths, SA)"
+    ],
+    "Detailed Description": [
+        "Tracks employment trends in professional and business services, a key sector of the economy.",
+        "Measures the percentage of the population that is either working or actively seeking work.",
+        "Tracks employment in trade, transportation, and utilities sectors, critical to supply chain and commerce.",
+        "Monitors average hourly earnings in private-sector industries, reflecting wage trends and inflation.",
+        "Tracks total wage and salary disbursements, showing trends in household earnings.",
+        "Monitors state government employment levels, reflecting public sector trends.",
+        "Represents the total population aged 65 and older, critical for understanding aging demographics.",
+        "Tracks exports of services, such as travel and financial services, reflecting international trade contributions.",
+        "Represents the net worth of households and nonprofit organizations, a key indicator of economic stability.",
+        "Measures total exports of goods and services in constant dollars, reflecting international trade performance.",
+        "Tracks the total population of children aged 0-4, a key demographic indicator for future planning.",
+        "Tracks debt securities and loans for nonfinancial corporate businesses, reflecting corporate financial health.",
+        "Monitors total imports of goods in constant dollars, a key economic trade indicator.",
+        "Represents the total population aged 15-64, typically considered the working-age population.",
+        "Tracks employment trends in natural resources and mining sectors, including oil and gas.",
+        "Monitors employment in other services such as repair, personal, and laundry services.",
+        "Represents the ratio of household debt payments to disposable income, indicating financial stress.",
+        "Tracks the exchange value of the U.S. dollar against a broad basket of currencies.",
+        "Counts the total number of business bankruptcies filed in a 12-month period.",
+        "Represents the total population aged 45-49, a key demographic for mid-career workforce analysis.",
+        "Measures housing affordability, considering median income and housing costs.",
+        "Tracks mortgage originations for single-family homes, reflecting housing market trends.",
+        "Represents the total number of households in the economy.",
+        "Tracks fixed-rate mortgage interest rates for 30-year commitments at the national level.",
+        "Monitors employment trends in the information sector, including media and telecommunications."
+    ]
+}
 
-# Apply feature transformation
-df_new = feature_transformation(df, groupby_col)
+# Create DataFrame
+df = pd.DataFrame(data)
+print(df)
 
-print(df_new)
+
+import pandas as pd
+
+# Data
+data = {
+    "MOODYS ROOT": [
+        "FPOP4549Q", "FHXAFF", "FMOF14PQ", "FHHOLDQ", "FRFHLMCFM", "FE51", "FCBC", 
+        "FE22", "FISCOMP", "FYHHMEDQ", "FHCMPMFQ", "FZFL154190005Q", "FHSTQ", 
+        "FHPNR", "FE42", "FHCMPQ", "FLBE", "FEGOOD", "FCPIU", "FYPQ", "FEMF", 
+        "FEOFC", "FHOFHOPIPOQ", "FIRHYBOASQ", "FNETEXS", "FSP500DYQ"
+    ],
+    "DESCRIPTION": [
+        "Population: Ages 45-49, (Ths.)",
+        "Housing Affordability Index, (Index, SA)",
+        "Mortgage Originations: 1-4 Family - Purchase (Bil. USD, SAAR)",
+        "Households: Total, (Ths.)",
+        "FHLMC: 30-Year Commitment Rate - Fixed Rate - National, (%, NSA)",
+        "Employment: Information, (Ths, SA)",
+        "Consumer Confidence Index, (Index 1985-100, SA)",
+        "Employment: Utilities, (Ths, SA)",
+        "Inventory to Shipments Ratio: Computer Equipment, (Ratio, SA)",
+        "Median Household Income, ($, SAAR)",
+        "Housing completions: Multi-family; (#; SAAR)",
+        "Financial Accounts: Households and nonprofit organizations; total liabilities (Bil. USD, Forecasted)",
+        "Housing Starts: Total, (#, SAAR)",
+        "Permits: Residential - Total, (#, SAAR)",
+        "Employment: Wholesale Trade, (Ths, SA)",
+        "Housing Completions: New Privately Owned Housing Units - Total, (Ths. #; SAAR)",
+        "Employment (Household Survey): Total Employed, (Ths, SA)",
+        "Employment: Goods-Producing (Mil. #, SA)",
+        "CPI: Urban Consumer - All Items, (Index 1982-84-100, SA)",
+        "Income: Total Personal, (Mil. $. SAAR)",
+        "Employment: Manufacturing Total, (Ths, SA)",
+        "Employment: Office-Using, (Ths, SA)",
+        "FHFA Purchase-Only Home Price Index, (Index 1991Q1-100, SA)",
+        "High-Yield Bonds: Option Adjusted Spread (% pts., NSA, Forecasted)",
+        "NIPA: Net Exports of Goods and Services, (Bil. Ch. 2012 USD, SAAR)",
+        "S&P 500 Composite: Dividend Yield, (% NSA)"
+    ],
+    "Detailed Description": [
+        "Tracks the total population aged 45-49, a key demographic for workforce and healthcare planning.",
+        "Measures housing affordability based on household income and median home prices.",
+        "Tracks mortgage originations for 1-4 family homes, reflecting housing market activity.",
+        "Represents the total number of households, a key indicator of population trends and housing demand.",
+        "Tracks fixed-rate mortgage interest rates for 30-year loans at the national level.",
+        "Monitors employment trends in the information sector, including media and telecommunications.",
+        "Reflects consumer sentiment regarding the economy, jobs, and financial prospects.",
+        "Tracks employment in the utilities sector, important for energy and infrastructure monitoring.",
+        "Measures inventory levels relative to shipments in the computer equipment sector.",
+        "Represents the median income of households, a key measure of economic well-being.",
+        "Tracks the number of completed multi-family housing units, a critical indicator of housing supply.",
+        "Monitors the liabilities of households and nonprofit organizations, indicating financial leverage.",
+        "Tracks the total number of housing starts, a leading indicator of residential construction activity.",
+        "Measures total permits issued for residential construction, reflecting future housing supply.",
+        "Tracks employment in wholesale trade, which is critical for supply chain operations.",
+        "Measures total completions of new privately owned housing units, an indicator of housing availability.",
+        "Represents the total number of employed individuals in the economy.",
+        "Monitors employment trends in goods-producing industries such as manufacturing and mining.",
+        "Tracks changes in the consumer price index for urban consumers, reflecting inflation trends.",
+        "Measures total personal income in the economy, an indicator of household purchasing power.",
+        "Tracks total employment in manufacturing industries, reflecting industrial activity.",
+        "Monitors employment in office-using sectors, such as finance, insurance, and real estate.",
+        "Measures changes in home prices for purchase-only transactions, reflecting housing market trends.",
+        "Tracks the spread of high-yield bonds compared to Treasury bonds, a measure of credit risk.",
+        "Represents net exports of goods and services in constant dollars, a measure of trade balance.",
+        "Tracks the dividend yield of the S&P 500 Index, reflecting investment income trends."
+    ]
+}
+
+# Create DataFrame
+df = pd.DataFrame(data)
+print(df)
+
+
+import pandas as pd
+
+# Data
+data = {
+    "MOODYS ROOT": [
+        "FEMF", "FEOFC", "FHOFHOPIPOQ", "FIRHYBOASQ", "FNETEXS", "FSP500DYQ", 
+        "FERW", "FRT", "FCPRNMC", "FPOP3539Q", "FCPNCCOMWAR", "FEEH", "FCUMF", 
+        "FRT722", "FIFNS", "FENRCC", "FRGT2Y", "FHSTMFQ", "FET", "FGDP", 
+        "FRBAAC", "FRGT10Y", "FZPAS", "FEXGS"
+    ],
+    "DESCRIPTION": [
+        "Employment: Manufacturing Total, (Ths, SA)",
+        "Employment: Office-Using, (Ths, SA)",
+        "FHFA Purchase-Only Home Price Index; (Index 199101-100, SA)",
+        "High-Yield Bonds: Option Adjusted Spread (% pts, NSA) (Forecasted)",
+        "NIPA: Net Exports of Goods and Services, (Bil. Ch. 2012 USD, SAAR)",
+        "S&P 500 Composite Dividend Yield; (%; NSA)",
+        "Employment: Transportation & Warehousing, (Ths, SA)",
+        "Retail Sales: Retail Sales Total, (Bil. USD, CDASAAR)",
+        "Value of Construction Put in Place: Private Residential - New Multifamily",
+        "Population: Ages 35-39, (Ths.)",
+        "Value of Construction Put in Place: Private Nonresidential Commercial - Warehouse",
+        "Employment: Education & Health Services, (Ths. SA)",
+        "Capacity Utilization: Manufacturing, (%, SA)",
+        "Retail Sales Food services and drinking places, (Bil. USD, CDASAAR)",
+        "NIPA: Fixed Investment - Nonresidential Total, (Bil. Ch. 2012 USD, SAAR)",
+        "ENR. Construction Cost Index, (Index 1913-100, NSA)",
+        "Interest Rates: 2-Year Constant Maturity Securities, (% p.a., NSA)",
+        "Housing Starts: Multifamily, (#, SAAR)",
+        "Employment: Total Non-Agricultural, (Ths, SA)",
+        "Gross Metro Product: Total (Bil. Ch. 2012 USD, SAAR)",
+        "Interest Rates: Moody's Bond Yield - Baa Corporate - Bonds with maturities 20 years and above, (% pa, NSA)",
+        "Interest Rates: 10-Year Constant Maturity Securities, (% pa, NSA)",
+        "NIPA: Profits after Tax (Without IVA and CCA), (Bil. Ch. 2012 USD, SAAR)",
+        "NIPA: Exports of Goods, (Bil. Ch. 2012 USD, SAAR)"
+    ],
+    "Detailed Description": [
+        "Tracks the total number of employees in the manufacturing sector, a key indicator of industrial activity.",
+        "Monitors employment in office-using sectors, such as finance, insurance, and professional services.",
+        "Measures changes in home prices for purchase-only transactions, reflecting housing market trends.",
+        "Tracks the spread of high-yield bonds compared to Treasury bonds, indicating credit risk in financial markets.",
+        "Represents net exports of goods and services in constant dollars, a measure of trade balance.",
+        "Tracks the dividend yield of the S&P 500 Index, reflecting investment income trends.",
+        "Monitors employment in transportation and warehousing sectors, critical for logistics and supply chains.",
+        "Measures total retail sales, providing insight into consumer spending behavior and economic health.",
+        "Tracks the value of new private multifamily residential construction, reflecting housing development trends.",
+        "Represents the total population aged 35-39, a demographic relevant for workforce and housing analysis.",
+        "Monitors the value of private nonresidential construction projects for warehouses, indicating commercial development.",
+        "Tracks employment trends in education and health services, critical sectors for social well-being.",
+        "Measures the percentage of manufacturing capacity currently in use, indicating industrial efficiency.",
+        "Monitors retail sales in food services and drinking places, reflecting consumer spending in this category.",
+        "Tracks nonresidential fixed investment, representing business expenditures on physical assets.",
+        "Monitors changes in construction costs using the ENR index, a benchmark for the construction industry.",
+        "Tracks interest rates on 2-year Treasury securities, a measure of short-term borrowing costs.",
+        "Measures the number of multifamily housing starts, reflecting supply trends in this market segment.",
+        "Represents total non-agricultural employment, a key indicator of overall economic activity.",
+        "Tracks the gross metropolitan product, representing the total output of metro areas.",
+        "Monitors Moody's corporate bond yields for Baa-rated bonds with maturities of 20 years or more.",
+        "Tracks interest rates on 10-year Treasury securities, a benchmark for long-term borrowing costs.",
+        "Measures corporate profits after tax, a key indicator of business profitability.",
+        "Represents exports of goods in constant dollars, reflecting international trade activity."
+    ]
+}
+
+# Create DataFrame
+df = pd.DataFrame(data)
+print(df)
+
