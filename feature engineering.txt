@@ -1,46 +1,98 @@
-import pandas as pd
+import tensorflow as tf
+from tensorflow.keras import layers
+import numpy as np
+import matplotlib.pyplot as plt
 
-def reshape_data(df):
-    """
-    Reshapes the DataFrame to the desired output format.
+# Generator Model
+def make_generator_model(input_dim, feature_dim):
+    model = tf.keras.Sequential()
+    model.add(layers.Dense(128, activation="relu", input_dim=input_dim))
+    model.add(layers.Reshape((1, 128)))
+    model.add(layers.LSTM(256, return_sequences=True))
+    model.add(layers.LSTM(128, return_sequences=False))
+    model.add(layers.Dense(feature_dim, activation="tanh"))
+    return model
 
-    Args:
-        df: The input DataFrame.
+# Discriminator Model
+def make_discriminator_model(feature_dim):
+    model = tf.keras.Sequential()
+    model.add(layers.LSTM(128, return_sequences=True, input_shape=(1, feature_dim)))
+    model.add(layers.LSTM(64, return_sequences=False))
+    model.add(layers.Dense(1, activation="sigmoid"))
+    return model
 
-    Returns:
-        A new DataFrame with the desired output format.
-    """
+# Loss functions
+cross_entropy = tf.keras.losses.BinaryCrossentropy(from_logits=False)
 
-    # Create a new DataFrame with the desired columns
-    new_df = pd.DataFrame(columns=['fipscode', 'comb', 'group', 'coef'])
+def generator_loss(fake_output):
+    return cross_entropy(tf.ones_like(fake_output), fake_output)
 
-    # Iterate over each unique fipscode
-    for fips in df['fipscode'].unique():
-        # Filter the DataFrame for the current fipscode
-        fips_df = df[df['fipscode'] == fips]
+def discriminator_loss(real_output, fake_output):
+    real_loss = cross_entropy(tf.ones_like(real_output), real_output)
+    fake_loss = cross_entropy(tf.zeros_like(fake_output), fake_output)
+    return real_loss + fake_loss
 
-        # Create a list of tuples for each row
-        rows = []
-        for col in ['ind', 'off', 'retail', 'jun', 'mar', 'sep']:
-            rows.append((fips, col, fips_df['group'].values[0], fips_df[col].values[0]))
+# Optimizers
+generator_optimizer = tf.keras.optimizers.Adam(1e-4)
+discriminator_optimizer = tf.keras.optimizers.Adam(1e-4)
 
-        # Append the rows to the new DataFrame
-        new_df = new_df.append(pd.DataFrame(rows, columns=['fipscode', 'comb', 'group', 'coef']), ignore_index=True)
+# Parameters
+BUFFER_SIZE = 1000
+BATCH_SIZE = 32
+EPOCHS = 100
+noise_dim = 100
+feature_dim = 50  # Number of features in each row
+num_examples_to_generate = 5
 
-    return new_df
+# Sample Data (Replace this with your time-series data)
+data = np.random.randn(1000, feature_dim).astype(np.float32)
+train_dataset = tf.data.Dataset.from_tensor_slices(data).shuffle(BUFFER_SIZE).batch(BATCH_SIZE)
 
-# Sample DataFrame (replace with your actual data)
-data = {'fipscode': ['Dipak', 'Dipak', 'Dipak'],
-        'group': [1, 1, 1],
-        'ind': [10, 20, 30],
-        'off': [40, 50, 60],
-        'retail': [70, 80, 90],
-        'jun': [100, 110, 120],
-        'mar': [130, 140, 150],
-        'sep': [160, 170, 180]}
-df = pd.DataFrame(data)
+# Models
+generator = make_generator_model(noise_dim, feature_dim)
+discriminator = make_discriminator_model(feature_dim)
 
-# Apply the function to reshape the data
-new_df = reshape_data(df)
+# Generate random vectors for testing
+seed = tf.random.normal([num_examples_to_generate, noise_dim])
 
-print(new_df)
+@tf.function
+def train_step(real_data):
+    noise = tf.random.normal([BATCH_SIZE, noise_dim])
+
+    with tf.GradientTape() as gen_tape, tf.GradientTape() as disc_tape:
+        generated_data = generator(noise, training=True)
+
+        real_output = discriminator(tf.expand_dims(real_data, axis=1), training=True)
+        fake_output = discriminator(tf.expand_dims(generated_data, axis=1), training=True)
+
+        gen_loss = generator_loss(fake_output)
+        disc_loss = discriminator_loss(real_output, fake_output)
+
+    gradients_of_generator = gen_tape.gradient(gen_loss, generator.trainable_variables)
+    gradients_of_discriminator = disc_tape.gradient(disc_loss, discriminator.trainable_variables)
+
+    generator_optimizer.apply_gradients(zip(gradients_of_generator, generator.trainable_variables))
+    discriminator_optimizer.apply_gradients(zip(gradients_of_discriminator, discriminator.trainable_variables))
+
+    return gen_loss, disc_loss
+
+def train(dataset, epochs):
+    for epoch in range(epochs):
+        gen_loss_avg = 0
+        disc_loss_avg = 0
+
+        for batch in dataset:
+            gen_loss, disc_loss = train_step(batch)
+            gen_loss_avg += gen_loss
+            disc_loss_avg += disc_loss
+
+        print(f"Epoch {epoch+1}/{epochs}, Generator Loss: {gen_loss_avg:.4f}, Discriminator Loss: {disc_loss_avg:.4f}")
+        if (epoch + 1) % 10 == 0:
+            generate_and_save_data(generator, epoch + 1, seed)
+
+def generate_and_save_data(model, epoch, test_input):
+    predictions = model(test_input, training=False)
+    print(f"Generated data at epoch {epoch}:\n{predictions.numpy()}")
+
+# Train the GAN
+train(train_dataset, EPOCHS)
