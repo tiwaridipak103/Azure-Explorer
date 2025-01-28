@@ -1,4 +1,4 @@
-import tensorflow as tf
+ekimport tensorflow as tf
 from tensorflow.keras import layers
 import numpy as np
 import matplotlib.pyplot as plt
@@ -169,3 +169,103 @@ y_pred = stacking_regressor.predict(X_test)
 # Evaluate the model
 print("Mean Squared Error:", mean_squared_error(y_test, y_pred))
 
+import numpy as np
+from sklearn.base import BaseEstimator, RegressorMixin, clone
+from sklearn.model_selection import KFold
+
+class StackingRegressor(BaseEstimator, RegressorMixin):
+    def __init__(self, base_regressors, meta_regressor, n_folds=5, random_state=None):
+        """
+        A custom stacking regressor class.
+
+        Parameters:
+        - base_regressors: List of base regressors (must implement `fit` and `predict`).
+        - meta_regressor: Regressor to combine base regressors' predictions.
+        - n_folds: Number of folds for cross-validation when training base regressors.
+        - random_state: Random seed for reproducibility.
+        """
+        self.base_regressors = base_regressors
+        self.meta_regressor = meta_regressor
+        self.n_folds = n_folds
+        self.random_state = random_state
+
+    def fit(self, X, y):
+        """
+        Train the base regressors and meta-regressor.
+
+        Parameters:
+        - X: Feature matrix (numpy array or pandas DataFrame).
+        - y: Target values.
+
+        Returns:
+        - self: The fitted model.
+        """
+        self.base_regressors_ = [clone(regressor) for regressor in self.base_regressors]
+        self.meta_regressor_ = clone(self.meta_regressor)
+
+        # Initialize storage for out-of-fold predictions
+        meta_features = np.zeros((X.shape[0], len(self.base_regressors)))
+        kfold = KFold(n_splits=self.n_folds, shuffle=True, random_state=self.random_state)
+
+        # Train each base regressor using out-of-fold predictions
+        for i, regressor in enumerate(self.base_regressors_):
+            for train_idx, val_idx in kfold.split(X, y):
+                regressor.fit(X[train_idx], y[train_idx])  # Fit on training fold
+                meta_features[val_idx, i] = regressor.predict(X[val_idx])  # Predict on validation fold
+
+        # Fit the meta-regressor on the out-of-fold predictions
+        self.meta_regressor_.fit(meta_features, y)
+        
+        # Train all base regressors on the full dataset for final predictions
+        for regressor in self.base_regressors_:
+            regressor.fit(X, y)
+
+        return self
+
+    def predict(self, X):
+        """
+        Predict target values using the stacking model.
+
+        Parameters:
+        - X: Feature matrix (numpy array or pandas DataFrame).
+
+        Returns:
+        - Predictions from the stacking model.
+        """
+        # Gather predictions from base regressors
+        meta_features = np.column_stack([regressor.predict(X) for regressor in self.base_regressors_])
+        
+        # Predict using the meta-regressor
+        return self.meta_regressor_.predict(meta_features)
+
+from sklearn.datasets import make_regression
+from sklearn.linear_model import LinearRegression
+from sklearn.tree import DecisionTreeRegressor
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.ensemble import GradientBoostingRegressor
+from sklearn.metrics import mean_squared_error
+
+# Create synthetic data
+X, y = make_regression(n_samples=1000, n_features=10, noise=0.2, random_state=42)
+
+# Split data
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Define base regressors and meta-regressor
+base_regressors = [
+    LinearRegression(),
+    DecisionTreeRegressor(max_depth=5),
+    RandomForestRegressor(n_estimators=50, random_state=42),
+]
+
+meta_regressor = GradientBoostingRegressor(n_estimators=50, random_state=42)
+
+# Create and train the stacking model
+stacking_model = StackingRegressor(base_regressors=base_regressors, meta_regressor=meta_regressor, n_folds=5, random_state=42)
+stacking_model.fit(X_train, y_train)
+
+# Predict and evaluate
+y_pred = stacking_model.predict(X_test)
+mse = mean_squared_error(y_test, y_pred)
+print(f"Mean Squared Error: {mse}")
