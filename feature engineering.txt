@@ -1,271 +1,57 @@
-ekimport tensorflow as tf
-from tensorflow.keras import layers
 import numpy as np
-import matplotlib.pyplot as plt
+import lightgbm as lgb
+from sklearn.model_selection import RandomizedSearchCV
+from lightgbm import LGBMRegressor
 
-# Generator Model
-def make_generator_model(input_dim, feature_dim):
-    model = tf.keras.Sequential()
-    model.add(layers.Dense(128, activation="relu", input_dim=input_dim))
-    model.add(layers.Reshape((1, 128)))
-    model.add(layers.LSTM(256, return_sequences=True))
-    model.add(layers.LSTM(128, return_sequences=False))
-    model.add(layers.Dense(feature_dim, activation="tanh"))
-    return model
+# Define Custom Weighted MAE Loss for Training
+def weighted_mae_obj(y_pred, dataset):
+    y_true = dataset.get_label()
+    var_y = np.var(y_true)
+    weight = 1 / (var_y + 1e-6)  # Prevent division by zero
 
-# Discriminator Model
-def make_discriminator_model(feature_dim):
-    model = tf.keras.Sequential()
-    model.add(layers.LSTM(128, return_sequences=True, input_shape=(1, feature_dim)))
-    model.add(layers.LSTM(64, return_sequences=False))
-    model.add(layers.Dense(1, activation="sigmoid"))
-    return model
+    grad = weight * np.sign(y_pred - y_true)
+    hess = np.ones_like(y_true)  # MAE has no second derivative
 
-# Loss functions
-cross_entropy = tf.keras.losses.BinaryCrossentropy(from_logits=False)
+    return grad, hess
 
-def generator_loss(fake_output):
-    return cross_entropy(tf.ones_like(fake_output), fake_output)
+# Define Custom Weighted MAE Metric for Evaluation
+def weighted_mae_metric(y_pred, dataset):
+    y_true = dataset.get_label()
+    var_y = np.var(y_true)
+    weight = 1 / (var_y + 1e-6)
 
-def discriminator_loss(real_output, fake_output):
-    real_loss = cross_entropy(tf.ones_like(real_output), real_output)
-    fake_loss = cross_entropy(tf.zeros_like(fake_output), fake_output)
-    return real_loss + fake_loss
+    mae = np.mean(np.abs(y_pred - y_true))
+    weighted_mae = weight * mae  
 
-# Optimizers
-generator_optimizer = tf.keras.optimizers.Adam(1e-4)
-discriminator_optimizer = tf.keras.optimizers.Adam(1e-4)
+    return "weighted_mae", weighted_mae, False  # False: lower is better
 
-# Parameters
-BUFFER_SIZE = 1000
-BATCH_SIZE = 32
-EPOCHS = 100
-noise_dim = 100
-feature_dim = 50  # Number of features in each row
-num_examples_to_generate = 5
+# Define Model
+lgb_model = LGBMRegressor(n_jobs=-1)
 
-# Sample Data (Replace this with your time-series data)
-data = np.random.randn(1000, feature_dim).astype(np.float32)
-train_dataset = tf.data.Dataset.from_tensor_slices(data).shuffle(BUFFER_SIZE).batch(BATCH_SIZE)
+# Define Hyperparameter Grid
+param_grid = {
+    'num_leaves': [20, 40, 60],
+    'learning_rate': [0.01, 0.05, 0.1],
+    'n_estimators': [100, 300, 500],
+    'max_depth': [-1, 10, 20],
+}
 
-# Models
-generator = make_generator_model(noise_dim, feature_dim)
-discriminator = make_discriminator_model(feature_dim)
-
-# Generate random vectors for testing
-seed = tf.random.normal([num_examples_to_generate, noise_dim])
-
-@tf.function
-def train_step(real_data):
-    noise = tf.random.normal([BATCH_SIZE, noise_dim])
-
-    with tf.GradientTape() as gen_tape, tf.GradientTape() as disc_tape:
-        generated_data = generator(noise, training=True)
-
-        real_output = discriminator(tf.expand_dims(real_data, axis=1), training=True)
-        fake_output = discriminator(tf.expand_dims(generated_data, axis=1), training=True)
-
-        gen_loss = generator_loss(fake_output)
-        disc_loss = discriminator_loss(real_output, fake_output)
-
-    gradients_of_generator = gen_tape.gradient(gen_loss, generator.trainable_variables)
-    gradients_of_discriminator = disc_tape.gradient(disc_loss, discriminator.trainable_variables)
-
-    generator_optimizer.apply_gradients(zip(gradients_of_generator, generator.trainable_variables))
-    discriminator_optimizer.apply_gradients(zip(gradients_of_discriminator, discriminator.trainable_variables))
-
-    return gen_loss, disc_loss
-
-def train(dataset, epochs):
-    for epoch in range(epochs):
-        gen_loss_avg = 0
-        disc_loss_avg = 0
-
-        for batch in dataset:
-            gen_loss, disc_loss = train_step(batch)
-            gen_loss_avg += gen_loss
-            disc_loss_avg += disc_loss
-
-        print(f"Epoch {epoch+1}/{epochs}, Generator Loss: {gen_loss_avg:.4f}, Discriminator Loss: {disc_loss_avg:.4f}")
-        if (epoch + 1) % 10 == 0:
-            generate_and_save_data(generator, epoch + 1, seed)
-
-def generate_and_save_data(model, epoch, test_input):
-    predictions = model(test_input, training=False)
-    print(f"Generated data at epoch {epoch}:\n{predictions.numpy()}")
-
-# Train the GAN
-train(train_dataset, EPOCHS)
-
-
-
-from sklearn.base import BaseEstimator, RegressorMixin
-from statsmodels.regression.mixed_linear_model import MixedLM
-import numpy as np
-import pandas as pd
-from sklearn.ensemble import StackingRegressor
-from sklearn.linear_model import LinearRegression
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import mean_squared_error
-
-# Custom wrapper for statsmodels MixedLM
-class MixedLMWrapper(BaseEstimator, RegressorMixin):
-    def __init__(self, formula, groups):
-        self.formula = formula
-        self.groups = groups
-        self.model = None
-
-    def fit(self, X, y):
-        # Convert X and y into a DataFrame for statsmodels
-        data = pd.DataFrame(X, columns=[f"feature_{i}" for i in range(X.shape[1])])
-        data["target"] = y
-        data["groups"] = self.groups
-        
-        # Fit the MixedLM model
-        self.model = MixedLM.from_formula(self.formula, data, groups=data["groups"])
-        self.result = self.model.fit()
-        return self
-
-    def predict(self, X):
-        # Use the fitted model to predict
-        if self.model is None:
-            raise ValueError("Model must be fitted before calling predict.")
-        
-        # Convert X into a DataFrame
-        data = pd.DataFrame(X, columns=[f"feature_{i}" for i in range(X.shape[1])])
-        return self.result.predict(data)
-
-# Example dataset
-np.random.seed(0)
-X = np.random.randn(100, 2)
-y = 1.5 * X[:, 0] - 2.0 * X[:, 1] + np.random.randn(100) * 0.1
-groups = np.random.choice(['A', 'B', 'C', 'D'], size=100)
-
-# Train-test split
-X_train, X_test, y_train, y_test, groups_train, groups_test = train_test_split(X, y, groups, test_size=0.2, random_state=42)
-
-# Define MixedLM formula
-formula = "target ~ feature_0 + feature_1"
-
-# Define base models
-mixedlm_model = MixedLMWrapper(formula=formula, groups=groups_train)
-linear_model = LinearRegression()
-
-# Define stacking regressor
-stacking_regressor = StackingRegressor(
-    estimators=[
-        ('mixedlm', mixedlm_model),
-        ('linear', linear_model)
-    ],
-    final_estimator=LinearRegression()
+# Perform Randomized Search
+random_search = RandomizedSearchCV(
+    estimator=lgb_model,
+    param_distributions=param_grid,
+    n_iter=10,
+    scoring='neg_mean_absolute_error',
+    cv=3,
+    verbose=2,
+    n_jobs=-1
 )
 
-# Train stacking model
-stacking_regressor.fit(X_train, y_train)
-
-# Make predictions
-y_pred = stacking_regressor.predict(X_test)
-
-# Evaluate the model
-print("Mean Squared Error:", mean_squared_error(y_test, y_pred))
-
-import numpy as np
-from sklearn.base import BaseEstimator, RegressorMixin, clone
-from sklearn.model_selection import KFold
-
-class StackingRegressor(BaseEstimator, RegressorMixin):
-    def __init__(self, base_regressors, meta_regressor, n_folds=5, random_state=None):
-        """
-        A custom stacking regressor class.
-
-        Parameters:
-        - base_regressors: List of base regressors (must implement `fit` and `predict`).
-        - meta_regressor: Regressor to combine base regressors' predictions.
-        - n_folds: Number of folds for cross-validation when training base regressors.
-        - random_state: Random seed for reproducibility.
-        """
-        self.base_regressors = base_regressors
-        self.meta_regressor = meta_regressor
-        self.n_folds = n_folds
-        self.random_state = random_state
-
-    def fit(self, X, y):
-        """
-        Train the base regressors and meta-regressor.
-
-        Parameters:
-        - X: Feature matrix (numpy array or pandas DataFrame).
-        - y: Target values.
-
-        Returns:
-        - self: The fitted model.
-        """
-        self.base_regressors_ = [clone(regressor) for regressor in self.base_regressors]
-        self.meta_regressor_ = clone(self.meta_regressor)
-
-        # Initialize storage for out-of-fold predictions
-        meta_features = np.zeros((X.shape[0], len(self.base_regressors)))
-        kfold = KFold(n_splits=self.n_folds, shuffle=True, random_state=self.random_state)
-
-        # Train each base regressor using out-of-fold predictions
-        for i, regressor in enumerate(self.base_regressors_):
-            for train_idx, val_idx in kfold.split(X, y):
-                regressor.fit(X[train_idx], y[train_idx])  # Fit on training fold
-                meta_features[val_idx, i] = regressor.predict(X[val_idx])  # Predict on validation fold
-
-        # Fit the meta-regressor on the out-of-fold predictions
-        self.meta_regressor_.fit(meta_features, y)
-        
-        # Train all base regressors on the full dataset for final predictions
-        for regressor in self.base_regressors_:
-            regressor.fit(X, y)
-
-        return self
-
-    def predict(self, X):
-        """
-        Predict target values using the stacking model.
-
-        Parameters:
-        - X: Feature matrix (numpy array or pandas DataFrame).
-
-        Returns:
-        - Predictions from the stacking model.
-        """
-        # Gather predictions from base regressors
-        meta_features = np.column_stack([regressor.predict(X) for regressor in self.base_regressors_])
-        
-        # Predict using the meta-regressor
-        return self.meta_regressor_.predict(meta_features)
-
-from sklearn.datasets import make_regression
-from sklearn.linear_model import LinearRegression
-from sklearn.tree import DecisionTreeRegressor
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.ensemble import GradientBoostingRegressor
-from sklearn.metrics import mean_squared_error
-
-# Create synthetic data
-X, y = make_regression(n_samples=1000, n_features=10, noise=0.2, random_state=42)
-
-# Split data
-from sklearn.model_selection import train_test_split
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-
-# Define base regressors and meta-regressor
-base_regressors = [
-    LinearRegression(),
-    DecisionTreeRegressor(max_depth=5),
-    RandomForestRegressor(n_estimators=50, random_state=42),
-]
-
-meta_regressor = GradientBoostingRegressor(n_estimators=50, random_state=42)
-
-# Create and train the stacking model
-stacking_model = StackingRegressor(base_regressors=base_regressors, meta_regressor=meta_regressor, n_folds=5, random_state=42)
-stacking_model.fit(X_train, y_train)
-
-# Predict and evaluate
-y_pred = stacking_model.predict(X_test)
-mse = mean_squared_error(y_test, y_pred)
-print(f"Mean Squared Error: {mse}")
+# Fit Model with Custom Objective and Metric
+random_search.fit(
+    X_train, y_train,
+    eval_set=[(X_valid, y_valid)],
+    eval_metric=weighted_mae_metric,  # Custom evaluation metric
+    callbacks=[lgb.log_evaluation(50)],
+    objective=weighted_mae_obj  # Custom objective function
+)
