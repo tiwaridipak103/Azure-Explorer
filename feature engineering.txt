@@ -55,3 +55,120 @@ random_search.fit(
     callbacks=[lgb.log_evaluation(50)],
     objective=weighted_mae_obj  # Custom objective function
 )
+
+
+import numpy as np
+import lightgbm as lgb
+from sklearn.base import BaseEstimator, RegressorMixin
+from sklearn.model_selection import RandomizedSearchCV
+
+# Define Custom Weighted MAE Loss
+def weighted_mae_obj(y_pred, dataset):
+    y_true = dataset.get_label()
+    var_y = np.var(y_true)
+    weight = 1 / (var_y + 1e-6)  # Prevent division by zero
+
+    grad = weight * np.sign(y_pred - y_true)
+    hess = np.ones_like(y_true)  # MAE has no second derivative
+
+    return grad, hess
+
+# Define Custom Weighted MAE Metric
+def weighted_mae_metric(y_pred, dataset):
+    y_true = dataset.get_label()
+    var_y = np.var(y_true)
+    weight = 1 / (var_y + 1e-6)
+
+    mae = np.mean(np.abs(y_pred - y_true))
+    weighted_mae = weight * mae  
+
+    return "weighted_mae", weighted_mae, False  # False: lower is better
+
+# Custom Wrapper for LightGBM
+class CustomLGBMRegressor(BaseEstimator, RegressorMixin):
+    def __init__(self, num_leaves=31, learning_rate=0.1, n_estimators=100, max_depth=-1):
+        self.num_leaves = num_leaves
+        self.learning_rate = learning_rate
+        self.n_estimators = n_estimators
+        self.max_depth = max_depth
+        self.model = None  # Placeholder for trained model
+
+    def fit(self, X, y):
+        train_data = lgb.Dataset(X, label=y)
+
+        params = {
+            'num_leaves': self.num_leaves,
+            'learning_rate': self.learning_rate,
+            'n_estimators': self.n_estimators,
+            'max_depth': self.max_depth
+        }
+
+        self.model = lgb.train(
+            params=params,
+            train_set=train_data,
+            fobj=weighted_mae_obj,  # Custom loss
+            feval=weighted_mae_metric,  # Custom evaluation metric
+            num_boost_round=500,
+            early_stopping_rounds=50,
+            verbose_eval=False
+        )
+        return self
+
+    def predict(self, X):
+        return self.model.predict(X)
+
+
+# Define Hyperparameter Grid
+param_grid = {
+    'num_leaves': [20, 40, 60],
+    'learning_rate': [0.01, 0.05, 0.1],
+    'n_estimators': [100, 300, 500],
+    'max_depth': [-1, 10, 20],
+}
+
+# Perform Randomized Search
+random_search = RandomizedSearchCV(
+    estimator=CustomLGBMRegressor(),
+    param_distributions=param_grid,
+    n_iter=10,
+    scoring='neg_mean_absolute_error',
+    cv=3,
+    verbose=2,
+    n_jobs=-1
+)
+
+# Fit Model with Hyperparameter Search
+random_search.fit(X_train, y_train)
+
+# Best Model
+best_model = random_search.best_estimator_
+
+
+from sklearn.metrics import make_scorer
+
+# Convert our LightGBM evaluation metric into a Scikit-Learn scorer
+def weighted_mae_scorer(y_true, y_pred):
+    var_y = np.var(y_true)
+    weight = 1 / (var_y + 1e-6)  # Avoid division by zero
+    weighted_mae = weight * np.mean(np.abs(y_pred - y_true))
+    return -weighted_mae  # Negative because Scikit-Learn maximizes scores
+
+# Create a Scikit-Learn scorer
+weighted_mae_sklearn = make_scorer(weighted_mae_scorer, greater_is_better=False)
+
+# Perform Randomized Search with Custom Scoring
+random_search = RandomizedSearchCV(
+    estimator=CustomLGBMRegressor(),
+    param_distributions=param_grid,
+    n_iter=10,
+    scoring=weighted_mae_sklearn,  # Use the weighted MAE scorer
+    cv=3,
+    verbose=2,
+    n_jobs=-1
+)
+
+# Fit Model with Hyperparameter Search
+random_search.fit(X_train, y_train)
+
+# Best Model
+best_model = random_search.best_estimator_
