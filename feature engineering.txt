@@ -52,3 +52,23 @@ if __name__ == "__main__":
                 pool.starmap(dipak, [((1, 2, 3), a)])
 
             print(list(a))  # Convert shared list to normal list before printing
+
+
+import multiprocessing as mp
+
+def dipak(c, shared_dict):
+    shared_dict.update(c)  # Update shared dictionary
+    print('hi')
+
+if __name__ == "__main__":
+    run_with_multiprocessing = True
+
+    if run_with_multiprocessing:
+        with mp.Manager() as manager:
+            a = manager.dict()  # Shared dictionary across processes
+            data = [{"x": 1, "y": 2}, {"z": 3}]
+
+            with mp.Pool(processes=3) as pool:
+                pool.starmap(dipak, [(d, a) for d in data])
+
+            print(dict(a))  # Convert shared dict to normal dict before printing
