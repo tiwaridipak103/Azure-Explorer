@@ -33,3 +33,22 @@ if __name__ == "__main__":
     
     for res in results:
         print(res)
+
+
+
+import multiprocessing as mp
+
+def dipak(c, shared_list):
+    shared_list.extend(c)
+    print('hi')
+
+if __name__ == "__main__":
+    run_with_multiprocessing = True
+
+    if run_with_multiprocessing:
+        with mp.Manager() as manager:
+            a = manager.list()  # Shared list across processes
+            with mp.Pool(processes=3) as pool:
+                pool.starmap(dipak, [((1, 2, 3), a)])
+
+            print(list(a))  # Convert shared list to normal list before printing
