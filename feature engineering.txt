@@ -99,3 +99,53 @@ if __name__ == "__main__":
 
             print("Final List:", list(shared_list))  # Convert to normal list before printing
             print("Final Dict:", dict(shared_dict))  # Convert to normal dict before printing
+
+
+
+import numpy as np
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from multiprocessing import Pool
+
+# Sample dataset
+np.random.seed(42)
+data = pd.DataFrame({
+    'feature1': np.random.rand(100),
+    'feature2': np.random.rand(100),
+    'target': np.random.randint(0, 2, 100)
+})
+
+# Function to train and evaluate a model
+def dipak_model(seed):
+    # Shuffle data
+    np.random.seed(seed)
+    shuffled_data = data.sample(frac=1, random_state=seed).reset_index(drop=True)
+    
+    # Train-test split (80-20)
+    train, test = train_test_split(shuffled_data, test_size=0.2, random_state=seed)
+
+    # Data preprocessing (if any)
+    X_train = train[['feature1', 'feature2']]
+    y_train = train['target']
+    X_test = test[['feature1', 'feature2']]
+    y_test = test['target']
+    
+    # Train a Linear Regression model
+    model = LinearRegression()
+    model.fit(X_train, y_train)
+    
+    # Evaluate the model
+    score = model.score(X_test, y_test)
+    
+    return f"Seed {seed}: Model Score = {score:.4f}"
+
+# Running 10 parallel executions using multiprocessing
+if __name__ == "__main__":
+    seeds = list(range(10))  # 10 different seeds for different splits
+    with Pool(processes=4) as pool:  # Using 4 cores
+        results = pool.map(dipak_model, seeds)
+
+    # Print results
+    for res in results:
+        print(res)
