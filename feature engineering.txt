@@ -300,3 +300,58 @@ if __name__ == "__main__":
         p.join()  # Wait for all parent processes to finish
 
     print("All processes completed.")
+
+
+import multiprocessing
+import os
+import psutil
+
+def set_cpu_affinity(core_id):
+    """Assign the current process to a specific CPU core."""
+    process = psutil.Process(os.getpid())
+    process.cpu_affinity([core_id])  # Pin to a specific CPU core
+
+def child_task(sub_task_id, core_id):
+    """Function executed by child processes, pinned to a specific core."""
+    set_cpu_affinity(core_id)
+    print(f"  Child Process {sub_task_id} running on Core {core_id}")
+
+def parent_task(parent_id, core_id):
+    """Function executed by parent processes, pinned to a specific core."""
+    set_cpu_affinity(core_id)
+    print(f"Parent Process {parent_id} running on Core {core_id}")
+
+    num_child_tasks = 2  # Number of child processes per parent
+    available_cores = list(range(core_id + 1, core_id + 1 + num_child_tasks))
+
+    child_processes = [
+        multiprocessing.Process(target=child_task, args=(i, available_cores[i % len(available_cores)]))
+        for i in range(num_child_tasks)
+    ]
+
+    for p in child_processes:
+        p.start()
+
+    for p in child_processes:
+        p.join()
+
+    print(f"Parent Process {parent_id} completed.")
+
+if __name__ == "__main__":
+    multiprocessing.set_start_method("spawn")  # Ensure safety for nested multiprocessing
+
+    num_cores = os.cpu_count()
+    parent_cores = list(range(0, num_cores, 3))  # Assign a core to each parent
+
+    parent_processes = [
+        multiprocessing.Process(target=parent_task, args=(i, parent_cores[i % len(parent_cores)]))
+        for i in range(len(parent_cores))
+    ]
+
+    for p in parent_processes:
+        p.start()
+
+    for p in parent_processes:
+        p.join()
+
+    print("All processes completed.")
