@@ -149,3 +149,101 @@ if __name__ == "__main__":
     # Print results
     for res in results:
         print(res)
+
+
+
+
+import multiprocessing as mp
+import numpy as np
+import random
+from sklearn.metrics import mean_absolute_error
+from sklearn.model_selection import train_test_split
+import lightgbm as lgb
+
+class RandomSearchParallel:
+    def __init__(self, model, param_grid, scoring, n_iter=10, n_jobs=4):
+        self.model = model
+        self.param_grid = param_grid
+        self.scoring = scoring
+        self.n_iter = n_iter
+        self.n_jobs = min(n_jobs, mp.cpu_count() - 1)  # Limit to available cores
+        self.best_params_ = None
+        self.best_score_ = float('inf')
+        self.best_model_ = None
+
+    def _train_evaluate(self, params, X_train, X_test, y_train, y_test, result_dict):
+        """Trains and evaluates the model for given hyperparameters"""
+        process_name = mp.current_process().name
+        print(f"{process_name} - Training with params: {params}")
+
+        # Initialize model with current hyperparameters
+        model = self.model.set_params(**params)
+
+        # Train the model
+        model.fit(X_train, y_train)
+
+        # Make predictions
+        y_pred = model.predict(X_test)
+
+        # Calculate the score
+        score = mean_absolute_error(y_test, y_pred)
+        print(f"{process_name} - Score: {score}")
+
+        # Store the result in shared dictionary
+        result_dict[str(params)] = score
+
+    def fit(self, X, y):
+        """Runs Randomized Search in parallel"""
+        manager = mp.Manager()
+        result_dict = manager.dict()  # Shared dict for storing results
+        processes = []
+
+        # Randomly sample `n_iter` parameter sets
+        sampled_params = [self._sample_params() for _ in range(self.n_iter)]
+
+        # Split dataset
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+        # Launch processes
+        for i, params in enumerate(sampled_params):
+            p = mp.Process(target=self._train_evaluate, args=(params, X_train, X_test, y_train, y_test, result_dict))
+            p.start()
+            processes.append(p)
+
+            # Limit parallel jobs to `n_jobs`
+            if len(processes) >= self.n_jobs:
+                for p in processes:
+                    p.join()
+                processes = []
+
+        # Ensure all processes finish
+        for p in processes:
+            p.join()
+
+        # Find the best parameters
+        self.best_params_, self.best_score_ = min(result_dict.items(), key=lambda x: x[1])
+        self.best_model_ = self.model.set_params(**eval(self.best_params_))  # Train best model
+
+        print(f"\nBest Params: {self.best_params_}")
+        print(f"Best Score: {self.best_score_}")
+
+    def _sample_params(self):
+        """Randomly samples a set of hyperparameters from the grid"""
+        return {key: random.choice(values) for key, values in self.param_grid.items()}
+
+
+# Sample dataset
+from sklearn.datasets import make_regression
+X, y = make_regression(n_samples=500, n_features=10, noise=0.1, random_state=42)
+
+# Define hyperparameter grid
+param_grid = {
+    'num_leaves': [20, 31, 40, 50],
+    'max_depth': [-1, 5, 10, 15],
+    'learning_rate': [0.01, 0.05, 0.1, 0.2],
+    'n_estimators': [50, 100, 200],
+}
+
+# Initialize and run Randomized Search
+search = RandomSearchParallel(model=lgb.LGBMRegressor(), param_grid=param_grid, scoring="neg_mean_absolute_error", n_iter=8, n_jobs=4)
+search.fit(X, y)
