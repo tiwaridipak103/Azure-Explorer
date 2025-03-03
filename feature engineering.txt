@@ -247,3 +247,20 @@ param_grid = {
 # Initialize and run Randomized Search
 search = RandomSearchParallel(model=lgb.LGBMRegressor(), param_grid=param_grid, scoring="neg_mean_absolute_error", n_iter=8, n_jobs=4)
 search.fit(X, y)
+
+from multiprocessing import Manager, Process
+
+def computation(iter, scenerio_df, response, important_feature, all_models, properties, val, all_predict):
+    # Your computation logic here
+    pass
+
+iteration = 10  # Define your iteration count
+
+with Manager() as manager:
+    all_predict = manager.dict()
+
+    processes = [Process(target=computation, args=(i, scenerio_df, response, important_feature, all_models, properties, 1, all_predict)) for i in range(iteration)]
+    
+    [p.start() for p in processes], [p.join() for p in processes]  # Start and join processes in one line
+
+    scenerio_df_output.update({f'PREDICTION_{i + 1}': dict(all_predict)[f'PREDICTION_{i + 1}'][0] for i in range(iteration)})  # Update DataFrame in one line
