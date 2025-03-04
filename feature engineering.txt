@@ -1,226 +1,71 @@
-eeimport numpy as np
-import multiprocessing
-from sklearn.linear_model import LinearRegression
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import mean_squared_error
-
-# Generate random data
-def generate_data(seed):
-    np.random.seed(seed)
-    X = np.random.rand(100, 5)  # 100 samples, 5 features
-    y = X @ np.array([2, -3, 1, 4, -2]) + np.random.randn(100)  # Linear relation with noise
-    return X, y
-
-# Function to train a linear regression model
-def train_linear_regression(seed):
-    X, y = generate_data(seed)
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-    
-    model = LinearRegression()
-    model.fit(X_train, y_train)
-    
-    y_pred = model.predict(X_test)
-    mse = mean_squared_error(y_test, y_pred)
-    
-    return f"Model {seed}: MSE = {mse:.4f}"
-
-# Running 5 linear regression models in parallel
-if __name__ == "__main__":
-    seeds = [42, 43, 44, 45, 46]  # Different seeds for different datasets
-    
-    with multiprocessing.Pool(processes=5) as pool:
-        results = pool.map(train_linear_regression, seeds)
-    
-    for res in results:
-        print(res)
-
-
-
-import multiprocessing as mp
-
-def dipak(c, shared_list):
-    shared_list.extend(c)
-    print('hi')
-
-if __name__ == "__main__":
-    run_with_multiprocessing = True
-
-    if run_with_multiprocessing:
-        with mp.Manager() as manager:
-            a = manager.list()  # Shared list across processes
-            with mp.Pool(processes=3) as pool:
-                pool.starmap(dipak, [((1, 2, 3), a)])
-
-            print(list(a))  # Convert shared list to normal list before printing
-
-
-import multiprocessing as mp
-
-def dipak(c, shared_dict):
-    shared_dict.update(c)  # Update shared dictionary
-    print('hi')
-
-if __name__ == "__main__":
-    run_with_multiprocessing = True
-
-    if run_with_multiprocessing:
-        with mp.Manager() as manager:
-            a = manager.dict()  # Shared dictionary across processes
-            data = [{"x": 1, "y": 2}, {"z": 3}]
-
-            with mp.Pool(processes=3) as pool:
-                pool.starmap(dipak, [(d, a) for d in data])
-
-            print(dict(a))  # Convert shared dict to normal dict before printing
-
-
-import multiprocessing as mp
-
-def dipak(c, shared_list, shared_dict):
-    shared_list.extend(c['list'])  # Append values to shared list
-    shared_dict.update(c['dict'])  # Update shared dictionary
-    print('hi')
-
-if __name__ == "__main__":
-    run_with_multiprocessing = True
-
-    if run_with_multiprocessing:
-        with mp.Manager() as manager:
-            shared_list = manager.list()  # Shared list across processes
-            shared_dict = manager.dict()  # Shared dictionary across processes
-
-            data = [
-                {"list": [1, 2], "dict": {"a": 1}}, 
-                {"list": [3, 4], "dict": {"b": 2}}
-            ]
-
-            with mp.Pool(processes=3) as pool:
-                pool.starmap(dipak, [(d, shared_list, shared_dict) for d in data])
-
-            print("Final List:", list(shared_list))  # Convert to normal list before printing
-            print("Final Dict:", dict(shared_dict))  # Convert to normal dict before printing
-
-
-
-import numpy as np
-import pandas as pd
-from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LinearRegression
-from multiprocessing import Pool
-
-# Sample dataset
-np.random.seed(42)
-data = pd.DataFrame({
-    'feature1': np.random.rand(100),
-    'feature2': np.random.rand(100),
-    'target': np.random.randint(0, 2, 100)
-})
-
-# Function to train and evaluate a model
-def dipak_model(seed):
-    # Shuffle data
-    np.random.seed(seed)
-    shuffled_data = data.sample(frac=1, random_state=seed).reset_index(drop=True)
-    
-    # Train-test split (80-20)
-    train, test = train_test_split(shuffled_data, test_size=0.2, random_state=seed)
-
-    # Data preprocessing (if any)
-    X_train = train[['feature1', 'feature2']]
-    y_train = train['target']
-    X_test = test[['feature1', 'feature2']]
-    y_test = test['target']
-    
-    # Train a Linear Regression model
-    model = LinearRegression()
-    model.fit(X_train, y_train)
-    
-    # Evaluate the model
-    score = model.score(X_test, y_test)
-    
-    return f"Seed {seed}: Model Score = {score:.4f}"
-
-# Running 10 parallel executions using multiprocessing
-if __name__ == "__main__":
-    seeds = list(range(10))  # 10 different seeds for different splits
-    with Pool(processes=4) as pool:  # Using 4 cores
-        results = pool.map(dipak_model, seeds)
-
-    # Print results
-    for res in results:
-        print(res)
-
-
-
-
 import multiprocessing as mp
 import numpy as np
 import random
 from sklearn.metrics import mean_absolute_error
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, KFold
 import lightgbm as lgb
 
 class RandomSearchParallel:
-    def __init__(self, model, param_grid, scoring, n_iter=10, n_jobs=4):
+    def __init__(self, model, param_grid, scoring, n_iter=20, n_jobs=4, cv=5):
         self.model = model
         self.param_grid = param_grid
         self.scoring = scoring
-        self.n_iter = n_iter
-        self.n_jobs = min(n_jobs, mp.cpu_count() - 1)  # Limit to available cores
+        self.n_iter = n_iter  # Total number of random parameter sets to test
+        self.n_jobs = min(n_jobs, mp.cpu_count())  # Limit parallel jobs to CPU cores
+        self.cv = cv  # Number of cross-validation folds
         self.best_params_ = None
         self.best_score_ = float('inf')
         self.best_model_ = None
 
-    def _train_evaluate(self, params, X_train, X_test, y_train, y_test, result_dict):
-        """Trains and evaluates the model for given hyperparameters"""
+    def _train_evaluate(self, params, X, y, result_dict):
+        """Trains and evaluates the model using cross-validation"""
         process_name = mp.current_process().name
         print(f"{process_name} - Training with params: {params}")
 
-        # Initialize model with current hyperparameters
-        model = self.model.set_params(**params)
+        kf = KFold(n_splits=self.cv, shuffle=True, random_state=42)
+        scores = []
 
-        # Train the model
-        model.fit(X_train, y_train)
+        for train_idx, val_idx in kf.split(X):
+            X_train, X_val = X[train_idx], X[val_idx]
+            y_train, y_val = y[train_idx], y[val_idx]
 
-        # Make predictions
-        y_pred = model.predict(X_test)
+            model = self.model.set_params(**params)
+            model.fit(X_train, y_train)
+            y_pred = model.predict(X_val)
 
-        # Calculate the score
-        score = mean_absolute_error(y_test, y_pred)
-        print(f"{process_name} - Score: {score}")
+            score = mean_absolute_error(y_val, y_pred)
+            scores.append(score)
+
+        mean_score = np.mean(scores)
+        print(f"{process_name} - Mean CV Score: {mean_score}")
 
         # Store the result in shared dictionary
-        result_dict[str(params)] = score
+        result_dict[str(params)] = mean_score
 
     def fit(self, X, y):
-        """Runs Randomized Search in parallel"""
+        """Runs Randomized Search with batch-wise multiprocessing"""
         manager = mp.Manager()
         result_dict = manager.dict()  # Shared dict for storing results
         processes = []
 
-        # Randomly sample `n_iter` parameter sets
-        sampled_params = [self._sample_params() for _ in range(self.n_iter)]
+        sampled_params = [self._sample_params() for _ in range(self.n_iter)]  # Sample random parameters
 
-        # Split dataset
-        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-
-        # Launch processes
         for i, params in enumerate(sampled_params):
-            p = mp.Process(target=self._train_evaluate, args=(params, X_train, X_test, y_train, y_test, result_dict))
+            p = mp.Process(target=self._train_evaluate, args=(params, X, y, result_dict))
             p.start()
             processes.append(p)
 
-            # Limit parallel jobs to `n_jobs`
+            # Run in batches of `n_jobs`
             if len(processes) >= self.n_jobs:
                 for p in processes:
                     p.join()
-                processes = []
+                processes = []  # Reset batch
 
-        # Ensure all processes finish
+        # Ensure any remaining processes complete
         for p in processes:
             p.join()
 
-        # Find the best parameters
+        # Find the best parameters based on the lowest score
         self.best_params_, self.best_score_ = min(result_dict.items(), key=lambda x: x[1])
         self.best_model_ = self.model.set_params(**eval(self.best_params_))  # Train best model
 
@@ -232,126 +77,25 @@ class RandomSearchParallel:
         return {key: random.choice(values) for key, values in self.param_grid.items()}
 
 
-# Sample dataset
-from sklearn.datasets import make_regression
-X, y = make_regression(n_samples=500, n_features=10, noise=0.1, random_state=42)
-
-# Define hyperparameter grid
-param_grid = {
-    'num_leaves': [20, 31, 40, 50],
-    'max_depth': [-1, 5, 10, 15],
-    'learning_rate': [0.01, 0.05, 0.1, 0.2],
-    'n_estimators': [50, 100, 200],
-}
-
-# Initialize and run Randomized Search
-search = RandomSearchParallel(model=lgb.LGBMRegressor(), param_grid=param_grid, scoring="neg_mean_absolute_error", n_iter=8, n_jobs=4)
-search.fit(X, y)
-
-from multiprocessing import Manager, Process
-
-def computation(iter, scenerio_df, response, important_feature, all_models, properties, val, all_predict):
-    # Your computation logic here
-    pass
-
-iteration = 10  # Define your iteration count
-
-with Manager() as manager:
-    all_predict = manager.dict()
-
-    processes = [Process(target=computation, args=(i, scenerio_df, response, important_feature, all_models, properties, 1, all_predict)) for i in range(iteration)]
+# Example Usage:
+if __name__ == "__main__":
+    from sklearn.datasets import make_regression
     
-    [p.start() for p in processes], [p.join() for p in processes]  # Start and join processes in one line
+    # Generate synthetic data
+    X, y = make_regression(n_samples=1000, n_features=10, noise=0.1, random_state=42)
+    
+    # Define parameter grid
+    param_grid = {
+        'learning_rate': [0.01, 0.05, 0.1],
+        'n_estimators': [50, 100, 200],
+        'max_depth': [3, 5, 7]
+    }
 
-    scenerio_df_output.update({f'PREDICTION_{i + 1}': dict(all_predict)[f'PREDICTION_{i + 1}'][0] for i in range(iteration)})  # Update DataFrame in one line
+    # Instantiate model
+    model = lgb.LGBMRegressor()
 
+    # Run Random Search
+    search = RandomSearchParallel(model, param_grid, scoring="neg_mean_absolute_error", n_iter=20, n_jobs=4, cv=5)
+    search.fit(X, y)
 
-import multiprocessing
-
-def child_task(sub_task_id):
-    """Function executed by child processes."""
-    print(f"  Child Process {sub_task_id} is running.")
-
-def parent_task(parent_id):
-    """Function executed by parent processes, spawning child processes."""
-    print(f"Parent Process {parent_id} started.")
-
-    child_processes = []
-    for sub_task_id in range(3):  # 3 child processes per parent
-        p = multiprocessing.Process(target=child_task, args=(sub_task_id,))
-        p.start()
-        child_processes.append(p)
-
-    for p in child_processes:
-        p.join()  # Wait for child processes to finish
-
-    print(f"Parent Process {parent_id} completed.")
-
-if __name__ == "__main__":
-    multiprocessing.set_start_method("spawn")  # Ensure safe multiprocessing
-
-    parent_processes = []
-    for parent_id in range(2):  # 2 parent processes
-        p = multiprocessing.Process(target=parent_task, args=(parent_id,))
-        p.start()
-        parent_processes.append(p)
-
-    for p in parent_processes:
-        p.join()  # Wait for all parent processes to finish
-
-    print("All processes completed.")
-
-
-import multiprocessing
-import os
-import psutil
-
-def set_cpu_affinity(core_id):
-    """Assign the current process to a specific CPU core."""
-    process = psutil.Process(os.getpid())
-    process.cpu_affinity([core_id])  # Pin to a specific CPU core
-
-def child_task(sub_task_id, core_id):
-    """Function executed by child processes, pinned to a specific core."""
-    set_cpu_affinity(core_id)
-    print(f"  Child Process {sub_task_id} running on Core {core_id}")
-
-def parent_task(parent_id, core_id):
-    """Function executed by parent processes, pinned to a specific core."""
-    set_cpu_affinity(core_id)
-    print(f"Parent Process {parent_id} running on Core {core_id}")
-
-    num_child_tasks = 2  # Number of child processes per parent
-    available_cores = list(range(core_id + 1, core_id + 1 + num_child_tasks))
-
-    child_processes = [
-        multiprocessing.Process(target=child_task, args=(i, available_cores[i % len(available_cores)]))
-        for i in range(num_child_tasks)
-    ]
-
-    for p in child_processes:
-        p.start()
-
-    for p in child_processes:
-        p.join()
-
-    print(f"Parent Process {parent_id} completed.")
-
-if __name__ == "__main__":
-    multiprocessing.set_start_method("spawn")  # Ensure safety for nested multiprocessing
-
-    num_cores = os.cpu_count()
-    parent_cores = list(range(0, num_cores, 3))  # Assign a core to each parent
-
-    parent_processes = [
-        multiprocessing.Process(target=parent_task, args=(i, parent_cores[i % len(parent_cores)]))
-        for i in range(len(parent_cores))
-    ]
-
-    for p in parent_processes:
-        p.start()
-
-    for p in parent_processes:
-        p.join()
-
-    print("All processes completed.")
+    print(f"Best Model: {search.best_model_}")
