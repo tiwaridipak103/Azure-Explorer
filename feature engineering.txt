@@ -99,3 +99,17 @@ if __name__ == "__main__":
     search.fit(X, y)
 
     print(f"Best Model: {search.best_model_}")
+
+
+import psutil
+import time
+
+# Wait a short time to get an accurate reading
+time.sleep(1) 
+
+# Get the percentage usage of each core
+cpu_usage_per_core = psutil.cpu_percent(percpu=True)
+
+# Print the usage of each core
+for i, usage in enumerate(cpu_usage_per_core):
+    print(f"Core {i}: {usage}% used")
