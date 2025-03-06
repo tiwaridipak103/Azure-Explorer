@@ -169,3 +169,33 @@ while True:
     # Draw the updated figure
     plt.draw()
     plt.pause(2)  # Pause for 2 seconds
+
+
+import psutil
+import matplotlib.pyplot as plt
+import matplotlib.animation as animation
+
+# Get the number of CPU cores
+num_cores = psutil.cpu_count()
+
+# Create figure and axis
+fig, ax = plt.subplots()
+bars = ax.bar(range(num_cores), [0] * num_cores, color='blue')
+
+# Set labels and limits
+ax.set_ylim(0, 100)
+ax.set_xlabel("CPU Core")
+ax.set_ylabel("Usage (%)")
+ax.set_title("Live CPU Usage per Core")
+
+# Function to update the bar chart
+def update(frame):
+    cpu_usage = psutil.cpu_percent(percpu=True)  # Get CPU usage for each core
+    for bar, usage in zip(bars, cpu_usage):
+        bar.set_height(usage)  # Update bar heights
+    return bars
+
+# Use Matplotlib animation to refresh plot every 2 seconds
+ani = animation.FuncAnimation(fig, update, interval=2000, blit=False)
+
+plt.show()
