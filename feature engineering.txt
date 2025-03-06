@@ -199,3 +199,50 @@ def update(frame):
 ani = animation.FuncAnimation(fig, update, interval=2000, blit=False)
 
 plt.show()
+
+
+import psutil
+import matplotlib.pyplot as plt
+import multiprocessing as mp
+import time
+
+def get_cpu_usage(queue):
+    """Continuously get CPU usage and put it into the queue."""
+    while True:
+        cpu_usage = psutil.cpu_percent(percpu=True)  # Get CPU usage per core
+        queue.put(cpu_usage)  # Put data into the queue
+        time.sleep(2)  # Wait for 2 seconds
+
+def plot_cpu_usage(queue):
+    """Plot bar chart and update it continuously."""
+    num_cores = psutil.cpu_count()
+    fig, ax = plt.subplots()
+    bars = ax.bar(range(num_cores), [0] * num_cores, color='blue')
+
+    ax.set_ylim(0, 100)
+    ax.set_xlabel("CPU Core")
+    ax.set_ylabel("Usage (%)")
+    ax.set_title("Live CPU Usage per Core")
+
+    plt.ion()  # Turn on interactive mode
+    plt.show()
+
+    while True:
+        if not queue.empty():
+            cpu_usage = queue.get()  # Get latest CPU usage data
+            for bar, usage in zip(bars, cpu_usage):
+                bar.set_height(usage)  # Update bar heights
+            plt.draw()
+            plt.pause(0.1)  # Small pause to refresh the plot
+
+if __name__ == "__main__":
+    queue = mp.Queue()  # Shared queue for data exchange
+
+    # Start the data collection process
+    process = mp.Process(target=get_cpu_usage, args=(queue,))
+    process.start()
+
+    # Run the plotting function in the main process
+    plot_cpu_usage(queue)
+
+    process.join()
