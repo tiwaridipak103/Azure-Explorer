@@ -113,3 +113,30 @@ cpu_usage_per_core = psutil.cpu_percent(percpu=True)
 # Print the usage of each core
 for i, usage in enumerate(cpu_usage_per_core):
     print(f"Core {i}: {usage}% used")
+
+
+import psutil
+import matplotlib.pyplot as plt
+import time
+
+plt.ion()  # Enable interactive mode
+
+# Initialize the plot
+fig, ax = plt.subplots()
+bars = ax.bar(range(psutil.cpu_count()), [0] * psutil.cpu_count(), color='blue')
+
+ax.set_ylim(0, 100)
+ax.set_xlabel("CPU Core")
+ax.set_ylabel("Usage (%)")
+ax.set_title("Live CPU Usage per Core")
+
+while True:
+    # Get CPU usage for each core
+    cpu_usage = psutil.cpu_percent(percpu=True)
+    
+    # Update bar heights
+    for bar, usage in zip(bars, cpu_usage):
+        bar.set_height(usage)
+    
+    # Pause to refresh the plot
+    plt.pause(2)
