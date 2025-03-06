@@ -246,3 +246,26 @@ if __name__ == "__main__":
     plot_cpu_usage(queue)
 
     process.join()
+
+import matplotlib.pyplot as plt
+import numpy as np
+import time
+
+# Sample data
+categories = ['A', 'B', 'C', 'D']
+values = np.random.randint(1, 100, size=len(categories))
+
+plt.ion()  # Turn on interactive mode
+
+for _ in range(10):
+    plt.clf()  # Clear the figure before plotting a new one
+    
+    values = np.random.randint(1, 100, size=len(categories))  # Generate new data
+    plt.bar(categories, values, color='blue')
+    plt.ylim(0, 100)  # Set limit for better visualization
+
+    plt.draw()  # Draw the updated figure
+    plt.pause(0.5)  # Pause to see the changes
+    
+plt.ioff()  # Turn off interactive mode
+plt.show()  # Show the final plot
