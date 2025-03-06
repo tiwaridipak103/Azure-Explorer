@@ -269,3 +269,26 @@ for _ in range(10):
     
 plt.ioff()  # Turn off interactive mode
 plt.show()  # Show the final plot
+
+
+import matplotlib.pyplot as plt
+import numpy as np
+import time
+
+# Sample data
+categories = ['A', 'B', 'C', 'D']
+
+# Create a figure and axis object
+fig, ax = plt.subplots()
+
+for _ in range(10):
+    ax.clear()  # Clears the current axes
+    values = np.random.randint(1, 100, size=len(categories))  # Generate new data
+    
+    ax.bar(categories, values, color='blue')
+    ax.set_ylim(0, 100)  # Set y-axis limit for consistent scale
+    
+    plt.show(block=False)  # Non-blocking show
+    plt.pause(0.5)  # Pause to update the plot
+
+plt.close(fig)  # Close the figure after loop ends
