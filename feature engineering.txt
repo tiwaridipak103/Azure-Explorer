@@ -140,3 +140,32 @@ while True:
     
     # Pause to refresh the plot
     plt.pause(2)
+
+
+import psutil
+import matplotlib.pyplot as plt
+import time
+
+plt.ion()  # Turn on interactive mode
+
+fig, ax = plt.subplots()
+
+while True:
+    # Get CPU usage for each core
+    cpu_usage = psutil.cpu_percent(percpu=True)
+
+    # Clear previous plot
+    ax.clear()
+    
+    # Plot new data
+    ax.bar(range(len(cpu_usage)), cpu_usage, color='blue')
+
+    # Set labels and limits
+    ax.set_ylim(0, 100)
+    ax.set_xlabel("CPU Core")
+    ax.set_ylabel("Usage (%)")
+    ax.set_title("Live CPU Usage per Core")
+
+    # Draw the updated figure
+    plt.draw()
+    plt.pause(2)  # Pause for 2 seconds
