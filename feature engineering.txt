@@ -1,4 +1,4 @@
-import psutil
+weimport psutil
 import matplotlib.pyplot as plt
 import time
 
@@ -89,3 +89,64 @@ def update_plot():
 while True:
     update_plot()
     time.sleep(1)  # Refresh every second
+
+
+import lightgbm as lgb
+import multiprocessing as mp
+import numpy as np
+import time
+import joblib  # For saving/loading models
+
+# Decorator function for multiprocessing
+def multiprocess_decorator(worker_fn, num_processes=4):
+    def wrapper(*args):
+        manager = mp.Manager()
+        results_dict = manager.dict()
+        processes = []
+
+        for i in range(num_processes):  # Create `num_processes` parallel workers
+            p = mp.Process(target=worker_fn, args=(i, *args, results_dict))
+            p.start()
+            processes.append(p)
+
+        for p in processes:
+            p.join()
+
+        return dict(results_dict)  # Convert Manager.dict to normal dict
+
+    return wrapper
+
+def train_model(X_train, y_train, model_path):
+    """Train LightGBM model and save it."""
+    model = lgb.LGBMRegressor(n_estimators=100)
+    model.fit(X_train, y_train)
+    joblib.dump(model, model_path)  # Save model
+    print(f"Model saved to {model_path}")
+
+def predict_model(X_test, model_path, process_id):
+    """Load trained LightGBM model and make predictions."""
+    time.sleep(2)  # Simulate delay
+    model = joblib.load(model_path)  # Load model
+    predictions = model.predict(X_test)
+    print(f"Process {process_id}: Predictions {predictions[:5]}")
+    return predictions
+
+@multiprocess_decorator
+def worker(process_id, X_test, model_path, results_dict):
+    """Worker process for making predictions."""
+    results_dict[process_id] = predict_model(X_test, model_path, process_id)
+
+if __name__ == "__main__":
+    # Simulated Data
+    X_train, y_train = np.random.rand(100, 10), np.random.rand(100)
+    X_test = np.random.rand(10, 10)
+    
+    model_path = "lightgbm_model.pkl"
+
+    # Train & Save Model
+    train_model(X_train, y_train, model_path)
+
+    # Call the decorated worker function with multiprocessing
+    results = worker(X_test, model_path)
+
+    print("\nAll predictions:", results)
