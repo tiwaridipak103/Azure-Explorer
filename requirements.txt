@@ -1,2 +1,34 @@
 azure-storage-blob==12.19.0
 Flask==3.0.2
+
+
+import multiprocessing
+import time
+import random
+
+def func(shared_list, lock, process_id):
+    for _ in range(5):  # Each process will run 5 times
+        with lock:
+            if shared_list:  # Ensure the list is not empty before popping
+                popped_value = shared_list.pop(0)
+                print(f"Process {process_id}: Popped {popped_value}")
+            new_value = random.randint(10, 99)
+            shared_list.append(new_value)
+            print(f"Process {process_id}: Inserted {new_value}")
+        time.sleep(random.random())  # Random delay to simulate processing
+
+if __name__ == "__main__":
+    manager = multiprocessing.Manager()
+    shared_list = manager.list([1, 2, 3, 4, 5])  # Shared list
+    lock = multiprocessing.Lock()  # Lock for synchronization
+
+    processes = []
+    for i in range(4):  # Running 4 processes
+        p = multiprocessing.Process(target=func, args=(shared_list, lock, i))
+        processes.append(p)
+        p.start()
+
+    for p in processes:
+        p.join()  # Wait for all processes to complete
+
+    print("Final Shared List:", list(shared_list))
