@@ -150,3 +150,47 @@ if __name__ == "__main__":
     results = worker(X_test, model_path)
 
     print("\nAll predictions:", results)
+
+
+import multiprocessing
+import time
+import random
+
+def func(shared_list, lock, condition, process_id):
+    for _ in range(5):  # Each process runs 5 times
+        with condition:
+            while not shared_list:  # Wait until the list is not empty
+                print(f"Process {process_id} is waiting as list is empty...")
+                condition.wait()  # Release the lock and wait for notification
+
+            with lock:
+                popped_value = shared_list.pop(0)
+                print(f"Process {process_id}: Popped {popped_value}")
+
+            # Simulate processing before inserting
+            time.sleep(random.random())
+
+            with lock:
+                new_value = random.randint(10, 99)
+                shared_list.append(new_value)
+                print(f"Process {process_id}: Inserted {new_value}")
+
+            with condition:
+                condition.notify_all()  # Notify waiting processes
+
+if __name__ == "__main__":
+    manager = multiprocessing.Manager()
+    shared_list = manager.list([1, 2, 3, 4, 5])  # Shared list
+    lock = multiprocessing.Lock()  # Lock for synchronization
+    condition = multiprocessing.Condition(lock)  # Condition variable
+
+    processes = []
+    for i in range(4):  # Running 4 processes
+        p = multiprocessing.Process(target=func, args=(shared_list, lock, condition, i))
+        processes.append(p)
+        p.start()
+
+    for p in processes:
+        p.join()  # Wait for all processes to complete
+
+    print("Final Shared List:", list(shared_list))
