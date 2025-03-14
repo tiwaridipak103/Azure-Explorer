@@ -1,196 +1,45 @@
-weimport psutil
-import matplotlib.pyplot as plt
-import time
-
-# Enable interactive mode
-plt.ion()
-
-# Initialize the plot only once
-fig, ax = plt.subplots()
-bars = ax.bar(range(psutil.cpu_count()), [0] * psutil.cpu_count(), color='blue')
-
-ax.set_ylim(0, 100)
-ax.set_xlabel("CPU Core")
-ax.set_ylabel("Usage (%)")
-ax.set_title("Live CPU Usage per Core")
-
-def test(core_id):
-    cpu_usage = psutil.cpu_percent(percpu=True)  # Get CPU usage for each core
-
-    for bar, usage in zip(bars, cpu_usage):  # Update bar heights
-        bar.set_height(usage)
-
-    fig.canvas.draw()  # Redraw the plot
-    fig.canvas.flush_events()  # Flush events for live update
-
-while True:
-    test(45)  # Call the function
-    time.sleep(2)  # Wait before updating again
-
-
-
 import psutil
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
 import time
+import os
+from IPython.display import display, clear_output
 
-# Enable Seaborn style
-sns.set_style("darkgrid")
-
-# Enable interactive mode
-plt.ion()
-
-# Initialize the plot
-fig, ax = plt.subplots(figsize=(10, 6))
-
-# Get number of CPU cores
-num_cores = psutil.cpu_count()
-
-# Create bars with initial height 0
-bars = ax.bar(range(num_cores), [0] * num_cores, color='blue', alpha=0.7)
-
-# Set axis labels and title
-ax.set_ylim(0, 100)
-ax.set_xlabel("CPU Core", fontsize=12)
-ax.set_ylabel("Usage (%)", fontsize=12)
-ax.set_title("Live CPU Usage per Core", fontsize=14, fontweight='bold')
-
-# Add grid lines for better readability
-ax.yaxis.grid(True, linestyle="--", alpha=0.7)
-
-# Add text labels on top of bars
-text_labels = [ax.text(bar.get_x() + bar.get_width() / 2, 0, "0%", 
-                        ha='center', va='bottom', fontsize=10, fontweight='bold') 
-               for bar in bars]
+def set_cpu_affinity(core_id):
+    process = psutil.Process(os.getpid())
+    process.cpu_affinity([core_id])
 
 def update_plot():
-    cpu_usage = psutil.cpu_percent(percpu=True)  # Get CPU usage per core
+    set_cpu_affinity(45)
+    sns.set_style("darkgrid")
+    plt.ion()
+    fig, ax = plt.subplots(figsize=(25, 6))
+    num_cores = psutil.cpu_count()
+    bars = ax.bar(range(num_cores), [0] * num_cores, color='blue', alpha=0.7)
+    ax.set_ylim(0, 110)
+    ax.set_xlabel("CPU Core", fontsize=12)
+    ax.set_ylabel("Usage (%)", fontsize=12)
+    ax.set_title("Live CPU Usage per Core", fontsize=14, fontweight='bold', pad=50)
+    ax.yaxis.grid(True, linestyle="-", alpha=0.7)
+    text_labels = [ax.text(bar.get_x() + bar.get_width() / 2, 0, '', ha='center', va='bottom', fontsize=10, fontweight='bold') for bar in bars]
 
-    for bar, usage, text in zip(bars, cpu_usage, text_labels):
-        bar.set_height(usage)  # Update bar height
-        
-        # Change color based on CPU load
-        if usage < 40:
-            bar.set_color("green")
-        elif usage < 80:
-            bar.set_color("orange")
-        else:
-            bar.set_color("red")
+    while True:
+        cpu_usage = psutil.cpu_percent(percpu=True)
+        for bar, usage, text in zip(bars, cpu_usage, text_labels):
+            bar.set_height(usage)
+            if usage <= 40:
+                bar.set_color("green")
+            elif 40 < usage <= 80:
+                bar.set_color("orange")
+            else:
+                bar.set_color("red")
+            text.set_y(usage + 2)
+            text.set_text(f"{usage:.1f}%")
+        fig.canvas.draw()
+        fig.canvas.flush_events()
+        time.sleep(1)
+        clear_output(wait=True)
 
-        # Update text label position & value
-        text.set_y(usage + 2)
-        text.set_text(f"{usage:.1f}%")
-
-    fig.canvas.draw()  # Redraw plot
-    fig.canvas.flush_events()  # Flush updates
-
-# Run the live update loop
-while True:
-    update_plot()
-    time.sleep(1)  # Refresh every second
-
-
-import lightgbm as lgb
-import multiprocessing as mp
-import numpy as np
-import time
-import joblib  # For saving/loading models
-
-# Decorator function for multiprocessing
-def multiprocess_decorator(worker_fn, num_processes=4):
-    def wrapper(*args):
-        manager = mp.Manager()
-        results_dict = manager.dict()
-        processes = []
-
-        for i in range(num_processes):  # Create `num_processes` parallel workers
-            p = mp.Process(target=worker_fn, args=(i, *args, results_dict))
-            p.start()
-            processes.append(p)
-
-        for p in processes:
-            p.join()
-
-        return dict(results_dict)  # Convert Manager.dict to normal dict
-
-    return wrapper
-
-def train_model(X_train, y_train, model_path):
-    """Train LightGBM model and save it."""
-    model = lgb.LGBMRegressor(n_estimators=100)
-    model.fit(X_train, y_train)
-    joblib.dump(model, model_path)  # Save model
-    print(f"Model saved to {model_path}")
-
-def predict_model(X_test, model_path, process_id):
-    """Load trained LightGBM model and make predictions."""
-    time.sleep(2)  # Simulate delay
-    model = joblib.load(model_path)  # Load model
-    predictions = model.predict(X_test)
-    print(f"Process {process_id}: Predictions {predictions[:5]}")
-    return predictions
-
-@multiprocess_decorator
-def worker(process_id, X_test, model_path, results_dict):
-    """Worker process for making predictions."""
-    results_dict[process_id] = predict_model(X_test, model_path, process_id)
-
-if __name__ == "__main__":
-    # Simulated Data
-    X_train, y_train = np.random.rand(100, 10), np.random.rand(100)
-    X_test = np.random.rand(10, 10)
-    
-    model_path = "lightgbm_model.pkl"
-
-    # Train & Save Model
-    train_model(X_train, y_train, model_path)
-
-    # Call the decorated worker function with multiprocessing
-    results = worker(X_test, model_path)
-
-    print("\nAll predictions:", results)
-
-
-import multiprocessing
-import time
-import random
-
-def func(shared_list, lock, condition, process_id):
-    for _ in range(5):  # Each process runs 5 times
-        with condition:
-            while not shared_list:  # Wait until the list is not empty
-                print(f"Process {process_id} is waiting as list is empty...")
-                condition.wait()  # Release the lock and wait for notification
-
-            with lock:
-                popped_value = shared_list.pop(0)
-                print(f"Process {process_id}: Popped {popped_value}")
-
-            # Simulate processing before inserting
-            time.sleep(random.random())
-
-            with lock:
-                new_value = random.randint(10, 99)
-                shared_list.append(new_value)
-                print(f"Process {process_id}: Inserted {new_value}")
-
-            with condition:
-                condition.notify_all()  # Notify waiting processes
-
-if __name__ == "__main__":
-    manager = multiprocessing.Manager()
-    shared_list = manager.list([1, 2, 3, 4, 5])  # Shared list
-    lock = multiprocessing.Lock()  # Lock for synchronization
-    condition = multiprocessing.Condition(lock)  # Condition variable
-
-    processes = []
-    for i in range(4):  # Running 4 processes
-        p = multiprocessing.Process(target=func, args=(shared_list, lock, condition, i))
-        processes.append(p)
-        p.start()
-
-    for p in processes:
-        p.join()  # Wait for all processes to complete
-
-    print("Final Shared List:", list(shared_list))
+plt.show()
+update_plot()
