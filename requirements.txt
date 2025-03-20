@@ -1,4 +1,4 @@
-import numpy as np
+TTimport numpy as np
 import pandas as pd
 from scipy.stats import ttest_ind, mannwhitneyu, ks_2samp, levene, shapiro
 
@@ -146,3 +146,23 @@ def correlation_tests(df1, df2):
 # Run tests
 corr_results = correlation_tests(df1, df2)
 print(corr_results)
+from scipy.stats import entropy
+
+def kl_divergence(df1, df2, bins=20):
+    results = []
+    for col in df1.columns:
+        hist1, _ = np.histogram(df1[col], bins=bins, density=True)
+        hist2, _ = np.histogram(df2[col], bins=bins, density=True)
+
+        # Normalize histograms to form probability distributions
+        hist1 = hist1 / np.sum(hist1)
+        hist2 = hist2 / np.sum(hist2)
+
+        kl_div = entropy(hist1, hist2)  # KL divergence
+        results.append({"Column": col, "KL Divergence": kl_div})
+    
+    return pd.DataFrame(results)
+
+# Run KL test
+kl_results = kl_divergence(df1, df2)
+print(kl_results)
