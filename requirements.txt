@@ -49,3 +49,45 @@ def compare_dataframes(df1, df2, alpha=0.05):
 # Run the comparison
 results_df = compare_dataframes(df1, df2)
 print(results_df)
+
+
+
+import numpy as np
+import pandas as pd
+
+def permutation_test(df1, df2, num_permutations=10000, alpha=0.05):
+    results = []
+    
+    for col in df1.columns:
+        data1, data2 = df1[col].values, df2[col].values
+        observed_diff = np.mean(data1) - np.mean(data2)  # Step 1: Observed difference
+
+        # Step 2: Compute permuted mean differences
+        combined = np.concatenate([data1, data2])
+        perm_diffs = []
+        for _ in range(num_permutations):
+            np.random.shuffle(combined)  # Shuffle combined data
+            perm_diffs.append(np.mean(combined[:len(data1)]) - np.mean(combined[len(data1):]))
+
+        # Step 3: Compute empirical p-value
+        perm_diffs = np.array(perm_diffs)
+        p_value = np.mean(np.abs(perm_diffs) >= np.abs(observed_diff))
+
+        # Store results
+        results.append({
+            "Column": col,
+            "Observed Difference": observed_diff,
+            "P-Value": p_value,
+            "Significant?": p_value < alpha  # Reject null if p < alpha
+        })
+
+    return pd.DataFrame(results)
+
+# Example Usage
+np.random.seed(42)
+df1 = pd.DataFrame(np.random.normal(50, 10, (100, 20)), columns=[f"col_{i}" for i in range(20)])
+df2 = pd.DataFrame(np.random.normal(51, 10, (100, 20)), columns=[f"col_{i}" for i in range(20)])  # Slightly different mean
+
+# Run the permutation test
+perm_results = permutation_test(df1, df2)
+print(perm_results)
