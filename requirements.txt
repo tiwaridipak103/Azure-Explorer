@@ -1,34 +1,51 @@
-azure-storage-blob==12.19.0
-Flask==3.0.2
+import numpy as np
+import pandas as pd
+from scipy.stats import ttest_ind, mannwhitneyu, ks_2samp, levene, shapiro
 
+# Generate Sample Data
+np.random.seed(42)
+df1 = pd.DataFrame(np.random.normal(50, 10, (100, 20)), columns=[f"col_{i}" for i in range(20)])
+df2 = pd.DataFrame(np.random.normal(50, 10, (100, 20)), columns=[f"col_{i}" for i in range(20)])
 
-import multiprocessing
-import time
-import random
+# Function to Perform Hypothesis Testing
+def compare_dataframes(df1, df2, alpha=0.05):
+    results = []
 
-def func(shared_list, lock, process_id):
-    for _ in range(5):  # Each process will run 5 times
-        with lock:
-            if shared_list:  # Ensure the list is not empty before popping
-                popped_value = shared_list.pop(0)
-                print(f"Process {process_id}: Popped {popped_value}")
-            new_value = random.randint(10, 99)
-            shared_list.append(new_value)
-            print(f"Process {process_id}: Inserted {new_value}")
-        time.sleep(random.random())  # Random delay to simulate processing
+    for col in df1.columns:
+        data1, data2 = df1[col], df2[col]
 
-if __name__ == "__main__":
-    manager = multiprocessing.Manager()
-    shared_list = manager.list([1, 2, 3, 4, 5])  # Shared list
-    lock = multiprocessing.Lock()  # Lock for synchronization
+        # Normality Check (Shapiro-Wilk Test)
+        norm1 = shapiro(data1).pvalue > alpha
+        norm2 = shapiro(data2).pvalue > alpha
 
-    processes = []
-    for i in range(4):  # Running 4 processes
-        p = multiprocessing.Process(target=func, args=(shared_list, lock, i))
-        processes.append(p)
-        p.start()
+        # T-Test if normal, otherwise Mann-Whitney U Test
+        if norm1 and norm2:
+            test_stat, p_value_ttest = ttest_ind(data1, data2)
+            test_used = "T-Test"
+        else:
+            test_stat, p_value_ttest = mannwhitneyu(data1, data2)
+            test_used = "Mann-Whitney U"
 
-    for p in processes:
-        p.join()  # Wait for all processes to complete
+        # Variance Test (Levene’s Test)
+        _, p_value_levene = levene(data1, data2)
 
-    print("Final Shared List:", list(shared_list))
+        # KS Test for Distribution Similarity
+        _, p_value_ks = ks_2samp(data1, data2)
+
+        # Store Results
+        results.append({
+            "Column": col,
+            "Test Used": test_used,
+            "T/Mann-Whitney P-Value": p_value_ttest,
+            "Levene P-Value (Variance)": p_value_levene,
+            "KS P-Value (Distribution)": p_value_ks,
+            "Same Mean?": p_value_ttest > alpha,
+            "Same Variance?": p_value_levene > alpha,
+            "Same Distribution?": p_value_ks > alpha
+        })
+
+    return pd.DataFrame(results)
+
+# Run the comparison
+results_df = compare_dataframes(df1, df2)
+print(results_df)
