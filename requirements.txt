@@ -166,3 +166,33 @@ def kl_divergence(df1, df2, bins=20):
 # Run KL test
 kl_results = kl_divergence(df1, df2)
 print(kl_results)
+
+
+
+{
+  "editor.formatOnSave": true,
+  "editor.suggestSelection": "first",
+  "files.autoSave": "afterDelay",
+  "files.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/CVS": true,
+    "**/.DS_Store": true,
+    "**/*.pyc": {
+      "when": "$(basename).py"
+    },
+    "**/_pycache_": true,
+    ".pytest_cache": true
+  },
+  "files.trimTrailingWhitespace": true,
+  "workbench.startupEditor": "newUntitledFile",
+  "win-ca.inject": "append",
+  "workbench.colorTheme": "Visual Studio Light",
+  "editor.fontSize": 17,
+  "git.autofetch": true,
+  "snowflake.connections ConfigFile": "C:\\Users\\t057831\\.snowflake\\connections.toml",
+  "workbench.preferredHighContrastColorTheme": "Default Dark Modern",
+  "editor.rename.enablePreview": false,
+  "editor.semanticTokenColorCustomizations": {}
+}
