@@ -117,3 +117,35 @@ for dataset in datasets:
         print(f"Failed to download: {dataset}")
 
 print("All datasets downloaded successfully!")
+
+
+import os
+import requests
+
+# GitHub repository details
+repo_owner = "asif-mehedi"
+repo_name = "fpp3-data"
+folder_path = "data"  # Change this to the folder you want to download
+base_url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/contents/{folder_path}"
+
+# Local save path
+save_dir = os.path.join(os.getcwd(), folder_path)
+os.makedirs(save_dir, exist_ok=True)
+
+# Fetch file list
+response = requests.get(base_url)
+if response.status_code == 200:
+    files = response.json()
+    
+    for file in files:
+        if file["type"] == "file":  # Ensure it's a file, not a subfolder
+            file_url = file["download_url"]
+            file_name = os.path.join(save_dir, file["name"])
+
+            # Download the file
+            file_data = requests.get(file_url)
+            with open(file_name, "wb") as f:
+                f.write(file_data.content)
+            print(f"Downloaded: {file_name}")
+else:
+    print(f"Failed to fetch folder contents. Status code: {response.status_code}")
