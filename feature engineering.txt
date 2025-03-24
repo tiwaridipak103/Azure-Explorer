@@ -89,3 +89,31 @@ for pname in ["fpp3", "tsibbledata", "tsibble", "fma"]:
     
     except Exception as e:
         print(f"Error loading package {pname}: {str(e)}")
+
+
+import os
+import requests
+
+# GitHub repo containing the exact R datasets
+base_url = "https://raw.githubusercontent.com/asif-mehedi/fpp3-data/main/data/"
+datasets = [
+    "aus_airpassengers.csv", "aus_arrivals.csv", "aus_cafe.csv", "aus_livestock.csv",
+    "aus_production.csv", "bricksq.csv", "electricity.csv", "tourism.csv"
+]  # Add more datasets if needed
+
+# Create a directory for storing the datasets
+os.makedirs("fpp3_data", exist_ok=True)
+
+# Download and save each dataset
+for dataset in datasets:
+    url = base_url + dataset
+    response = requests.get(url)
+
+    if response.status_code == 200:
+        with open(f"fpp3_data/{dataset}", "wb") as file:
+            file.write(response.content)
+        print(f"Downloaded: {dataset}")
+    else:
+        print(f"Failed to download: {dataset}")
+
+print("All datasets downloaded successfully!")
