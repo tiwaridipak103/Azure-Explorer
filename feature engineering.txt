@@ -43,3 +43,49 @@ def update_plot():
 
 plt.show()
 update_plot()
+
+
+import os
+import rpy2.robjects as robjects
+from rpy2.robjects.packages import importr
+import pandas as pd
+
+# Import necessary R packages
+fpp3 = importr("fpp3")
+tsibbledata = importr("tsibbledata")
+tsibble = importr("tsibble")
+fma = importr("fma")
+
+# Function to export dataset to CSV
+def ts2csv(objname, pname):
+    try:
+        # Get the dataset
+        robj = robjects.r[f"data('{objname}')"]
+        df = robjects.r[objname]  # Convert R dataset to Python-readable format
+        df = pd.DataFrame({col: list(df.rx2(col)) for col in df.names})
+
+        # Create directory if not exists
+        dir_path = f"data/{pname}"
+        os.makedirs(dir_path, exist_ok=True)
+        
+        # Save to CSV
+        fname = f"{dir_path}/{objname}.csv"
+        df.to_csv(fname, index=False)
+        print(f"Saved: {fname}")
+    
+    except Exception as e:
+        print(f"Error saving {objname}: {str(e)}")
+
+# Loop through all packages and datasets
+for pname in ["fpp3", "tsibbledata", "tsibble", "fma"]:
+    try:
+        # Get available datasets in the package
+        datasets = robjects.r(f"data(package='{pname}')")  
+        dataset_names = datasets[3]  # Extract dataset names
+
+        # Convert each dataset to CSV
+        for objname in dataset_names:
+            ts2csv(objname, pname)
+    
+    except Exception as e:
+        print(f"Error loading package {pname}: {str(e)}")
