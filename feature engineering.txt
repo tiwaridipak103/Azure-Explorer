@@ -149,3 +149,21 @@ if response.status_code == 200:
             print(f"Downloaded: {file_name}")
 else:
     print(f"Failed to fetch folder contents. Status code: {response.status_code}")
+
+
+
+import pandas as pd
+
+# Read the copied text from the file
+with open("data.txt", "r", encoding="utf-8") as file:
+    csv_text = file.read()
+
+# Convert the text into a list of lines
+lines = csv_text.strip().split("\n")
+
+# Convert into a CSV file
+with open("output.csv", "w", encoding="utf-8") as f:
+    for line in lines:
+        f.write(line + "\n")
+
+print("CSV file created successfully as output.csv")
