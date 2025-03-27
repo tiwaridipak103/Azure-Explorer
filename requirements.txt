@@ -196,3 +196,19 @@ print(kl_results)
   "editor.rename.enablePreview": false,
   "editor.semanticTokenColorCustomizations": {}
 }
+
+
+Custom Tooltip =
+VAR ActualValue = SELECTEDVALUE(YourTable[Actual])
+VAR UpperValue = SELECTEDVALUE(YourTable[Upper])
+VAR LowerValue = SELECTEDVALUE(YourTable[Lower])
+VAR PredictionValue = SELECTEDVALUE(YourTable[Prediction])
+
+VAR DisplayUpper = IF(ActualValue = UpperValue, BLANK(), UpperValue)
+VAR DisplayLower = IF(ActualValue = LowerValue, BLANK(), LowerValue)
+
+RETURN 
+"Actual: " & ActualValue & UNICHAR(10) & 
+IF(NOT(ISBLANK(DisplayUpper)), "Upper: " & DisplayUpper & UNICHAR(10), "") & 
+"Prediction: " & PredictionValue & UNICHAR(10) & 
+IF(NOT(ISBLANK(DisplayLower)), "Lower: " & DisplayLower, "")
