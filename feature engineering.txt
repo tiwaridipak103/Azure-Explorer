@@ -167,3 +167,25 @@ with open("output.csv", "w", encoding="utf-8") as f:
         f.write(line + "\n")
 
 print("CSV file created successfully as output.csv")
+
+
+import numpy as np
+import pandas as pd
+
+# Assuming model is already trained
+feature_importance = model.feature_importances_
+feature_names = model.feature_name_
+
+# Convert to DataFrame
+feature_importance_df = pd.DataFrame({'Feature': feature_names, 'Importance': feature_importance})
+
+# Min-Max Scaling to range [0, 100]
+min_val = feature_importance_df['Importance'].min()
+max_val = feature_importance_df['Importance'].max()
+
+feature_importance_df['Scaled Importance'] = (feature_importance_df['Importance'] - min_val) / (max_val - min_val) * 100
+
+# Sort in descending order
+feature_importance_df = feature_importance_df.sort_values(by="Scaled Importance", ascending=False)
+
+print(feature_importance_df)
