@@ -189,3 +189,34 @@ feature_importance_df['Scaled Importance'] = (feature_importance_df['Importance'
 feature_importance_df = feature_importance_df.sort_values(by="Scaled Importance", ascending=False)
 
 print(feature_importance_df)
+
+
+import numpy as np import pandas as pd import matplotlib.pyplot as plt from statsmodels.tsa.arima.model import ARIMA
+
+Function to reverse time series
+
+def reverse_ts(y): return pd.Series(y[::-1], index=y.index[::-1])
+
+Function to reverse a forecast
+
+def reverse_forecast(forecast_result, original_series): h = len(forecast_result.predicted_mean) reversed_x = reverse_ts(original_series) reversed_mean = reverse_ts(forecast_result.predicted_mean) reversed_conf_int = forecast_result.conf_int().iloc[::-1]
+
+return {
+    "x": reversed_x,
+    "mean": reversed_mean,
+    "lower": reversed_conf_int.iloc[:, 0],
+    "upper": reversed_conf_int.iloc[:, 1]
+}
+
+Example dataset (replace with euretail dataset)
+
+dates = pd.date_range(start='1996-01-01', periods=60, freq='Q')  # 15 years of quarterly data euretail = pd.Series(np.random.randn(60).cumsum(), index=dates)
+
+Backcasting process
+
+reversed_series = reverse_ts(euretail) model = ARIMA(reversed_series, order=(1,1,1)) fit = model.fit() forecast_result = fit.get_forecast(steps=8) backcast = reverse_forecast(forecast_result, euretail)
+
+Plot the backcast
+
+plt.figure(figsize=(10, 5)) plt.plot(euretail.index, euretail, label='Original Series', color='blue') plt.plot(euretail.index[:8], backcast["mean"], label='Backcast', color='red', linestyle='dashed') plt.fill_between(euretail.index[:8], backcast["lower"], backcast["upper"], color='red', alpha=0.3) plt.title('Backcasts for Quarterly Retail Trade in the Euro Area') plt.legend() plt.show()
+
