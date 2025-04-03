@@ -272,3 +272,93 @@ Morgan Stanley (Formerly)
 [Your Contact Information]
 
 
+from scipy.stats import anderson_ksamp
+
+result = anderson_ksamp([df1['values'], df2['values']])
+print(f"Anderson-Darling Test Statistic: {result.statistic}, P-value: {result.significance_level}")
+
+from scipy.stats import chisquare
+
+df1_counts, _ = np.histogram(df1['values'], bins=10)
+df2_counts, _ = np.histogram(df2['values'], bins=10)
+
+chi_stat, chi_p_value = chisquare(df1_counts, df2_counts)
+print(f"Chi-Square Statistic: {chi_stat}, P-value: {chi_p_value}")
+
+
+import numpy as np
+import pandas as pd
+
+def calculate_psi(expected, actual, bins=10):
+    """Calculate PSI between two distributions."""
+    
+    # Define bin edges based on the expected data
+    bin_edges = np.linspace(expected.min(), expected.max(), bins + 1)
+    
+    # Assign data to bins
+    expected_bins = np.histogram(expected, bins=bin_edges)[0] / len(expected)
+    actual_bins = np.histogram(actual, bins=bin_edges)[0] / len(actual)
+
+    # Replace zeroes to avoid log(0)
+    expected_bins = np.where(expected_bins == 0, 0.0001, expected_bins)
+    actual_bins = np.where(actual_bins == 0, 0.0001, actual_bins)
+
+    # Compute PSI
+    psi_values = (expected_bins - actual_bins) * np.log(expected_bins / actual_bins)
+    psi = np.sum(psi_values)
+
+    return psi
+
+# Example Data
+df1 = pd.DataFrame({'values': np.random.normal(0, 1, 1000)})  # Baseline distribution
+df2 = pd.DataFrame({'values': np.random.normal(0.2, 1.2, 1000)})  # New distribution
+
+psi_value = calculate_psi(df1['values'], df2['values'])
+print(f"PSI Score: {psi_value}")
+
+# Interpretation
+if psi_value < 0.1:
+    print("No significant shift in distribution (Stable).")
+elif psi_value < 0.25:
+    print("Moderate shift in distribution (Needs monitoring).")
+else:
+    print("Significant shift in distribution (Action required).")
+
+
+import pandas as pd
+import numpy as np
+
+def calculate_psi(expected, actual, bins=10):
+    """Calculate PSI between two distributions."""
+    bin_edges = np.linspace(expected.min(), expected.max(), bins + 1)
+    
+    expected_bins = np.histogram(expected, bins=bin_edges)[0] / len(expected)
+    actual_bins = np.histogram(actual, bins=bin_edges)[0] / len(actual)
+
+    expected_bins = np.where(expected_bins == 0, 0.0001, expected_bins)
+    actual_bins = np.where(actual_bins == 0, 0.0001, actual_bins)
+
+    psi_values = (expected_bins - actual_bins) * np.log(expected_bins / actual_bins)
+    psi = np.sum(psi_values)
+
+    return psi
+
+# Example Usage:
+for col in df.columns:
+    psi_value = calculate_psi(df.loc[df['year'] <= 2025, col], df.loc[df['year'] > 2025, col])
+    print(f"PSI for {col}: {psi_value}")
+
+
+from scipy.stats import ks_2samp
+
+for col in df.columns:
+    ks_stat, p_value = ks_2samp(df.loc[df['year'] <= 2025, col], df.loc[df['year'] > 2025, col])
+    print(f"KS Test for {col}: p-value={p_value}")
+
+    if p_value < 0.05:
+        print(f"Significant drift detected in {col}")
+
+df['residuals'] = df['actual_values'] - df['predicted_values']
+plt.plot(df['year'], df['residuals'])
+plt.axhline(0, color='red', linestyle='--')
+plt.show()
