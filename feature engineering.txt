@@ -233,3 +233,28 @@ plt.fill_between(euretail.index[:8], backcast["lower"], backcast["upper"], color
 plt.title('Backcasts for Quarterly Retail Trade in the Euro Area')
 plt.legend()
 plt.show()
+
+
+import pandas as pd
+
+# Creating a sample DataFrame
+df = pd.DataFrame({
+    'Category': ['A', 'B', 'A', 'B', 'C', 'A'],
+    'Value': [10, 20, None, 40, 50, None]
+})
+
+print("Original DataFrame:\n", df)
+
+# 1. Using transform() - Preserves original order
+df_transform = df.copy()
+df_transform['Value'] = df_transform.groupby('Category')['Value'].transform(lambda x: x.fillna(x.mean()))
+print("\nAfter using transform():\n", df_transform)
+
+# 2. Using apply() - May change order
+df_apply = df.copy()
+df_apply = df_apply.groupby('Category').apply(lambda x: x.fillna(x['Value'].mean()))
+print("\nAfter using apply():\n", df_apply)
+
+# 3. Using agg() - Reduces data
+df_agg = df.groupby('Category')['Value'].agg('mean')
+print("\nAfter using agg():\n", df_agg)
