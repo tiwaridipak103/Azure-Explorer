@@ -394,3 +394,28 @@ target_drift_report.show()
 dashboard = Dashboard(metrics=[DataDriftPreset()])
 dashboard.run(reference_data=reference_data, current_data=current_data)
 dashboard.show()
+
+
+from evidently import ColumnType
+from evidently.report import Report
+from evidently.metrics import DataDriftPreset
+
+# List of all drift detection methods for numeric data
+numeric_methods = [
+    "ks", "wasserstein", "kl_div", "psi", "anderson",
+    "cramer_von_mises", "hellinger", "mannw", "ed", 
+    "es", "t_test", "empirical_mmd"
+]
+
+# Apply all numeric drift methods while keeping the default threshold
+report = Report([
+    DataDriftPreset(
+        per_column_method={col: numeric_methods for col in numeric_columns}
+    )
+])
+
+# Run the report on the datasets
+snapshot = report.run(reference_data, current_data)
+
+# Display the report
+snapshot
