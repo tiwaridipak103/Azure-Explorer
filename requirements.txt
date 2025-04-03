@@ -362,3 +362,35 @@ df['residuals'] = df['actual_values'] - df['predicted_values']
 plt.plot(df['year'], df['residuals'])
 plt.axhline(0, color='red', linestyle='--')
 plt.show()
+
+import pandas as pd
+import numpy as np
+from evidently.report import Report
+from evidently.metric_preset import DataDriftPreset, TargetDriftPreset
+from evidently.dashboard import Dashboard
+
+# Load dataset
+df = pd.read_csv("your_timeseries_data.csv")  # Replace with actual dataset path
+
+# Splitting into reference (historical) and current (future)
+reference_data = df[df["year"] <= 2025].drop(columns=["year"])  # Training period
+current_data = df[df["year"] > 2025].drop(columns=["year"])  # Future period
+
+# Ensure both datasets have the same columns
+assert reference_data.columns.equals(current_data.columns), "Column mismatch between reference and current data"
+
+# Generate Data Drift Report
+data_drift_report = Report(metrics=[DataDriftPreset()])
+data_drift_report.run(reference_data=reference_data, current_data=current_data)
+data_drift_report.show()
+
+# Generate Target Drift Report (If you have a target variable)
+target_column = "your_target_column"  # Replace with the actual target column name
+target_drift_report = Report(metrics=[TargetDriftPreset()])
+target_drift_report.run(reference_data=reference_data, current_data=current_data, column_mapping={"target": target_column})
+target_drift_report.show()
+
+# Interactive Dashboard for Continuous Monitoring
+dashboard = Dashboard(metrics=[DataDriftPreset()])
+dashboard.run(reference_data=reference_data, current_data=current_data)
+dashboard.show()
