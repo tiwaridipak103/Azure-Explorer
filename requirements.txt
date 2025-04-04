@@ -506,3 +506,32 @@ y_pred = np.array([...])  # Replace with predicted values
 
 trend_score = trend_similarity(y_true, y_pred)
 print(f"Trend Similarity (Spearman Correlation): {trend_score:.3f}")
+
+import numpy as np
+from scipy.stats import entropy
+
+def penalize_flat_forecasts(y_pred):
+    """
+    Computes entropy and standard deviation to penalize flat forecasts.
+
+    Args:
+    - y_pred: Forecasted values (array-like)
+
+    Returns:
+    - entropy_score: Entropy of the forecast distribution (lower means flatter)
+    - std_dev: Standard deviation of the forecast (lower means flatter)
+    """
+    # Normalize predictions to get probability distribution for entropy calculation
+    y_pred_probs, _ = np.histogram(y_pred, bins=10, density=True)
+    entropy_score = entropy(y_pred_probs + 1e-10)  # Avoid log(0) issue
+
+    # Compute standard deviation
+    std_dev = np.std(y_pred)
+
+    return entropy_score, std_dev
+
+# --- Example Usage ---
+pred_lightgbm = np.array([...])  # Replace with model predictions
+entropy_lightgbm, std_dev_lightgbm = penalize_flat_forecasts(pred_lightgbm)
+
+print(f"LightGBM -> Entropy: {entropy_lightgbm:.4f}, Std Dev: {std_dev_lightgbm:.4f}")
