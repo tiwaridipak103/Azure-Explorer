@@ -419,3 +419,31 @@ snapshot = report.run(reference_data, current_data)
 
 # Display the report
 snapshot
+
+import numpy as np
+import statsmodels.api as sm
+from statsmodels.tsa.stattools import acf
+
+def residual_autocorrelation_score(y_true, y_pred, lags=30):
+    """
+    Computes the Residual Autocorrelation Score (RAS).
+    
+    Args:
+    - y_true: Array of actual values
+    - y_pred: Array of predicted values
+    - lags: Number of lags to consider for autocorrelation
+    
+    Returns:
+    - RAS (float): Lower is better. A high value indicates residual structure.
+    """
+    residuals = y_true - y_pred
+    acf_values = acf(residuals, nlags=lags, fft=False)[1:]  # Ignore lag 0
+    ras = np.sum(np.square(acf_values))  # Sum of squared ACF values
+    return ras
+
+# Example usage
+y_true = np.array([...])  # Replace with actual values
+y_pred = np.array([...])  # Replace with model predictions
+
+ras_score = residual_autocorrelation_score(y_true, y_pred)
+print(f"Residual Autocorrelation Score (RAS): {ras_score}")
