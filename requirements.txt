@@ -535,3 +535,41 @@ pred_lightgbm = np.array([...])  # Replace with model predictions
 entropy_lightgbm, std_dev_lightgbm = penalize_flat_forecasts(pred_lightgbm)
 
 print(f"LightGBM -> Entropy: {entropy_lightgbm:.4f}, Std Dev: {std_dev_lightgbm:.4f}")
+
+
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Example data
+import numpy as np
+data = np.random.normal(loc=0, scale=1, size=1000)
+
+# Histogram with KDE curve
+sns.histplot(data, kde=True, stat="density", bins=30, color='skyblue', edgecolor='black')
+plt.title("Histogram with KDE Curve")
+plt.xlabel("Value")
+plt.ylabel("Density")
+plt.show()
+
+
+import matplotlib.pyplot as plt
+import numpy as np
+from scipy.stats import norm
+
+# Example data
+data = np.random.normal(loc=0, scale=1, size=1000)
+
+# Plot histogram
+count, bins, ignored = plt.hist(data, bins=30, density=True, alpha=0.6, color='skyblue', edgecolor='black')
+
+# Plot normal distribution curve
+mu, std = np.mean(data), np.std(data)
+xmin, xmax = plt.xlim()
+x = np.linspace(xmin, xmax, 100)
+p = norm.pdf(x, mu, std)
+plt.plot(x, p, 'r', linewidth=2)
+
+plt.title("Histogram with Normal Distribution Curve")
+plt.xlabel("Value")
+plt.ylabel("Density")
+plt.show()
