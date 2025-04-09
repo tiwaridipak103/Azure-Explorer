@@ -319,3 +319,30 @@ if os.path.exists(cache_path):
     print("Hugging Face cache (models, tokenizers, etc.) deleted.")
 else:
     print("No Hugging Face cache found.")
+
+
+
+import ast
+import astor
+
+class CodeInjector(ast.NodeTransformer):
+    def __init__(self, method_name, code_to_insert):
+        self.method_name = method_name
+        self.code_to_insert = code_to_insert
+
+    def visit_FunctionDef(self, node):
+        if node.name == self.method_name:
+            new_nodes = ast.parse(self.code_to_insert).body
+            node.body = new_nodes + node.body  # Insert at start; use node.body + new_nodes to insert at end
+        return node
+
+# Sample usage
+with open("your_file.py", "r") as f:
+    source = f.read()
+
+tree = ast.parse(source)
+injector = CodeInjector(method_name="target_method", code_to_insert="print('Injected code')")
+modified_tree = injector.visit(tree)
+
+with open("your_file_modified.py", "w") as f:
+    f.write(astor.to_source(modified_tree))
