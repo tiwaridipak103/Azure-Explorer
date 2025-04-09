@@ -272,3 +272,40 @@ outputs = model.generate(
 generated_code = tokenizer.decode(outputs[0], skip_special_tokens=True)
 print("\n=== Generated Python Code ===\n")
 print(generated_code)
+
+
+import os
+import psutil
+
+def get_readable_size(bytes_val):
+    return f"{bytes_val / (1024 ** 3):.2f} GB"
+
+def get_dir_size(path):
+    total = 0
+    for dirpath, dirnames, filenames in os.walk(path):
+        for f in filenames:
+            fp = os.path.join(dirpath, f)
+            total += os.path.getsize(fp)
+    return total
+
+# 1. RAM Info
+mem = psutil.virtual_memory()
+print(f"=== RAM Info ===")
+print(f"Total RAM: {get_readable_size(mem.total)}")
+print(f"Available RAM: {get_readable_size(mem.available)}\n")
+
+# 2. Disk Info
+disk = psutil.disk_usage('/')
+print(f"=== Disk Info ===")
+print(f"Total Disk: {get_readable_size(disk.total)}")
+print(f"Free Disk: {get_readable_size(disk.free)}\n")
+
+# 3. Hugging Face Cache Info
+cache_path = os.path.expanduser("~/.cache/huggingface")
+if os.path.exists(cache_path):
+    cache_size = get_dir_size(cache_path)
+    print(f"=== Hugging Face Cache ===")
+    print(f"Cache Directory: {cache_path}")
+    print(f"Cache Size: {get_readable_size(cache_size)}")
+else:
+    print("Hugging Face cache directory not found.")
