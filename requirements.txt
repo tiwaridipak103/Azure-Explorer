@@ -346,3 +346,43 @@ modified_tree = injector.visit(tree)
 
 with open("your_file_modified.py", "w") as f:
     f.write(astor.to_source(modified_tree))
+
+
+
+import ast
+import astor
+
+class SmartCodeInjector(ast.NodeTransformer):
+    def __init__(self, method_name, after_string=None, before_return_code=None):
+        self.method_name = method_name
+        self.after_string = after_string
+        self.before_return_code = before_return_code
+
+    def visit_FunctionDef(self, node):
+        if node.name != self.method_name:
+            return node
+
+        new_body = []
+        for stmt in node.body:
+            # If it's a print("some string") and matches the given one
+            if (
+                isinstance(stmt, ast.Expr)
+                and isinstance(stmt.value, ast.Call)
+                and isinstance(stmt.value.func, ast.Name)
+                and stmt.value.func.id == "print"
+                and len(stmt.value.args) > 0
+                and isinstance(stmt.value.args[0], ast.Constant)
+                and stmt.value.args[0].value == self.after_string
+            ):
+                new_body.append(stmt)
+                # Insert after the matched print
+                new_body += ast.parse("print('injected after string')").body
+            elif isinstance(stmt, ast.Return):
+                # Insert before return
+                new_body += ast.parse(self.before_return_code).body
+                new_body.append(stmt)
+            else:
+                new_body.append(stmt)
+
+        node.body = new_body
+        return node
