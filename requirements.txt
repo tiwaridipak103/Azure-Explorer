@@ -236,340 +236,39 @@ Rental Income: Earnings from real estate properties.
 
 
 
-In summary, investment gain is typically associated with asset appreciation, while investment income comes from ongoing earnings like dividends and interest.
-
-
-[Your Name]
-[Your Address]
-[Your Email]
-[Your Phone Number]
-[Date]
-
-Admissions Committee
-Worcester Polytechnic Institute
-[Address of the University]
-
-Subject: Recommendation for [Colleague's Name] – MS in Business Analytics Application
-
-Dear Admissions Committee,
-
-I am honored to write this letter of recommendation for [Colleague’s Name] in support of her application for the Master of Science in Business Analytics at Worcester Polytechnic Institute. Having worked alongside her for nearly three years in the Data Science and Analytics team at Morgan Stanley, I have had the privilege of witnessing her exceptional analytical skills, problem-solving acumen, and unwavering dedication to excellence.
-
-During our tenure together, [Colleague’s Name] consistently demonstrated a deep understanding of data analytics, statistical modeling, and business intelligence. She played an instrumental role in deriving actionable insights from complex datasets, enabling key stakeholders to make informed decisions. Her ability to blend technical expertise with strategic thinking made her an invaluable asset to our team.
-
-One of the standout qualities of [Colleague’s Name] is her keen attention to detail and her ability to transform raw data into meaningful narratives. She exhibited exceptional proficiency in tools such as Python, SQL, Tableau, and Power BI, allowing her to craft insightful reports and dashboards that streamlined decision-making processes. Furthermore, her strong grasp of machine learning and predictive analytics contributed significantly to optimizing financial models and risk assessment strategies.
-
-Beyond her technical prowess, [Colleague’s Name] is an excellent team player who thrives in collaborative environments. She has a remarkable ability to communicate complex data-driven insights in a clear and concise manner, making her an effective liaison between technical teams and business stakeholders. Her leadership, adaptability, and eagerness to continuously learn set her apart as a professional committed to personal and professional growth.
-
-I have no doubt that [Colleague’s Name] will excel in WPI’s MS in Business Analytics program. Her analytical mindset, combined with her passion for leveraging data to drive impactful business decisions, makes her an ideal candidate for this prestigious program. I wholeheartedly endorse her application and strongly believe that she will contribute significantly to your academic community.
-
-Please feel free to contact me at [Your Email] or [Your Phone Number] if you require any additional information.
-
-Sincerely,
-[Your Name]
-[Your Position]
-Morgan Stanley (Formerly)
-[Your Contact Information]
-
-
-from scipy.stats import anderson_ksamp
-
-result = anderson_ksamp([df1['values'], df2['values']])
-print(f"Anderson-Darling Test Statistic: {result.statistic}, P-value: {result.significance_level}")
-
-from scipy.stats import chisquare
-
-df1_counts, _ = np.histogram(df1['values'], bins=10)
-df2_counts, _ = np.histogram(df2['values'], bins=10)
-
-chi_stat, chi_p_value = chisquare(df1_counts, df2_counts)
-print(f"Chi-Square Statistic: {chi_stat}, P-value: {chi_p_value}")
-
-
-import numpy as np
-import pandas as pd
-
-def calculate_psi(expected, actual, bins=10):
-    """Calculate PSI between two distributions."""
-    
-    # Define bin edges based on the expected data
-    bin_edges = np.linspace(expected.min(), expected.max(), bins + 1)
-    
-    # Assign data to bins
-    expected_bins = np.histogram(expected, bins=bin_edges)[0] / len(expected)
-    actual_bins = np.histogram(actual, bins=bin_edges)[0] / len(actual)
-
-    # Replace zeroes to avoid log(0)
-    expected_bins = np.where(expected_bins == 0, 0.0001, expected_bins)
-    actual_bins = np.where(actual_bins == 0, 0.0001, actual_bins)
-
-    # Compute PSI
-    psi_values = (expected_bins - actual_bins) * np.log(expected_bins / actual_bins)
-    psi = np.sum(psi_values)
-
-    return psi
-
-# Example Data
-df1 = pd.DataFrame({'values': np.random.normal(0, 1, 1000)})  # Baseline distribution
-df2 = pd.DataFrame({'values': np.random.normal(0.2, 1.2, 1000)})  # New distribution
-
-psi_value = calculate_psi(df1['values'], df2['values'])
-print(f"PSI Score: {psi_value}")
-
-# Interpretation
-if psi_value < 0.1:
-    print("No significant shift in distribution (Stable).")
-elif psi_value < 0.25:
-    print("Moderate shift in distribution (Needs monitoring).")
-else:
-    print("Significant shift in distribution (Action required).")
-
-
-import pandas as pd
-import numpy as np
-
-def calculate_psi(expected, actual, bins=10):
-    """Calculate PSI between two distributions."""
-    bin_edges = np.linspace(expected.min(), expected.max(), bins + 1)
-    
-    expected_bins = np.histogram(expected, bins=bin_edges)[0] / len(expected)
-    actual_bins = np.histogram(actual, bins=bin_edges)[0] / len(actual)
-
-    expected_bins = np.where(expected_bins == 0, 0.0001, expected_bins)
-    actual_bins = np.where(actual_bins == 0, 0.0001, actual_bins)
-
-    psi_values = (expected_bins - actual_bins) * np.log(expected_bins / actual_bins)
-    psi = np.sum(psi_values)
-
-    return psi
-
-# Example Usage:
-for col in df.columns:
-    psi_value = calculate_psi(df.loc[df['year'] <= 2025, col], df.loc[df['year'] > 2025, col])
-    print(f"PSI for {col}: {psi_value}")
-
-
-from scipy.stats import ks_2samp
-
-for col in df.columns:
-    ks_stat, p_value = ks_2samp(df.loc[df['year'] <= 2025, col], df.loc[df['year'] > 2025, col])
-    print(f"KS Test for {col}: p-value={p_value}")
-
-    if p_value < 0.05:
-        print(f"Significant drift detected in {col}")
-
-df['residuals'] = df['actual_values'] - df['predicted_values']
-plt.plot(df['year'], df['residuals'])
-plt.axhline(0, color='red', linestyle='--')
-plt.show()
-
-import pandas as pd
-import numpy as np
-from evidently.report import Report
-from evidently.metric_preset import DataDriftPreset, TargetDriftPreset
-from evidently.dashboard import Dashboard
-
-# Load dataset
-df = pd.read_csv("your_timeseries_data.csv")  # Replace with actual dataset path
-
-# Splitting into reference (historical) and current (future)
-reference_data = df[df["year"] <= 2025].drop(columns=["year"])  # Training period
-current_data = df[df["year"] > 2025].drop(columns=["year"])  # Future period
-
-# Ensure both datasets have the same columns
-assert reference_data.columns.equals(current_data.columns), "Column mismatch between reference and current data"
-
-# Generate Data Drift Report
-data_drift_report = Report(metrics=[DataDriftPreset()])
-data_drift_report.run(reference_data=reference_data, current_data=current_data)
-data_drift_report.show()
-
-# Generate Target Drift Report (If you have a target variable)
-target_column = "your_target_column"  # Replace with the actual target column name
-target_drift_report = Report(metrics=[TargetDriftPreset()])
-target_drift_report.run(reference_data=reference_data, current_data=current_data, column_mapping={"target": target_column})
-target_drift_report.show()
-
-# Interactive Dashboard for Continuous Monitoring
-dashboard = Dashboard(metrics=[DataDriftPreset()])
-dashboard.run(reference_data=reference_data, current_data=current_data)
-dashboard.show()
-
-
-from evidently import ColumnType
-from evidently.report import Report
-from evidently.metrics import DataDriftPreset
-
-# List of all drift detection methods for numeric data
-numeric_methods = [
-    "ks", "wasserstein", "kl_div", "psi", "anderson",
-    "cramer_von_mises", "hellinger", "mannw", "ed", 
-    "es", "t_test", "empirical_mmd"
-]
-
-# Apply all numeric drift methods while keeping the default threshold
-report = Report([
-    DataDriftPreset(
-        per_column_method={col: numeric_methods for col in numeric_columns}
-    )
-])
-
-# Run the report on the datasets
-snapshot = report.run(reference_data, current_data)
-
-# Display the report
-snapshot
-
-import numpy as np
-import statsmodels.api as sm
-from statsmodels.tsa.stattools import acf
-
-def residual_autocorrelation_score(y_true, y_pred, lags=30):
-    """
-    Computes the Residual Autocorrelation Score (RAS).
-    
-    Args:
-    - y_true: Array of actual values
-    - y_pred: Array of predicted values
-    - lags: Number of lags to consider for autocorrelation
-    
-    Returns:
-    - RAS (float): Lower is better. A high value indicates residual structure.
-    """
-    residuals = y_true - y_pred
-    acf_values = acf(residuals, nlags=lags, fft=False)[1:]  # Ignore lag 0
-    ras = np.sum(np.square(acf_values))  # Sum of squared ACF values
-    return ras
-
-# Example usage
-y_true = np.array([...])  # Replace with actual values
-y_pred = np.array([...])  # Replace with model predictions
-
-ras_score = residual_autocorrelation_score(y_true, y_pred)
-print(f"Residual Autocorrelation Score (RAS): {ras_score}")
-
-
-import numpy as np
-
-def directional_accuracy(y_true, y_pred):
-    """
-    Computes the Directional Accuracy (DA) between actual and predicted values.
-    
-    Args:
-    - y_true: array-like of actual values
-    - y_pred: array-like of predicted values
-    
-    Returns:
-    - DA (float): Proportion of times the predicted direction matched the actual direction
-    """
-    # Convert to numpy arrays
-    y_true = np.array(y_true)
-    y_pred = np.array(y_pred)
-
-    # Calculate actual and predicted differences
-    actual_diff = np.sign(np.diff(y_true))
-    pred_diff = np.sign(np.diff(y_pred))
-
-    # Calculate matching directions
-    matches = actual_diff == pred_diff
-    da_score = np.mean(matches)
-
-    return da_score
-
-# Example usage:
-y_true = np.array([...])  # Replace with your actual values
-y_pred = np.array([...])  # Replace with your predicted values
-
-da = directional_accuracy(y_true, y_pred)
-print(f"Directional Accuracy: {da:.2%}")
-
-from scipy.stats import spearmanr
-import numpy as np
-
-def trend_similarity(y_true, y_pred):
-    """
-    Computes the Spearman Rank Correlation to measure trend similarity.
-
-    Args:
-    - y_true: Actual values (array-like)
-    - y_pred: Predicted values (array-like)
-
-    Returns:
-    - Spearman correlation coefficient (between -1 and 1)
-    """
-    corr, _ = spearmanr(y_true, y_pred)
-    return corr
-
-# Example usage:
-y_true = np.array([...])  # Replace with actual values
-y_pred = np.array([...])  # Replace with predicted values
-
-trend_score = trend_similarity(y_true, y_pred)
-print(f"Trend Similarity (Spearman Correlation): {trend_score:.3f}")
-
-import numpy as np
-from scipy.stats import entropy
-
-def penalize_flat_forecasts(y_pred):
-    """
-    Computes entropy and standard deviation to penalize flat forecasts.
-
-    Args:
-    - y_pred: Forecasted values (array-like)
-
-    Returns:
-    - entropy_score: Entropy of the forecast distribution (lower means flatter)
-    - std_dev: Standard deviation of the forecast (lower means flatter)
-    """
-    # Normalize predictions to get probability distribution for entropy calculation
-    y_pred_probs, _ = np.histogram(y_pred, bins=10, density=True)
-    entropy_score = entropy(y_pred_probs + 1e-10)  # Avoid log(0) issue
-
-    # Compute standard deviation
-    std_dev = np.std(y_pred)
-
-    return entropy_score, std_dev
-
-# --- Example Usage ---
-pred_lightgbm = np.array([...])  # Replace with model predictions
-entropy_lightgbm, std_dev_lightgbm = penalize_flat_forecasts(pred_lightgbm)
-
-print(f"LightGBM -> Entropy: {entropy_lightgbm:.4f}, Std Dev: {std_dev_lightgbm:.4f}")
-
-
-import seaborn as sns
-import matplotlib.pyplot as plt
-
-# Example data
-import numpy as np
-data = np.random.normal(loc=0, scale=1, size=1000)
-
-# Histogram with KDE curve
-sns.histplot(data, kde=True, stat="density", bins=30, color='skyblue', edgecolor='black')
-plt.title("Histogram with KDE Curve")
-plt.xlabel("Value")
-plt.ylabel("Density")
-plt.show()
-
-
-import matplotlib.pyplot as plt
-import numpy as np
-from scipy.stats import norm
-
-# Example data
-data = np.random.normal(loc=0, scale=1, size=1000)
-
-# Plot histogram
-count, bins, ignored = plt.hist(data, bins=30, density=True, alpha=0.6, color='skyblue', edgecolor='black')
-
-# Plot normal distribution curve
-mu, std = np.mean(data), np.std(data)
-xmin, xmax = plt.xlim()
-x = np.linspace(xmin, xmax, 100)
-p = norm.pdf(x, mu, std)
-plt.plot(x, p, 'r', linewidth=2)
-
-plt.title("Histogram with Normal Distribution Curve")
-plt.xlabel("Value")
-plt.ylabel("Density")
-plt.show()
+from transformers import AutoTokenizer, AutoModelForCausalLM
+import torch
+
+# Load model and tokenizer
+model_id = "bigcode/starcoder2-3b"
+
+print("Loading tokenizer...")
+tokenizer = AutoTokenizer.from_pretrained(model_id)
+
+print("Loading model...")
+model = AutoModelForCausalLM.from_pretrained(
+    model_id,
+    torch_dtype=torch.float32,  # You have enough RAM, use float32 for max compatibility
+    device_map="auto"           # Will use CPU across all cores
+)
+
+# Prompt to generate Python code
+prompt = """# Write a Python script to fetch data from an API and save it to a CSV file
+"""
+
+print("Tokenizing...")
+inputs = tokenizer(prompt, return_tensors="pt").to(model.device)
+
+print("Generating...")
+outputs = model.generate(
+    **inputs,
+    max_new_tokens=150,           # You can increase this for longer code
+    do_sample=True,               # Enable sampling for creativity
+    top_p=0.95,
+    temperature=0.7,
+    pad_token_id=tokenizer.eos_token_id
+)
+
+generated_code = tokenizer.decode(outputs[0], skip_special_tokens=True)
+print("\n=== Generated Python Code ===\n")
+print(generated_code)
