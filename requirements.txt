@@ -309,3 +309,13 @@ if os.path.exists(cache_path):
     print(f"Cache Size: {get_readable_size(cache_size)}")
 else:
     print("Hugging Face cache directory not found.")
+
+import shutil
+import os
+
+cache_path = os.path.expanduser("~/.cache/huggingface")
+if os.path.exists(cache_path):
+    shutil.rmtree(cache_path)
+    print("Hugging Face cache (models, tokenizers, etc.) deleted.")
+else:
+    print("No Hugging Face cache found.")
