@@ -421,3 +421,23 @@ class TableArgInjector(ast.NodeTransformer):
                                 ast.keyword(arg=self.arg_name, value=ast.Constant(value=self.arg_value))
                             )
         return node
+
+
+source_code = """
+class dynamodb:
+    \"\"\"This is Dipak\"\"\"
+
+    @staticmethod
+    def create_table(self):
+        Table = dynamodb.Table(
+            Scope=stack,
+            Id=tab_id
+        )
+"""
+
+tree = ast.parse(source_code)
+
+injector = TableArgInjector("create_table", "Publicintime", True)
+modified_tree = injector.visit(tree)
+
+print(astor.to_source(modified_tree))
