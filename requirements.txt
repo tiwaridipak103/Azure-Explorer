@@ -386,3 +386,38 @@ class SmartCodeInjector(ast.NodeTransformer):
 
         node.body = new_body
         return node
+
+
+
+import ast
+import astor
+
+class TableArgInjector(ast.NodeTransformer):
+    def __init__(self, method_name, arg_name, arg_value):
+        self.method_name = method_name
+        self.arg_name = arg_name
+        self.arg_value = arg_value
+
+    def visit_FunctionDef(self, node):
+        if node.name != self.method_name:
+            return node
+
+        # Traverse all statements in the method
+        for stmt in node.body:
+            # Check for assignment like: Table = dynamodb.Table(...)
+            if isinstance(stmt, ast.Assign):
+                value = stmt.value
+                if isinstance(value, ast.Call):
+                    # Check if it's a call to dynamodb.Table
+                    if (
+                        isinstance(value.func, ast.Attribute)
+                        and value.func.attr == "Table"
+                        and isinstance(value.func.value, ast.Name)
+                        and value.func.value.id == "dynamodb"
+                    ):
+                        # Inject new keyword if not already present
+                        if not any(k.arg == self.arg_name for k in value.keywords):
+                            value.keywords.append(
+                                ast.keyword(arg=self.arg_name, value=ast.Constant(value=self.arg_value))
+                            )
+        return node
