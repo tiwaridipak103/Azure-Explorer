@@ -258,3 +258,82 @@ print("\nAfter using apply():\n", df_apply)
 # 3. Using agg() - Reduces data
 df_agg = df.groupby('Category')['Value'].agg('mean')
 print("\nAfter using agg():\n", df_agg)
+
+
+import ast
+import astor
+import pdb
+
+class TableArgInjector(ast.NodeTransformer):
+    def __init__(self, method_name, arg_name, arg_value):
+        self.method_name = method_name
+        self.arg_name = arg_name
+        self.arg_value = arg_value
+
+    def visit_FunctionDef(self, node):
+        print(f"\n--- Visiting function: {node.name} ---")
+        print(ast.dump(node, indent=4))  # Inspect entire function node
+
+        if node.name != self.method_name:
+            print("Skipping function (not target)")
+            return node
+
+        for stmt in node.body:
+            print(f"\nInspecting statement: {ast.dump(stmt, indent=4)}")
+
+            if isinstance(stmt, ast.Assign):
+                value = stmt.value
+
+                if isinstance(value, ast.Call):
+                    func = value.func
+                    print(f"Found a function call: {ast.dump(func)}")
+
+                    if (
+                        isinstance(func, ast.Attribute)
+                        and func.attr == "Table"
+                        and isinstance(func.value, ast.Name)
+                        and func.value.id == "dynamodb"
+                    ):
+                        print("Match found: dynamodb.Table(...)")
+
+                        # Optional debug breakpoint
+                        # pdb.set_trace()
+
+                        if not any(k.arg == self.arg_name for k in value.keywords):
+                            print(f"Injecting: {self.arg_name} = {self.arg_value}")
+                            value.keywords.append(
+                                ast.keyword(arg=self.arg_name, value=ast.Constant(value=self.arg_value))
+                            )
+                        else:
+                            print(f"{self.arg_name} already exists, skipping injection.")
+        return node
+
+
+# Sample source code to modify
+source_code = """
+class dynamodb:
+    \"""This is Dipak\"""
+
+    @staticmethod
+    def create_table(self):
+        Table = dynamodb.Table(
+            Scope=stack,
+            Id=tab_id
+        )
+"""
+
+# Step 1: Parse the source code to AST
+tree = ast.parse(source_code)
+print("\nOriginal AST Tree:")
+print(ast.dump(tree, indent=4))
+
+# Step 2: Transform the tree
+injector = TableArgInjector("create_table", "Publicintime", True)
+modified_tree = injector.visit(tree)
+
+# Step 3: Convert AST back to code
+modified_code = astor.to_source(modified_tree)
+
+# Final result
+print("\n--- Modified Source Code ---")
+print(modified_code)
