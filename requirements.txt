@@ -441,3 +441,14 @@ injector = TableArgInjector("create_table", "Publicintime", True)
 modified_tree = injector.visit(tree)
 
 print(astor.to_source(modified_tree))
+
+def read_file_safely(filepath):
+    encodings = ["utf-8", "latin-1", "windows-1252"]
+    for enc in encodings:
+        try:
+            with open(filepath, "r", encoding=enc) as f:
+                return f.read()
+        except UnicodeDecodeError:
+            continue
+    print(f"Failed to decode {filepath}")
+    return ""
