@@ -452,3 +452,29 @@ def read_file_safely(filepath):
             continue
     print(f"Failed to decode {filepath}")
     return ""
+
+
+
+Absolutely, here’s a shorter and to-the-point version:
+
+
+---
+
+Hi [Manager's Name],
+
+Hope you're doing well.
+
+I wanted to request a small favor — since I shared the code directly with your team without routing it through my own team first, I’d appreciate it if you could send a brief note acknowledging this, keeping my lead and manager in CC. This will help maintain transparency on my end.
+
+Let me know if you'd prefer a draft for it — happy to help.
+
+Thanks a lot for your support!
+
+Best,
+Kalyan
+
+
+---
+
+Let me know if you want it even more concise or in a different tone.
+
