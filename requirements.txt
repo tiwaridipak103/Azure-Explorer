@@ -1,0 +1,35 @@
+Here's a clean and professional message you can send:
+
+
+---
+
+Subject: Request to Restrict GitHub Personal Account Login on Company Devices
+
+Hi [Leader's Name],
+
+I hope you're doing well.
+
+I would like to propose a security measure regarding GitHub access from company laptops.
+Specifically, I request that we disable the ability for users to log in to personal GitHub accounts (such as accounts linked to personal emails like Gmail, Yahoo, etc.) from company devices.
+
+However, users should still be able to:
+
+View public repositories on GitHub without any restrictions.
+
+Log in using their organization credentials (e.g., dipak.tiwari@abc.com) to access and collaborate on official company repositories.
+
+
+Implementing this would help strengthen our data security posture by ensuring that company devices are only used for authorized GitHub activities, while still allowing access to necessary public resources.
+
+Please let me know if you'd like me to provide more details or draft a proposed implementation plan.
+
+Thank you for considering this request.
+
+Best regards,
+Dipak Tiwari
+
+
+---
+
+Would you also like a second, slightly more casual version depending on your company's culture?
+
