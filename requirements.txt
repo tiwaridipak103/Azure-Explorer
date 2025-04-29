@@ -1,35 +1,24 @@
-Here's a clean and professional message you can send:
+import pandas as pd
 
+# Input: any valid date string
+input_date = pd.to_datetime("1960-01-01")
 
----
+# Generate previous 8 years' dates
+previous_dates = []
+for i in range(1, 9):
+    year = input_date.year - i
+    try:
+        new_date = input_date.replace(year=year)
+    except ValueError:
+        # Handles February 29 for non-leap years
+        new_date = input_date - pd.DateOffset(years=i)
+        new_date = pd.Timestamp(new_date.year, new_date.month, new_date.day)
+    previous_dates.append(new_date)
 
-Subject: Request to Restrict GitHub Personal Account Login on Company Devices
+# Reverse to go from oldest to newest
+previous_dates = previous_dates[::-1]
 
-Hi [Leader's Name],
+# Convert to DatetimeIndex (optional)
+previous_dates = pd.to_datetime(previous_dates)
 
-I hope you're doing well.
-
-I would like to propose a security measure regarding GitHub access from company laptops.
-Specifically, I request that we disable the ability for users to log in to personal GitHub accounts (such as accounts linked to personal emails like Gmail, Yahoo, etc.) from company devices.
-
-However, users should still be able to:
-
-View public repositories on GitHub without any restrictions.
-
-Log in using their organization credentials (e.g., dipak.tiwari@abc.com) to access and collaborate on official company repositories.
-
-
-Implementing this would help strengthen our data security posture by ensuring that company devices are only used for authorized GitHub activities, while still allowing access to necessary public resources.
-
-Please let me know if you'd like me to provide more details or draft a proposed implementation plan.
-
-Thank you for considering this request.
-
-Best regards,
-Dipak Tiwari
-
-
----
-
-Would you also like a second, slightly more casual version depending on your company's culture?
-
+print(previous_dates)
