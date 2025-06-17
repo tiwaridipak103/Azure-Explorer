@@ -11,24 +11,32 @@ with pm.Model(coords=coords) as model:
     # Index data
     submarket_idx = pm.ConstantData("submarket_idx", df["submarket_idx"].values)
     market_idx = pm.ConstantData("market_idx", df["market_idx"].values)
-    
-    # Top-level prior (National)
+
+    # National-level intercept
     alpha_n = pm.Normal("alpha_n", mu=0, sigma=10)
 
-    # Market-level effects
+    # Market-level intercepts
     sigma_m = pm.Exponential("sigma_m", 1.0)
     alpha_m = pm.Normal("alpha_m", mu=alpha_n, sigma=sigma_m, dims="markets")
 
-    # Submarket-level effects
+    # Submarket-level intercepts
     sigma_s = pm.Exponential("sigma_s", 1.0)
     alpha_s = pm.Normal("alpha_s", mu=alpha_m[market_idx], sigma=sigma_s, dims="submarkets")
 
-    # Final observed mean
-    mu = alpha_s[submarket_idx]
+    # Coefficients for top-down predictors
+    beta_market = pm.Normal("beta_market", mu=0, sigma=1)
+    beta_national = pm.Normal("beta_national", mu=0, sigma=1)
 
-    # Observation-level noise
+    # Expected value
+    mu = (
+        alpha_s[submarket_idx] +
+        beta_market * df["vacancy_market"].values +
+        beta_national * df["vacancy_national"].values
+    )
+
+    # Noise and likelihood
     sigma = pm.Exponential("sigma", 1.0)
     y_obs = pm.Normal("y_obs", mu=mu, sigma=sigma, observed=df["vacancy"].values)
 
-    # Sampling
+    # Sample posterior
     trace = pm.sample(1000, tune=1000, target_accept=0.9)
