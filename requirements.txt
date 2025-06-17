@@ -1,38 +1,3 @@
-# Sub-market level
-submarket_df = pd.DataFrame({
-    'date': [...],
-    'submarket_id': [...],
-    'price': [...],
-    'market_id': [...],  # map each submarket to its parent market
-})
-
-# Market-level predictors
-market_df = pd.DataFrame({
-    'date': [...],
-    'market_id': [...],
-    'stock': [...],
-    'vacancy': [...],
-    ...
-})
-
-# National-level predictors
-national_df = pd.DataFrame({
-    'date': [...],
-    'national_id': [...],
-    'rent_growth': [...],
-    ...
-})
-
-# Merge market predictors
-df = submarket_df.merge(market_df, on=['date', 'market_id'], how='left')
-# Merge national predictors
-df = df.merge(national_df, on='date', how='left')
-
-
-df['submarket_idx'] = df['submarket_id'].astype('category').cat.codes
-df['market_idx'] = df['market_id'].astype('category').cat.codes
-
-
 import pymc as pm
 import numpy as np
 import pandas as pd
@@ -43,26 +8,27 @@ coords = {
 }
 
 with pm.Model(coords=coords) as model:
-    # Data
+    # Index data
     submarket_idx = pm.ConstantData("submarket_idx", df["submarket_idx"].values)
     market_idx = pm.ConstantData("market_idx", df["market_idx"].values)
     
-    # Priors
+    # Top-level prior (National)
     alpha_n = pm.Normal("alpha_n", mu=0, sigma=10)
-    
+
+    # Market-level effects
     sigma_m = pm.Exponential("sigma_m", 1.0)
     alpha_m = pm.Normal("alpha_m", mu=alpha_n, sigma=sigma_m, dims="markets")
-    
+
+    # Submarket-level effects
     sigma_s = pm.Exponential("sigma_s", 1.0)
     alpha_s = pm.Normal("alpha_s", mu=alpha_m[market_idx], sigma=sigma_s, dims="submarkets")
-    
-    # Linear regression on predictors (optional for now)
-    beta_stock = pm.Normal("beta_stock", mu=0, sigma=1)
-    beta_vacancy = pm.Normal("beta_vacancy", mu=0, sigma=1)
-    
-    mu = alpha_s[submarket_idx] + beta_stock * df["stock"].values + beta_vacancy * df["vacancy"].values
-    
+
+    # Final observed mean
+    mu = alpha_s[submarket_idx]
+
+    # Observation-level noise
     sigma = pm.Exponential("sigma", 1.0)
-    y_obs = pm.Normal("y_obs", mu=mu, sigma=sigma, observed=df["price"].values)
-    
+    y_obs = pm.Normal("y_obs", mu=mu, sigma=sigma, observed=df["vacancy"].values)
+
+    # Sampling
     trace = pm.sample(1000, tune=1000, target_accept=0.9)
