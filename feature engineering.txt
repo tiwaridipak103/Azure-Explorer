@@ -1,0 +1,6 @@
+def save_last_output(filename="cell_output.txt"):
+    from IPython import get_ipython
+    ip = get_ipython()
+    output = ip.user_ns.get('_', '')
+    with open(filename, 'w') as f:
+        f.write(str(output))
