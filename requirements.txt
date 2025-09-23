@@ -1,4 +1,4 @@
-import pymc as pm
+isimport pymc as pm
 import numpy as np
 import pandas as pd
 
@@ -40,3 +40,7 @@ with pm.Model(coords=coords) as model:
 
     # Sample posterior
     trace = pm.sample(1000, tune=1000, target_accept=0.9)
+
+
+Subject: Request for Work from Home Due to InjuryDear [Manager’s Name],I hope you’re doing well. I wanted to inform you that I had a minor accident last week and have some swelling and scratches on my knees and ankles. The doctor has advised me to avoid travel and work from home for this week to recover properly. I request your approval to work from home until I am fit to return to the office.Thank you for your understanding.Best regards,
+[Your Name]
