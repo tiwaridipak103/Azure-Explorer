@@ -1,46 +1,241 @@
-isimport pymc as pm
-import numpy as np
-import pandas as pd
+Nice — thanks for the clear tree description. Below I’ll give you a practical, ready-to-run set of hierarchical model designs (concept + code) for the tree:
 
-coords = {
-    "submarkets": df['submarket_idx'].nunique(),
-    "markets": df['market_idx'].nunique()
+United_state (root)
+→ 10 markets (market_0 .. market_9)
+→ each market has 5 submarkets (so 50 submarkets total; nested under markets)
+
+I’ll assume a continuous outcome y (e.g., price, sales). If your outcome is binary or counts, I’ll add alternatives at the end. I’ll also assume you might want both varying intercepts and optionally varying slopes for one or more predictors. If you want a plain intercept-only multilevel model, you can drop the slope parts.
+
+
+---
+
+1) Model outline (mathematical)
+
+Indexing:
+
+i indexes observations (rows).
+
+m[i] ∈ {0..9} is the market index for observation i.
+
+s[i] ∈ {0..49} is the submarket index for observation i. Each submarket has a known parent market market_of_sub[s].
+
+
+Basic 3-level hierarchical model (varying intercepts):
+
+\begin{aligned}
+y_i &\sim \mathcal{N}(\mu_i, \sigma_y)\\
+\mu_i &= \alpha_{US} + \alpha^{(M)}_{m[i]} + \alpha^{(S)}_{s[i]} + X_i \beta\\
+\alpha_{US} &\sim \mathcal{N}(0, \sigma_{US})\ \text{(could be fixed 0)}\\
+\alpha^{(M)}_m &\sim \mathcal{N}(0, \sigma_M) \quad m=0,\dots,9\\
+\alpha^{(S)}_s &\sim \mathcal{N}(0, \sigma_S) \quad s=0,\dots,49\\
+\sigma_y, \sigma_M, \sigma_S &>0 \text{ (hyperpriors)}
+\end{aligned}
+
+If you want varying slopes for a predictor x1 at market level:
+
+\mu_i = \alpha_{US} + \alpha^{(M)}_{m[i]} + \alpha^{(S)}_{s[i]} + \big(\beta_{0} + \beta^{(M)}_{m[i]}\big) x_{1,i} + X_{-1,i} \beta_{-1}
+
+
+---
+
+2) Data preparation notes
+
+Create integer indices:
+
+market_idx ∈ {0..9}
+
+submarket_idx ∈ {0..49}
+
+
+Also create a market_of_sub array mapping each submarket index to its parent market index.
+
+Center / standardize continuous predictors — helps sampling and interpretability.
+
+
+Example mapping in pandas:
+
+# pseudo
+df['market_idx'] = df['market'].astype('category').cat.codes
+df['submarket_idx'] = df['market'].astype(str) + '_' + df['submarket'].astype(str)
+df['submarket_idx'] = df['submarket_idx'].astype('category').cat.codes
+# build market_of_sub: for each submarket id, what's the market id
+market_of_sub = df[['submarket_idx','market_idx']].drop_duplicates().sort_values('submarket_idx')['market_idx'].values
+
+
+---
+
+3) PyMC (Bayesian) implementation (full example)
+
+This is a practical PyMC model implementing varying intercepts at market and submarket and an optional varying slope for x1 at market level.
+
+# PyMC example (PyMC v4+/aesara)
+import numpy as np
+import pymc as pm
+import arviz as az
+
+# Inputs you must prepare:
+# y: (N,) numpy array
+# x1: (N,) predictor (centered)
+# X_other: (N, P) other predictors (already standardized) or None
+# market_idx: (N,) ints in 0..9
+# submarket_idx: (N,) ints in 0..49
+# market_of_sub: (S,) ints linking submarket->market (length S=50)
+
+N = len(y)
+n_markets = max(market_idx) + 1        # 10
+n_submarkets = max(submarket_idx) + 1  # 50
+
+with pm.Model() as model:
+    # Hyperpriors for SDs
+    sigma_y = pm.HalfNormal("sigma_y", sigma=1.0)
+    sigma_M = pm.HalfNormal("sigma_M", sigma=1.0)
+    sigma_S = pm.HalfNormal("sigma_S", sigma=1.0)
+    
+    # Global intercept (alpha_US)
+    alpha_US = pm.Normal("alpha_US", mu=0.0, sigma=5.0)
+    
+    # Market-level varying intercepts
+    alpha_M_raw = pm.Normal("alpha_M_raw", mu=0.0, sigma=1.0, shape=n_markets)
+    alpha_M = pm.Deterministic("alpha_M", alpha_M_raw * sigma_M)
+    
+    # Submarket-level varying intercepts (centered per usual)
+    alpha_S_raw = pm.Normal("alpha_S_raw", mu=0.0, sigma=1.0, shape=n_submarkets)
+    alpha_S = pm.Deterministic("alpha_S", alpha_S_raw * sigma_S)
+    
+    # Fixed effect for x1
+    beta_x1 = pm.Normal("beta_x1", mu=0.0, sigma=1.0)
+    
+    # Optional: varying slope for x1 at market level (uncomment to use)
+    use_varying_slope = True
+    if use_varying_slope:
+        sigma_beta_M = pm.HalfNormal("sigma_beta_M", sigma=1.0)
+        beta_M_raw = pm.Normal("beta_M_raw", 0.0, 1.0, shape=n_markets)
+        beta_M = pm.Deterministic("beta_M", beta_M_raw * sigma_beta_M)
+    else:
+        beta_M = np.zeros(n_markets)
+    
+    # Optional additional fixed covariates
+    # X_other: shape (N, P), beta_other shape (P,)
+    # beta_other = pm.Normal('beta_other', mu=0, sigma=1, shape=P)
+    
+    # Expected value
+    mu = (alpha_US 
+          + alpha_M[market_idx] 
+          + alpha_S[submarket_idx]
+          + (beta_x1 + (beta_M[market_idx] if use_varying_slope else 0.0)) * x1
+         )
+    # add other fixed covariates: + X_other.dot(beta_other)
+    
+    y_obs = pm.Normal("y_obs", mu=mu, sigma=sigma_y, observed=y)
+    
+    # Sample
+    trace = pm.sample(1000, tune=1000, target_accept=0.9)
+    az.summary(trace, var_names=["alpha_US","sigma_y","sigma_M","sigma_S","beta_x1","sigma_beta_M"])
+
+Notes:
+
+alpha_M_raw and alpha_S_raw are standard-normal and scaled — common practice for hierarchical priors.
+
+If you want correlation between market intercept and slope, replace alpha_M_raw and beta_M_raw with a bivariate MVN with a 2×2 covariance (I can show that if you want).
+
+
+
+---
+
+4) lme4 (R) — quick formula if you prefer frequentist
+
+If you prefer lme4 in R, a simple random intercepts model:
+
+# intercepts for market and submarket nested
+lmer(y ~ x1 + (1 | market) + (1 | market:submarket), data = df)
+
+# if varying slope for x1 at market-level:
+lmer(y ~ x1 + (1 + x1 | market) + (1 | market:submarket), data = df)
+
+market:submarket enforces nesting. You can also use (1 | submarket) if submarket IDs are globally unique and already encode parent market (i.e., submarket IDs aren't repeated across markets).
+
+
+---
+
+5) Stan (for multivariate market intercept/slope correlation)
+
+If you want correlation between intercept and slope at market-level, Stan multivariate normal is typical. Sketch (pseudo):
+
+data { int<lower=1> N; int<lower=1> M; int<lower=1> S;
+       int market_idx[N]; int submarket_idx[N];
+       vector[N] x1; vector[N] y; int market_of_sub[S]; }
+parameters {
+  real alpha_us;
+  vector[2] mu_M; // not needed
+  cholesky_factor_corr[2] L_Omega_M;
+  vector<lower=0>[2] tau_M;
+  matrix[2,M] z_M; // raw
+  vector[S] alpha_S_raw;
+  real<lower=0> sigma_S;
+  real<lower=0> sigma_y;
+  real beta_global;
+}
+transformed parameters {
+  matrix[2,M] b_M = diag_pre_multiply(tau_M, L_Omega_M) * z_M;
+  // b_M[1,m] intercept dev, b_M[2,m] slope dev
+}
+model {
+  // priors ...
+  for (n in 1:N)
+    y[n] ~ normal(alpha_us + b_M[1, market_idx[n]] + alpha_S_raw[submarket_idx[n]] 
+                 + (beta_global + b_M[2, market_idx[n]]) * x1[n], sigma_y);
 }
 
-with pm.Model(coords=coords) as model:
-    # Index data
-    submarket_idx = pm.ConstantData("submarket_idx", df["submarket_idx"].values)
-    market_idx = pm.ConstantData("market_idx", df["market_idx"].values)
-
-    # National-level intercept
-    alpha_n = pm.Normal("alpha_n", mu=0, sigma=10)
-
-    # Market-level intercepts
-    sigma_m = pm.Exponential("sigma_m", 1.0)
-    alpha_m = pm.Normal("alpha_m", mu=alpha_n, sigma=sigma_m, dims="markets")
-
-    # Submarket-level intercepts
-    sigma_s = pm.Exponential("sigma_s", 1.0)
-    alpha_s = pm.Normal("alpha_s", mu=alpha_m[market_idx], sigma=sigma_s, dims="submarkets")
-
-    # Coefficients for top-down predictors
-    beta_market = pm.Normal("beta_market", mu=0, sigma=1)
-    beta_national = pm.Normal("beta_national", mu=0, sigma=1)
-
-    # Expected value
-    mu = (
-        alpha_s[submarket_idx] +
-        beta_market * df["vacancy_market"].values +
-        beta_national * df["vacancy_national"].values
-    )
-
-    # Noise and likelihood
-    sigma = pm.Exponential("sigma", 1.0)
-    y_obs = pm.Normal("y_obs", mu=mu, sigma=sigma, observed=df["vacancy"].values)
-
-    # Sample posterior
-    trace = pm.sample(1000, tune=1000, target_accept=0.9)
+Tell me if you want a full Stan file and I’ll paste a copy.
 
 
-Subject: Request for Work from Home Due to InjuryDear [Manager’s Name],I hope you’re doing well. I wanted to inform you that I had a minor accident last week and have some swelling and scratches on my knees and ankles. The doctor has advised me to avoid travel and work from home for this week to recover properly. I request your approval to work from home until I am fit to return to the office.Thank you for your understanding.Best regards,
-[Your Name]
+---
+
+6) Practical tips & diagnostics
+
+Center continuous predictors (especially x1) — reduces correlation between intercept and slope.
+
+Priors: set sensible weakly-informative priors (e.g., normal(0,1) for standardized predictors). Use HalfNormal(1) for scale hyperpriors.
+
+Check pooling: inspect posterior SDs sigma_M, sigma_S. If sigma_S ≈ 0, submarket-level adds little.
+
+Posterior predictive checks (ppc) — always run az.plot_ppc / pm.sample_posterior_predictive to compare predicted vs observed.
+
+Model comparison: compare simpler (no varying slopes) vs richer models with LOO/WAIC or leave-one-market-out checks.
+
+If many predictors: consider group-level regularization (horseshoe, hierarchical shrinkage) or dimensionality reduction.
+
+If time series: extend to include temporal correlation (AR terms) at appropriate levels.
+
+
+
+---
+
+7) Binary outcome / counts
+
+Binary: replace y_obs ~ Normal with pm.Bernoulli("y_obs", logit_p=logit_p, observed=y) where logit_p = mu and mu becomes linear predictor.
+
+Counts: use pm.Poisson or pm.NegativeBinomial with log(mu) = linear_predictor.
+
+
+
+---
+
+8) Next steps I can do for you (pick any — no need to answer now if you already know)
+
+Produce a fully runnable PyMC notebook with simulated example data (I can include simulation code and sampling commands).
+
+Provide a full Stan .stan file ready to compile.
+
+Convert to a glmer/lme4-ready R script and show diagnostics there.
+
+Add correlated random effects (market intercept–slope covariance) example in PyMC or Stan.
+
+Adapt the model for binary/count outcome or include time component.
+
+
+
+---
+
+If you want, I can immediately produce a runnable PyMC notebook that simulates data for your exact tree (United_state → 10 markets → 5 submarkets each), fits the model, and shows diagnostic plots and summaries. Or I can produce the full Stan file. Which one would you like me to generate now?
+
