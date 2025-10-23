@@ -313,4 +313,49 @@ DPI_Concentration_Share	Market_DPI / Sum(DPI_all_markets)	Income-weighted share 
 DPI_Decoupling_Index	Correlation(Market_DPI, National_DPI) * -1	Detects markets that diverge from national cycle — key for vacancy resilience
 DPI_Gap_to_Neighbor_Markets	Average DPI difference to adjacent markets	Economic migration gradient direction
 🏗️ 5️⃣ Construction & Supply Synchronization Indicators
-These look at timing mismatches between income 
+These look at timing mismatches between income growth and property supply — crucial in explaining vacancy swings.
+
+Feature	Formula / Description	Why it’s insightful
+Income_Supply_Gap	(DPI_Growth - Construction_Growth)	When income grows faster than supply → vacancy ↓
+Lagged_Supply_vs_Income_Index	DPI_Growth_t-2 - New_Units_Completed_t	Detects delayed absorption potential
+Income_Based_Absorption_Potential	DPI_per_Capita / Vacant_Units	How much income backs each vacant space
+Income_to_Supply_Elasticity	(ΔSupply / ΔDPI)	Useful in equilibrium-based vacancy models
+Affordability_Lag_Spread	Lag(Income_to_Rent_Ratio, 4Q) - Income_to_Rent_Ratio	Measures income-driven rent lag effects over a year
+🧠 6️⃣ Time-Series Decomposition & Shock Analytics
+Institutional economists often extract the cyclical or shock components of DPI to anticipate turning points.
+
+Feature	Description	Use
+DPI_Trend_Component	HP-filtered or STL trend of DPI	Structural long-term growth capacity
+DPI_Cyclical_Component	Deviation from trend	Income cycles that often lead real estate cycles
+DPI_Residual_Shock	Actual DPI - Forecast(DPI via ARIMA)	Identifies unpredicted shocks
+Cumulative_Income_Shock_Index	Sum of negative deviations over 4 quarters	Measures depth of income-driven distress
+Mean_Reversion_Speed	Regression of ΔDPI on lagged deviations	Stability measure — faster reversion = resilient market
+💡 7️⃣ Macro-Composite & Synthetic Predictors
+These are blended or model-derived indices — the kind of high-level features found in proprietary institutional models.
+
+Feature	Description	Interpretation
+Income_Purchasing_Power_Index (IPPI)	DPI / (CPI * Mortgage_Rate * Cost_of_Living)	Unified affordability & purchasing power score
+Effective_Real_DPI	DPI * (Employment_Rate) / CPI	Realized income after job and inflation adjustment
+DPI_Stress_Score	Standardized(-DPI_Growth + Unemployment_Change + CPI_Growth)	Summary distress metric; higher → vacancy risk
+Income_to_Productivity_Index	DPI / Labor_Productivity	Indicates whether income gains are sustainable or inflationary
+Income_Macro_Sentiment_Composite	Weighted PCA of DPI, Confidence, Employment, Rates	Captures latent macroeconomic health signal used in rent/vacancy regression models
+⚙️ Bonus: Interaction Blueprints to Pair with Vacancy Directly
+Interaction Feature	Interpretation
+(DPI_Growth * Rent_Change_Lag2)	Lagged demand-supply dynamic
+(DPI_Shock_Index * Vacancy_t-1)	Income shock persistence effect
+(DPI_per_Capita * Population_Density) / Vacancy	Effective local demand pressure
+(ΔDPI / ΔInterest_Rate)	Income sensitivity to monetary conditions
+(DPI_Volatility * Construction_Activity)	Risk-adjusted absorption potential
+🧩 Why these matter:
+Disposable Personal Income isn’t just a wealth indicator — it’s the fuel for rent payments, migration, and space absorption.
+
+Real estate vacancy moves nonlinearly with DPI — small income drops can cause big occupancy shocks in low-affordability markets.
+
+These advanced features let your model see the early warning signals that raw income levels can’t capture.
+
+Would you like me to now compile all these ideas into a structured feature blueprint table (Excel/CSV-ready) — grouped by category (affordability, sentiment, supply, etc.) — so you can plug it directly into your modeling workflow for feature creation and selection?
+
+
+
+No file chosenNo file chosen
+ChatGPT can make mistakes. Check important info. See Cookie Preferences.
