@@ -1,36 +1,22 @@
-import multiprocessing as mp
-import traceback
-from typing import Callable, Any, Tuple
+I have shared the complete PDF of the chapter “Lease and Benefits.” I would like you to act as my personal tutor and help me understand the entire chapter thoroughly and in depth.
 
-def multiprocess_decorator(worker_fn: Callable[..., Any]):
+We will proceed topic by topic.
 
-    def safe_worker(idx, *args):
-        try:
-            worker_fn(idx, *args)
-        except Exception:
-            print(f"\n❌ Exception in worker {idx}")
-            print(traceback.format_exc())
-            raise
+First, you explain one topic in detail.
 
-    def wrapper(*args: Tuple[Any, ...]):
-        iteration, *remaining_args = args
+Then I will review it and ask questions if I have any doubts.
 
-        ctx = mp.get_context("spawn")  # CRITICAL
-        processes = []
+Once I confirm that I am comfortable with the topic, we will move to the next one.
 
-        for i in range(iteration):
-            p = ctx.Process(
-                target=safe_worker,
-                args=(i, *remaining_args)
-            )
-            p.start()
-            processes.append(p)
+Please ensure the following while explaining:
 
-        for p in processes:
-            p.join(timeout=300)  # avoid infinite hang
-            if p.exitcode != 0:
-                raise RuntimeError(
-                    f"Worker process {p.pid} failed with exit code {p.exitcode}"
-                )
+Go into sufficient depth and do not skip important concepts.
 
-    return wrapper
+Use bullet points for clarity.
+
+After each bullet point, add a brief explanation in brackets, especially connecting concepts in a way that would be easy to understand for someone with an engineering background (e.g., using logic, structure, system thinking, or simple analogies).
+
+Explain each major concept in small, clear paragraphs instead of very long blocks of text.
+
+I want to build strong conceptual clarity, not just surface-level understanding.
+
