@@ -9,528 +9,531 @@ This is a copy of a conversation between ChatGPT & Anonymous.
 
 Report conversation
 We are working on Moody's dataset with multiple features and responses for each market.It is quarterly data that means, that every quarter, new record come for each market .It is real estate dataset.
-I am currently working with feature name thirty_year_fixed_mortgage_rate and response vacancy. Help me understand how it worked 
+I am currently working with feature name ten_year_treasure_rate and response vacancy. Help me understand how it worked 
 
-Let’s frame this in real-estate market mechanics terms.
+For real estate vacancy modeling, ten_year_treasury_rate is one of the most economically meaningful macro variables.
 
-You have:
+Since you're modeling vacancy on quarterly market-level real estate data, this feature captures the cost of long-duration capital and the market's expectation of future economic conditions.
 
-Feature: thirty_year_fixed_mortgage_rate
+Let’s break it down from a real estate analyst’s perspective.
 
-Response: vacancy
+1. What is ten_year_treasury_rate?
+It is the yield on the United States 10-year government bond.
 
-Frequency: Quarterly
+It represents:
 
-Granularity: Market-level (likely metro / city / region)
+Long-term risk-free interest rate
 
-The key question is:
+Benchmark for commercial mortgage pricing
 
-How does a change in 30-year fixed mortgage rates propagate through the real estate system and eventually affect vacancy?
+Investor expectations about:
 
-This depends heavily on property type (apartment, office, industrial, retail), because mortgage rates influence each sector differently.
+Inflation
 
-1. What is thirty_year_fixed_mortgage_rate?
-This is the average interest rate borrowers pay for a standard 30-year mortgage.
+Economic growth
 
-It represents the cost of long-term housing debt.
+Monetary policy path
 
-When it rises:
+In CRE, this is foundational because almost everything prices off it.
 
-Monthly mortgage payments increase
+Typical financing spread:
 
-Borrowing affordability declines
+C
+o
+m
+m
+e
+r
+c
+i
+a
+l
+ 
+M
+o
+r
+t
+g
+a
+g
+e
+ 
+R
+a
+t
+e
+=
+10
+Y
+ 
+T
+r
+e
+a
+s
+u
+r
+y
++
+C
+r
+e
+d
+i
+t
+ 
+S
+p
+r
+e
+a
+d
+Commercial Mortgage Rate=10Y Treasury+Credit Spread
+Example:
 
-Housing demand often weakens
+If 10Y Treasury = 4.2%
 
-Financing costs for property acquisition rise
+and lender spread = 250 bps
 
-When it falls:
+then mortgage rate:
 
-Borrowing becomes cheaper
-
-Home purchases become more attractive
-
-Property demand increases
-
-It is essentially a capital cost signal for real estate.
+4.2
++
+2.5
+=
+6.7
+%
+4.2+2.5=6.7%
+That financing rate directly impacts acquisitions, refinancing, development, and occupancy.
 
 2. Why would it affect vacancy?
-Vacancy = unused real estate supply.
+Vacancy reacts through several economic transmission channels.
 
-Mortgage rates affect vacancy through demand migration, construction incentives, and investment decisions.
+Channel A: Cost of capital → Development activity
+This is usually the strongest.
 
-The relationship is usually indirect and lagged.
+If 10Y Treasury rises:
+Financing new construction becomes expensive.
 
-Channel 1: Affordability Channel (Most Important for Apartments)
-This is usually the strongest mechanism.
+Developers delay projects.
 
-When mortgage rates rise
-Higher rates make buying homes expensive.
+Less future supply enters market.
 
-Example:
+Lower supply growth often reduces vacancy.
 
-Suppose a buyer wants a ₹80 lakh home.
+Example
+Suppose an office developer finances a $100M project.
 
-At 6%
-Monthly payment ≈ ₹48,000
+At 4% debt:
 
-At 8%
-Monthly payment ≈ ₹58,700
+Annual interest = $4M
 
-That’s a big jump.
+At 7% debt:
 
-Many households can no longer buy.
+Annual interest = $7M
 
-So they:
+That extra $3M may kill feasibility.
 
-→ Stay renters longer
-→ Delay homeownership
-→ Increase apartment demand
+Result:
 
-Higher apartment demand reduces vacant rental units.
+Fewer projects
 
-So:
+Less new inventory
 
-Mortgage rate ↑ → Rental demand ↑ → Apartment vacancy ↓
-
-This is often observed in multifamily markets.
-
-Real-world interpretation
-If your model shows:
-
-negative coefficient
-
-for apartments:
-
-that is economically intuitive.
-
-Meaning:
-
-Higher mortgage rates trap households in rental markets, tightening occupancy.
-
-Channel 2: Housing Supply Freeze
-When mortgage rates rise:
-
-Developers face:
-
-Higher construction financing costs
-
-Lower buyer demand
-
-Lower project feasibility
-
-They delay new housing projects.
-
-Less future supply enters.
-
-Lower supply can reduce vacancy.
+Vacancy pressure decreases (after lag)
 
 So:
 
-Mortgage rate ↑ → Construction slows → Future vacancy ↓
+Higher 10Y Treasury → Lower future vacancy
 
-Important:
+with lag.
 
-This effect appears with long lag.
+Channel B: Economic slowdown expectations
+Sometimes rising yields indicate stronger growth expectations.
 
-Usually:
+Strong growth:
 
-4 to 12 quarters later
+More hiring
 
-For quarterly Moody’s data, lagged features matter.
+More office absorption
 
-Example:
+More retail demand
 
-mortgage_rate_lag_4
-mortgage_rate_lag_8
-Channel 3: Lock-In Effect
-This became very important post-2022.
+More industrial leasing
 
-When homeowners have low-rate mortgages (say 3%) and market rates jump to 7%:
+This reduces vacancy.
 
-They avoid selling.
+So in this case:
 
-Housing inventory shrinks.
+Higher 10Y Treasury → Lower vacancy
 
-Potential buyers remain renters.
+But if yields rise because inflation fears trigger aggressive tightening:
 
-Rental demand rises.
+Borrowing slows
+
+Economic activity weakens
+
+Demand weakens
+
+Vacancy rises.
+
+Then:
+
+Higher 10Y Treasury → Higher vacancy
+
+This is why the relationship is often regime dependent.
+
+Channel C: Cap rate repricing
+Real estate valuation often uses:
+
+C
+a
+p
+ 
+R
+a
+t
+e
+=
+10
+Y
+ 
+T
+r
+e
+a
+s
+u
+r
+y
++
+R
+i
+s
+k
+ 
+P
+r
+e
+m
+i
+u
+m
+Cap Rate=10Y Treasury+Risk Premium
+If Treasury rises:
+
+Cap rates rise.
+
+Property values fall.
+
+Owners delay redevelopment / acquisitions.
+
+Transactions freeze.
+
+This can reduce capital recycling.
+
+Effects on vacancy depend on asset class.
+
+3. Asset-class-specific effects
+This matters a lot.
+
+Office
+Very sensitive.
+
+Higher 10Y:
+
+Corporate borrowing cost rises
+
+Hiring slows
+
+Leasing slows
+
+Likely vacancy increase.
+
+Industrial
+Moderate sensitivity.
+
+Driven more by logistics demand.
+
+10Y impacts development pipeline more than occupancy.
+
+Multifamily
+High sensitivity.
+
+Mortgage rates influence rent-vs-buy decision.
+
+Higher Treasury → Higher mortgage rates
+
+Households rent longer
+
+Apartment demand rises
 
 Vacancy falls.
 
-This is another reason:
-
-Higher mortgage rates can reduce apartment vacancy
-
-Channel 4: Wealth / Economic Slowdown Channel
-High mortgage rates often reflect tighter monetary policy.
-
-Tighter monetary policy can cause:
-
-Lower business expansion
-
-Reduced hiring
-
-Slower household formation
-
-Lower migration
-
-This reduces demand for space.
-
-Then vacancy rises.
-
-So here:
-
-Mortgage rate ↑ → Economic slowdown → Vacancy ↑
-
-This is the opposite direction.
-
-This often dominates for:
-
-Office
+This is a very important nonlinear relationship.
 
 Retail
+Indirect sensitivity via consumer spending.
 
-Industrial (sometimes)
+Usually weaker than office.
 
-3. Property-type interpretation
-This is critical for your project.
+4. Why lag matters in your quarterly dataset
+Real estate responds slowly.
 
-Apartments
-Usually:
+A rate shock today doesn’t instantly affect vacancy.
 
-Mortgage rate ↑ → Vacancy ↓
+Typical lags:
 
-Why?
+Leasing impact: 1–3 quarters
 
-Rent-vs-buy substitution.
+Development impact: 4–12 quarters
 
-Strongest relationship.
+Repricing impact: 2–6 quarters
 
-Office
-Usually:
+You should almost never use only contemporaneous rate.
 
-weak or positive relationship
+Create:
 
-Higher rates:
-
-Reduce corporate expansion
-
-Slow leasing
-
-Increase vacancy
-
-So:
-
-Mortgage rate ↑ → Office vacancy ↑
-
-Retail
-Indirect effect.
-
-Higher rates reduce:
-
-Consumer spending
-
-retail expansion
-
-Vacancy may rise.
-
-Industrial
-Mixed.
-
-Depends on:
-
-broader economic growth
-
-logistics demand
-
-Mortgage rate often weakly related.
-
-4. Timing matters (VERY IMPORTANT)
-Quarterly real estate data rarely reacts instantly.
-
-Mortgage rate impacts often show delayed effects.
-
-Typical lag structure:
-
-Immediate (0–1 quarter)
-Sentiment changes
-
-Medium lag (2–4 quarters)
-Leasing adjustments
-
-Long lag (4–8 quarters)
-Construction pipeline changes
-
-For your model, create:
-
-current rate
-
-lag1
-
-lag2
-
-lag4
-
-lag8
-
-Then inspect which lag has strongest explanatory power.
-
-5. Market heterogeneity
-Not all markets react equally.
-
-Example:
-
-Austin
-Highly elastic supply.
-
-Builders respond quickly.
-
-Mortgage rate changes strongly impact vacancy.
-
-New York
-Supply constrained.
-
-Mortgage rates may have weaker vacancy impact.
-
-Atlanta
-Moderate sensitivity.
-
-You should probably engineer:
-
-mortgage_rate × market_supply_elasticity
-or
-
-mortgage_rate × market
-interaction terms.
-
-This helps your global model learn different local effects.
-
-6. What sign should you expect?
-No universal answer.
-
-Interpretation depends on market + property type.
-
-If coefficient is negative:
-Higher mortgage rates are pushing households into renting.
-
-Likely apartment effect.
-
-If coefficient is positive:
-Higher rates are suppressing economic activity / demand.
-
-Likely office or retail effect.
-
-7. How to validate in your Moody’s dataset
-Run simple market-level plots.
-
-For each market-property pair:
-
-Plot:
-
-x-axis: mortgage rate
-
-y-axis: vacancy
-
-Look for lagged patterns.
-
-Even better:
-
-correlate vacancy with:
-
-current mortgage rate
-
-mortgage_rate_lag_2
-
-mortgage_rate_lag_4
-
-mortgage_rate_lag_8
-
-You may find:
-
-Lag	Correlation
-0	weak
-2	moderate
-4	strong
-That tells you the economic transmission delay.
-
-8. For your forecasting work
-Good engineered versions:
-
-Rate shock
-mortgage_rate_t - mortgage_rate_t-4
-Captures sudden affordability changes.
-
-Moving average
-rolling_mean_4
-Captures persistent financing conditions.
-
-Regime flag
-mortgage_rate > historical_75th_percentile
-Captures high-rate environments.
-
-Interaction with vacancy persistence
-mortgage_rate * vacancy_lag_1
-Very useful in real estate dynamics.
-
-Practical intuition to remember
-Think of 30-year mortgage rate as a traffic controller between ownership and renting.
-
-When rates rise:
-
-Some households get redirected from:
-
-buying market → rental market
-
-That flow often reduces apartment vacancy.
-
-But if rates rise enough to damage the economy:
-
-overall space demand weakens
-
-Then vacancy rises.
-
-That tension is exactly why this feature is powerful in vacancy forecasting.
-
-If you tell me which property type (apartment / office / retail / industrial) you're modeling, I can explain the exact economic mechanism for that vacancy relationship.
-
-
-Help with out of box features engineering for this column.
-
-For thirty_year_fixed_mortgage_rate, basic lags and rolling averages are useful — but if you want out-of-the-box feature engineering like top institutional real estate forecasting teams use, you need to capture the deeper economic mechanisms:
-
-affordability stress
-
-regime shifts
-
-refinancing lock-in
-
-mortgage shock persistence
-
-interaction with local market structure
-
-nonlinear threshold effects
-
-Since your target is vacancy, we want features that explain how mortgage-rate dynamics alter occupancy behavior.
-
-Here are strong, realistic engineered features.
-
-1. Mortgage Affordability Shock
-This captures sudden deterioration in home-buying affordability.
-
-Feature
-M
-A
-S
+T
+Y
 t
-=
-R
-a
+TY 
 t
-e
+​
+ 
+T
+Y
 t
 −
-R
-a
+1
+TY 
+t−1
+​
+ 
+T
+Y
 t
-e
+−
+2
+TY 
+t−2
+​
+ 
+T
+Y
 t
 −
 4
-MAS 
-t
-​
- =Rate 
-t
-​
- −Rate 
+TY 
 t−4
 ​
  
-Quarter-over-quarter annualized mortgage shock.
+And moving averages.
 
-Python:
+Often:
 
-df['mortgage_affordability_shock'] = (
-    df['thirty_year_fixed_mortgage_rate']
-    - df.groupby('market')['thirty_year_fixed_mortgage_rate'].shift(4)
-)
-Why it works:
+4-quarter lag performs best
 
-A rapid jump from 5% → 7% changes renter/buyer behavior more than a stable 7%.
+for vacancy.
 
-This often predicts apartment occupancy changes.
+5. What sign should you expect?
+No universal sign.
 
-2. Mortgage Acceleration
-Second derivative of mortgage movement.
+Depends on market and property type.
 
-Captures whether rates are speeding upward.
+Property Type	Likely Relationship
+Office	Positive
+Multifamily	Negative
+Industrial	Mixed / lagged negative
+Retail	Weak positive
+This is why your global model probably benefits from market-property interaction terms.
 
-Feature
+You mentioned earlier you're combining multiple property types into one model — this variable is exactly where interactions matter.
+
+Example:
+
+V
+a
+c
+a
+n
+c
+y
+=
+β
+1
+T
+Y
++
+β
+2
+P
+r
+o
+p
+e
+r
+t
+y
+T
+y
+p
+e
++
+β
+3
 (
-R
+T
+Y
+×
+P
+r
+o
+p
+e
+r
+t
+y
+T
+y
+p
+e
+)
+Vacancy=β 
+1
+​
+ TY+β 
+2
+​
+ PropertyType+β 
+3
+​
+ (TY×PropertyType)
+This lets Treasury effects differ by sector.
+
+6. Advanced feature engineering for ten_year_treasury_rate
+For top-tier CRE forecasting, raw level is usually not enough.
+
+A. Rate shock
+Δ
+T
+Y
+t
+=
+T
+Y
 t
 −
-R
+T
+Y
+t
+−
+1
+ΔTY 
+t
+​
+ =TY 
+t
+​
+ −TY 
+t−1
+​
+ 
+Captures sudden market repricing.
+
+Very predictive.
+
+B. Yield acceleration
+(
+T
+Y
+t
+−
+T
+Y
 t
 −
 1
 )
 −
 (
-R
+T
+Y
 t
 −
 1
 −
-R
+T
+Y
 t
 −
 2
 )
-(R 
+(TY 
 t
 ​
- −R 
+ −TY 
 t−1
 ​
- )−(R 
+ )−(TY 
 t−1
 ​
- −R 
+ −TY 
 t−2
 ​
  )
-Python:
+Captures policy regime shifts.
 
-rate = df['thirty_year_fixed_mortgage_rate']
-
-df['mortgage_acceleration'] = (
-    (rate - rate.shift(1)) -
-    (rate.shift(1) - rate.shift(2))
-)
-Why useful:
-
-Markets react strongly when financing conditions worsen faster than expected.
-
-3. Lock-In Pressure Index
-This is very powerful post-2022.
-
-Measures incentive for homeowners to stay put.
-
-Feature
-C
-u
-r
-r
-e
-n
+C. Financing pressure
+T
+Y
 t
-R
+×
+V
 a
+c
+a
+n
+c
+y
 t
-e
 −
+1
+TY 
+t
+​
+ ×Vacancy 
+t−1
+​
+ 
+High rates hurt weak markets more.
+
+Excellent nonlinear signal.
+
+D. Spread to short rate
+T
+Y
+−
+F
+e
+d
+F
+u
+n
+d
+s
+TY−FedFunds
+Captures curve steepness.
+
+This often predicts recession / expansion dynamics.
+
+A flat/inverted curve often precedes vacancy deterioration.
+
+E. Relative regime indicator
+T
+Y
+t
+>
 R
 o
 l
@@ -539,956 +542,3137 @@ i
 n
 g
 M
-i
-n
-(
-12
-Q
-)
-CurrentRate−RollingMin(12Q)
-Python:
-
-df['lockin_pressure'] = (
-    df['thirty_year_fixed_mortgage_rate'] -
-    df.groupby('market')['thirty_year_fixed_mortgage_rate']
-      .transform(lambda x: x.rolling(12, min_periods=4).min())
-)
-Economic intuition:
-
-Large positive value = existing homeowners won’t move.
-
-That constrains inventory and can tighten rental vacancy.
-
-Institutional models love this kind of behavioral proxy.
-
-4. Mortgage Rate Regime Duration
-How long market has remained in high-rate environment.
-
-threshold = df['thirty_year_fixed_mortgage_rate'].quantile(0.75)
-
-df['high_rate_flag'] = (
-    df['thirty_year_fixed_mortgage_rate'] > threshold
-).astype(int)
-
-df['high_rate_duration'] = df.groupby('market')['high_rate_flag'].cumsum()
-Why:
-
-Behavioral adaptation differs.
-
-Quarter 1 of high rates ≠ Quarter 8.
-
-5. Mortgage Stress Relative to Market History
-Normalizes across long historical periods.
-
-Z-score
-df['mortgage_rate_zscore'] = (
-    df.groupby('market')['thirty_year_fixed_mortgage_rate']
-      .transform(lambda x: (x - x.expanding().mean()) /
-                           x.expanding().std())
-)
-Why useful:
-
-A 6% mortgage rate may be:
-
-extremely high historically
-
-normal in another regime
-
-Models learn relative stress better than absolute rates.
-
-6. Convexity Feature (Nonlinear Effect)
-Vacancy often reacts nonlinearly.
-
-Mortgage rates below 5% behave differently from rates above 7%.
-
-Add squared term:
-
-df['mortgage_rate_sq'] = (
-    df['thirty_year_fixed_mortgage_rate'] ** 2
-)
-This lets model capture threshold effects.
-
-7. Mortgage Pain Threshold Flag
-Institutional models often use economic tipping points.
-
-df['mortgage_above_7pct'] = (
-    df['thirty_year_fixed_mortgage_rate'] > 7
-).astype(int)
-Or dynamic:
-
-df['mortgage_stress_regime'] = (
-    df['thirty_year_fixed_mortgage_rate'] >
-    df['thirty_year_fixed_mortgage_rate'].quantile(0.85)
-).astype(int)
-Why:
-
-Consumer behavior changes sharply past psychological thresholds.
-
-8. Mortgage Volatility
-Uncertainty itself matters.
-
-df['mortgage_rate_volatility'] = (
-    df.groupby('market')['thirty_year_fixed_mortgage_rate']
-      .transform(lambda x: x.rolling(4).std())
-)
-Why:
-
-Stable high rates are easier for markets to absorb than volatile rates.
-
-Developers delay projects under uncertainty.
-
-This affects future vacancy.
-
-9. Rental Capture Opportunity
-This is strong for apartments.
-
-Interaction between mortgage rates and vacancy.
-
-df['rental_capture_pressure'] = (
-    df['thirty_year_fixed_mortgage_rate'] *
-    df.groupby('market')['vacancy'].shift(1)
-)
-Interpretation:
-
-High rates + already tight vacancy = strong occupancy pressure.
-
-This often improves forecasting.
-
-10. Mortgage Momentum Persistence
-Measures sustained directional pressure.
-
-df['mortgage_up_streak'] = (
-    df.groupby('market')['thirty_year_fixed_mortgage_rate']
-      .diff()
-      .gt(0)
-      .astype(int)
-)
-Then rolling sum:
-
-df['mortgage_up_streak_4q'] = (
-    df.groupby('market')['mortgage_up_streak']
-      .transform(lambda x: x.rolling(4).sum())
-)
-Why:
-
-Four consecutive increases signal tightening regime.
-
-11. Vacancy Sensitivity Interaction
-Allows market-specific sensitivity.
-
-df['mortgage_x_market_tightness'] = (
-    df['thirty_year_fixed_mortgage_rate'] *
-    (1 - df.groupby('market')['vacancy'].shift(1))
-)
-Why:
-
-Mortgage effects stronger in already constrained markets.
-
-12. Asymmetric Shock Feature
-Separate rises from declines.
-
-change = df.groupby('market')['thirty_year_fixed_mortgage_rate'].diff()
-
-df['mortgage_positive_shock'] = change.clip(lower=0)
-df['mortgage_negative_shock'] = change.clip(upper=0)
-Important because:
-
-Rate increases hurt more than decreases help.
-
-Very realistic economically.
-
-13. Mean-Reversion Distance
-Captures abnormal rate environment.
-
-rolling_mean = (
-    df.groupby('market')['thirty_year_fixed_mortgage_rate']
-      .transform(lambda x: x.rolling(12).mean())
-)
-
-df['mortgage_distance_from_trend'] = (
-    df['thirty_year_fixed_mortgage_rate'] - rolling_mean
-)
-14. Financing Constraint Persistence
-Captures cumulative tightening.
-
-df['cumulative_rate_pressure'] = (
-    df.groupby('market')['thirty_year_fixed_mortgage_rate']
-      .transform(lambda x: x.rolling(8).sum())
-)
-This often works surprisingly well.
-
-My top 5 recommendations for your vacancy model
-If I were building an institutional-grade forecasting pipeline, I’d prioritize:
-
-Tier 1
-lockin_pressure
-
-mortgage_affordability_shock
-
-mortgage_rate_volatility
-
-mortgage_positive_shock
-
-rental_capture_pressure
-
-Tier 2
-mortgage_acceleration
-
-mortgage_rate_sq
-
-high_rate_duration
-
-For apartment vacancy, lockin_pressure is especially strong.
-
-For office/retail, volatility and cumulative pressure tend to matter more.
-
-If you tell me the property type you’re modeling (apartment / office / industrial / retail), I can narrow this down to the 6–8 highest-value features.
-
-
-Sorry I was asking can you look for some more top notch features engineering which top real estate industry use
-
-Got it — you’re asking for more institutional / advanced feature engineering ideas for thirty_year_fixed_mortgage_rate, beyond standard lag/rolling constructs.
-
-These are the kinds of engineered features used by sophisticated real estate forecasting teams because they try to capture capital-market transmission into occupancy dynamics, not just raw mortgage levels.
-
-Since this is quarterly Moody’s panel data, the best features usually encode:
-
-financing regime structure
-
-capital-market stress propagation
-
-housing tenure substitution
-
-temporal persistence
-
-nonlinear refinancing frictions
-
-market disequilibrium
-
-Here are stronger, more “industry-grade” ideas.
-
-1. Mortgage Rate Compression Ratio
-Measures how abruptly financing conditions changed relative to recent history.
-
-Logic
-A sudden rate repricing creates more behavioral disruption than gradual change.
-
-Feature
-M
-R
-C
-=
-R
-a
-t
 e
+a
+n
+8
+Q
+TY 
+t
+​
+ >RollingMean 
+8Q
+​
+ 
+Binary high-rate regime.
+
+Useful for tree models.
+
+7. Real-world interpretation in your Moody’s dataset
+Suppose:
+
+Austin multifamily
+10Y rises from 2.5% → 4.8%
+
+Likely:
+
+Home purchase affordability worsens
+
+Rent demand increases
+
+Vacancy declines
+
+San Francisco office
+Same rate increase
+
+Likely:
+
+Tech financing tightens
+
+Hiring slows
+
+Leasing slows
+
+Vacancy rises
+
+Same macro variable.
+
+Different market transmission.
+
+That’s why interaction engineering is essential.
+
+8. What to check in your data right now
+For each market/property type:
+
+Run cross-correlation between:
+
+V
+a
+c
+a
+n
+c
+y
+t
+Vacancy 
+t
+​
+ 
+and
+
+T
+Y
 t
 −
-R
-a
+k
+TY 
+t−k
+​
+ 
+for
+
+k
+=
+0...8
+k=0...8
+This will show:
+
+direction
+
+lag structure
+
+strongest predictive horizon
+
+This is usually the fastest way to understand how Treasury affects vacancy in your dataset.
+
+My strongest practical advice:
+
+For ten_year_treasury_rate, engineer:
+
+1Q change
+
+4Q change
+
+4Q moving average
+
+Yield curve spread
+
+Treasury × property type
+
+Treasury × lagged vacancy
+
+These are the kinds of features institutional CRE forecasting teams actually use.
+
+
+Help with out of box features engineering for this column.
+
+Since you're working with ten_year_treasury_rate → vacancy forecasting, and you want out-of-the-box feature engineering (the kind real institutional CRE quant teams use rather than basic lags/rolling averages), we should think in terms of capital market transmission, regime shifts, convexity effects, and market stress propagation.
+
+Here are advanced, realistic feature ideas for ten_year_treasury_rate.
+
+1. Treasury Rate Shock Persistence
+Not just rate change — how long the shock lasts.
+
+Feature
+S
+h
+o
+c
+k
+P
+e
+r
+s
+i
+s
 t
 e
+n
+c
+e
+t
+=
+∑
+i
+=
+0
+3
+∣
+T
+Y
+t
+−
+i
+−
+T
+Y
+t
+−
+i
+−
+1
+∣
+ShockPersistence 
+t
+​
+ = 
+i=0
+∑
+3
+​
+ ∣TY 
+t−i
+​
+ −TY 
+t−i−1
+​
+ ∣
+Measures sustained volatility in rates.
+
+Why it matters
+CRE markets dislike uncertainty more than high rates.
+
+Persistent treasury volatility causes:
+
+delayed transactions
+
+underwriting uncertainty
+
+lender caution
+
+leasing hesitation
+
+This often predicts vacancy stress better than level.
+
+2. Distance from Market Comfort Zone
+Each asset class has a financing comfort band.
+
+Feature:
+
+C
+o
+m
+f
+o
+r
+t
+G
+a
+p
+t
+=
+∣
+T
+Y
+t
+−
+T
+Y
+h
+i
+s
+t
+o
+r
+i
+c
+a
+l
+ 
+m
+e
+d
+i
+a
+n
+∣
+ComfortGap 
+t
+​
+ =∣TY 
+t
+​
+ −TY 
+historical median
+ ∣
+Why useful:
+
+Real estate adapts to normal ranges.
+
+Problems happen when rates move far from expected equilibrium.
+
+Example:
+
+If multifamily historically operated around 2–3%
+
+and treasury jumps to 5%
+
+capital structure assumptions break.
+
+This creates delayed vacancy effects.
+
+3. Treasury Regime Duration
+How long rates have stayed elevated.
+
+Feature:
+
+R
+e
+g
+i
+m
+e
+D
+u
+r
+a
+t
+i
+o
+n
+t
+=
+Consecutive quarters where 
+T
+Y
+>
+t
+h
+r
+e
+s
+h
+o
+l
+d
+RegimeDuration 
+t
+​
+ =Consecutive quarters where TY>threshold
+Example threshold:
+
+rolling 75th percentile
+
+long-term mean + 1 std
+
+Why powerful:
+
+Markets absorb short shocks.
+
+Extended high-rate regimes force:
+
+refinancing stress
+
+construction cancellation
+
+tenant contraction
+
+Duration often matters more than magnitude.
+
+4. Financing Convexity Stress
+Real estate response to rates is nonlinear.
+
+Small increases may not matter.
+
+Beyond threshold, impact accelerates.
+
+Feature:
+
+C
+o
+n
+v
+e
+x
+S
+t
+r
+e
+s
+s
+t
+=
+m
+a
+x
+(
+0
+,
+T
+Y
+t
+−
+c
+)
+2
+ConvexStress 
+t
+​
+ =max(0,TY 
+t
+​
+ −c) 
+2
+ 
+Where:
+
+c = financing pain threshold
+
+Typical:
+
+Office: 4.5%
+
+Multifamily: 5%
+
+Industrial: 4%
+
+Why institutional teams use this
+
+Captures “breakpoint behavior.”
+
+Markets often tolerate rates until feasibility collapses.
+
+5. Treasury Compression / Expansion Velocity
+Measures how abruptly rates normalize or spike.
+
+V
+e
+l
+o
+c
+i
+t
+y
+t
+=
+T
+Y
+t
+−
+T
+Y
 t
 −
 4
-R
-o
-l
-l
-i
-n
-g
-S
-t
-d
-8
-MRC= 
-RollingStd 
-8
-​
- 
-Rate 
+4
+Velocity 
 t
 ​
- −Rate 
+ = 
+4
+TY 
+t
+​
+ −TY 
 t−4
 ​
  
 ​
  
-df['mortgage_compression_ratio'] = (
-    (
-        df['thirty_year_fixed_mortgage_rate'] -
-        df.groupby('market')['thirty_year_fixed_mortgage_rate'].shift(4)
-    )
-    /
-    df.groupby('market')['thirty_year_fixed_mortgage_rate']
-      .transform(lambda x: x.rolling(8).std())
-)
-Why institutions use this:
+Then engineer asymmetry:
 
-Normalizes shock intensity.
+P
+o
+s
+i
+t
+i
+v
+e
+V
+e
+l
+o
+c
+i
+t
+y
+PositiveVelocity
+N
+e
+g
+a
+t
+i
+v
+e
+V
+e
+l
+o
+c
+i
+t
+y
+NegativeVelocity
+Why:
 
-A 100 bps move means different things in stable vs volatile environments.
+Markets react differently to:
 
-2. Embedded Refinance Friction Index
-Very sophisticated behavioral proxy.
+gradual increase
 
-Captures how painful it is for existing homeowners to refinance or move.
+rapid spike
 
-Feature
-Current rate relative to historical weighted mortgage memory.
+gradual decline
+
+sudden collapse
+
+Fast spikes often trigger underwriting freezes.
+
+6. Treasury-to-Vacancy Elasticity Memory
+A dynamic interaction with historical sensitivity.
+
+Feature:
 
 E
-R
-F
-I
+l
+a
+s
+t
+i
+c
+i
+t
+y
+M
+e
+m
+o
+r
+y
+t
 =
+(
+T
+Y
+t
+−
+T
+Y
+t
+−
+1
+)
+×
+V
+a
+c
+a
+n
+c
+y
+t
+−
+4
+ElasticityMemory 
+t
+​
+ =(TY 
+t
+​
+ −TY 
+t−1
+​
+ )×Vacancy 
+t−4
+​
+ 
+Why this is strong
+
+Rate shocks hit differently depending on starting market slack.
+
+Example:
+
+If vacancy already high → rate hike hurts more.
+
+If vacancy tight → market absorbs shock.
+
+This is very realistic.
+
+7. Capital Market Stress Oscillator
+Blend trend and deviation.
+
+S
+t
+r
+e
+s
+s
+O
+s
+c
+t
+=
+T
+Y
+t
+−
+M
+A
+8
+(
+T
+Y
+)
+S
+T
+D
+8
+(
+T
+Y
+)
+StressOsc 
+t
+​
+ = 
+STD 
+8
+​
+ (TY)
+TY 
+t
+​
+ −MA 
+8
+​
+ (TY)
+​
+ 
+This is like a z-score.
+
+Why useful
+
+Detects abnormal capital conditions.
+
+A +2 z-score often signals dislocation.
+
+Institutional macro desks use this concept heavily.
+
+8. Treasury Curve Momentum Interaction
+Treasury trend persistence.
+
+C
+u
+r
+v
+e
+M
+o
+m
+e
+n
+t
+u
+m
+t
+=
+(
+T
+Y
+t
+−
+T
+Y
+t
+−
+1
+)
++
+(
+T
+Y
+t
+−
+1
+−
+T
+Y
+t
+−
+2
+)
+CurveMomentum 
+t
+​
+ =(TY 
+t
+​
+ −TY 
+t−1
+​
+ )+(TY 
+t−1
+​
+ −TY 
+t−2
+​
+ )
+Interpretation:
+
+Positive:
+
+accelerating tightening
+
+Negative:
+
+easing cycle
+
+Vacancy often reacts strongly to sustained directional moves.
+
+9. Treasury Mean-Reversion Pressure
+Rates rarely stay extreme forever.
+
+Feature:
+
+M
+R
+P
+r
+e
+s
+s
+u
+r
+e
+t
+=
+T
+Y
+t
+−
+M
+A
+12
+(
+T
+Y
+)
+MRPressure 
+t
+​
+ =TY 
+t
+​
+ −MA 
+12
+​
+ (TY)
+Why predictive
+
+Extreme deviations often precede reversals.
+
+Real estate decisions are forward-looking.
+
+Developers respond to expected normalization.
+
+10. Refinance Wall Stress Proxy
+This is very CRE-specific.
+
+R
+e
+f
+i
+S
+t
+r
+e
+s
+s
+t
+=
+T
+Y
+t
+×
+D
+e
+b
+t
+M
+a
+t
+u
+r
+i
+t
+y
+E
+x
+p
+o
+s
+u
+r
+e
+RefiStress 
+t
+​
+ =TY 
+t
+​
+ ×DebtMaturityExposure
+If no debt maturity data:
+
+proxy using lagged construction / transaction volume.
+
+Why top-tier feature
+
+High treasury + refinancing concentration
+= severe asset stress.
+
+Huge vacancy predictor for office.
+
+11. Treasury Entropy
+Measure unpredictability.
+
+E
+n
+t
+r
+o
+p
+y
+t
+=
+H
+(
+Δ
+T
+Y
+l
+a
+s
+t
+8
+Q
+)
+Entropy 
+t
+​
+ =H(ΔTY 
+last8Q
+​
+ )
+Higher entropy = unstable rate environment.
+
+Why useful
+
+Stable high rates are easier to price than chaotic rates.
+
+Leasing and capital deployment slow under uncertainty.
+
+Very advanced but effective.
+
+12. Treasury Turning Point Indicator
+Binary feature for inflection.
+
+T
+u
+r
+n
+i
+n
+g
+P
+o
+i
+n
+t
+t
+=
+1
+i
+f
+(
+T
+Y
+t
+−
+T
+Y
+t
+−
+1
+)
+(
+T
+Y
+t
+−
+1
+−
+T
+Y
+t
+−
+2
+)
+<
+0
+TurningPoint 
+t
+​
+ =1if(TY 
+t
+​
+ −TY 
+t−1
+​
+ )(TY 
+t−1
+​
+ −TY 
+t−2
+​
+ )<0
+Why interesting
+
+CRE often reacts strongly at policy reversals.
+
+Rate peaks/troughs trigger:
+
+acquisition waves
+
+refinancing activity
+
+leasing sentiment changes
+
+13. Treasury Drawdown from Local Peak
+D
+r
+a
+w
+d
+o
+w
+n
+t
+=
+P
+e
+a
+k
+8
+Q
+−
+T
+Y
+t
+P
+e
+a
+k
+8
+Q
+Drawdown 
+t
+​
+ = 
+Peak 
+8Q
+​
+ 
+Peak 
+8Q
+​
+ −TY 
+t
+​
+ 
+​
+ 
+Interpretation:
+
+How much rates have eased from recent stress.
+
+This often predicts transaction thawing.
+
+14. Treasury Pressure on New Supply
+If you have construction starts / permits:
+
+S
+u
+p
+p
+l
+y
+F
+i
+n
+a
+n
+c
+e
+S
+t
+r
+e
+s
+s
+t
+=
+T
+Y
+t
+×
+C
+o
+n
+s
+t
+r
+u
+c
+t
+i
+o
+n
+S
+t
+a
+r
+t
+s
+t
+−
+1
+SupplyFinanceStress 
+t
+​
+ =TY 
+t
+​
+ ×ConstructionStarts 
+t−1
+​
+ 
+Why excellent
+
+High treasury hurts markets with aggressive pipelines.
+
+Massive vacancy relevance.
+
+15. Real Estate Capital Optionality Index
+A sophisticated nonlinear transformation.
+
+O
+p
+t
+i
+o
+n
+a
+l
+i
+t
+y
+t
+=
+exp
+⁡
+(
+−
+α
+T
+Y
+t
+)
+Optionality 
+t
+​
+ =exp(−αTY 
+t
+​
+ )
+Interpretation:
+
+As rates rise, strategic flexibility collapses exponentially.
+
+Captures capital market freezing behavior.
+
+My top 5 recommendations for your vacancy model
+If I were building this on Moody’s quarterly CRE panel, I’d prioritize:
+
+1.
+Treasury Shock Persistence
+
+2.
+Convex Stress Threshold
+
+3.
+Elasticity Memory
+
+4.
+Capital Market Stress Oscillator
+
+5.
+Treasury × Existing Vacancy interaction
+
+These tend to produce real incremental lift because they capture how capital market conditions propagate into occupancy stress, not just raw rate levels.
+
+For your multi-market global model, these are especially powerful when interacted with:
+
+property type
+
+market liquidity tier
+
+supply elasticity
+
+historical vacancy regime
+
+That’s where the strongest signal usually emerges.
+
+
+Sorry I was asking can you look for some more top notch features engineering which top real estate industry use
+
+Got it — you’re asking for institutional-grade / top real estate industry feature engineering specifically for ten_year_treasury_rate, not generic ML transformations.
+
+Think like teams at major CRE analytics shops, REIT research groups, debt funds, or platforms like Moody's Analytics, CBRE, JLL, or Blackstone.
+
+They usually engineer features around:
+
+capital market transmission
+
+spread decomposition
+
+refinancing stress
+
+duration mismatch
+
+liquidity regime shifts
+
+asset repricing mechanics
+
+Here are more realistic high-end CRE features.
+
+1. Treasury-to-Cap Rate Gap
+One of the most widely used institutional signals.
+
+Feature
+C
+a
+p
+S
+p
+r
+e
+a
+d
+t
+=
+M
+a
+r
+k
+e
+t
+C
+a
+p
 R
 a
 t
 e
 t
 −
-E
-W
-M
-A
-(
-R
-a
+T
+Y
 t
-e
-)
-ERFI=Rate 
+CapSpread 
 t
 ​
- −EWMA(Rate)
-df['refinance_friction'] = (
-    df['thirty_year_fixed_mortgage_rate']
-    - df.groupby('market')['thirty_year_fixed_mortgage_rate']
-      .transform(lambda x: x.ewm(span=12).mean())
-)
-Economic meaning:
+ =MarketCapRate 
+t
+​
+ −TY 
+t
+​
+ 
+If no cap rate:
 
-Large positive value → severe lock-in.
+proxy using NOI / property value estimate.
 
-This strongly impacts rental inventory pressure.
+Why industry uses it
+This measures risk premium compression.
 
-Very relevant for apartment vacancy.
+When spread becomes too tight:
 
-3. Mortgage Regime Transition Score
-Top real estate firms often model state transitions.
+acquisitions slow
 
-Instead of level:
+valuations correct
 
-Track movement between regimes.
+transaction liquidity falls
 
-Define:
+That often leads to vacancy pressure later.
 
-low-rate
+This is extremely common in institutional underwriting.
 
-neutral
+2. Treasury Repricing Pressure Index
+Measures deviation from underwritten assumptions.
 
-restrictive
-
-q1 = df['thirty_year_fixed_mortgage_rate'].quantile(0.33)
-q2 = df['thirty_year_fixed_mortgage_rate'].quantile(0.66)
-
-df['mortgage_regime'] = pd.cut(
-    df['thirty_year_fixed_mortgage_rate'],
-    bins=[-np.inf, q1, q2, np.inf],
-    labels=[0,1,2]
-)
-
-df['regime_transition'] = (
-    df.groupby('market')['mortgage_regime']
-      .astype(float)
-      .diff()
-)
-Why powerful:
-
-Vacancy often reacts more to regime changes than static levels.
-
-4. Capital Market Whiplash Indicator
-Captures direction reversals.
-
-Real estate reacts strongly when mortgage trends reverse.
-
-change = df.groupby('market')['thirty_year_fixed_mortgage_rate'].diff()
-
-df['mortgage_whiplash'] = (
-    change * change.shift(1) < 0
-).astype(int)
-Why:
-
-Developers pause when policy signals become inconsistent.
-
-Useful for construction-linked vacancy effects.
-
-5. Affordability Elasticity Proxy
-Measures how rate-sensitive market occupancy is.
-
-Create interaction with market rent growth.
-
-df['mortgage_affordability_elasticity'] = (
-    df['thirty_year_fixed_mortgage_rate']
-    *
-    df.groupby('market')['rent_growth'].shift(1)
-)
-Interpretation:
-
-High rates + high rent growth = severe affordability squeeze.
-
-This often predicts vacancy shifts.
-
-Very realistic institutional feature.
-
-6. Mortgage Burden Persistence Curve
-Captures cumulative stress.
-
-Not just current pain.
-
-Weighted cumulative burden
-df['mortgage_burden_persistence'] = (
-    df.groupby('market')['thirty_year_fixed_mortgage_rate']
-      .transform(
-          lambda x: x.rolling(8).apply(
-              lambda y: np.sum(y * np.arange(1, len(y)+1))
-          )
-      )
-)
-Recent quarters weighted more heavily.
-
-This mimics real-world adaptive lag behavior.
-
-7. Housing Tenure Switching Pressure
-Extremely useful.
-
-Models pressure forcing households from ownership into renting.
-
-H
-T
-S
-P
-=
 R
-a
-t
 e
-t
-×
-H
-o
-m
-e
-P
+p
 r
 i
 c
+i
+n
+g
+P
+r
 e
+s
+s
+u
+r
+e
+t
+=
+T
+Y
+t
+−
+A
+c
+q
+u
+i
+s
+i
+t
+i
+o
+n
+V
+i
+n
+t
+a
+g
+e
+R
+a
+t
+e
+RepricingPressure 
+t
+​
+ =TY 
+t
+​
+ −AcquisitionVintageRate
+Why it matters
+
+Assets bought at low-rate vintages become stressed when treasury rises.
+
+This predicts:
+
+refinance difficulty
+
+distressed leasing
+
+concession pressure
+
+Very practical CRE signal.
+
+3. Debt Service Feasibility Spread
+A lender-focused feature.
+
+D
+S
+F
+S
+t
+=
+N
+O
+I
+Y
+i
+e
+l
+d
+−
+(
+T
+Y
+t
++
+C
+r
+e
+d
+i
+t
+S
+p
+r
+e
+a
+d
+)
+DSFS 
+t
+​
+ =NOIYield−(TY 
+t
+​
+ +CreditSpread)
+Interpretation:
+
+Positive:
+
+financeable
+
+Negative:
+
+capital stack stressed
+
+This is exactly how debt funds think.
+
+When this compresses, vacancy often rises due to operational pressure.
+
+4. Treasury-to-Rent Growth Tension
+A very strong macro-real estate interaction.
+
+R
+a
+t
+e
+R
+e
+n
+t
+T
+e
+n
+s
+i
+o
+n
+t
+=
+T
+Y
+t
+−
+E
+x
+p
+e
+c
+t
+e
+d
+R
+e
+n
+t
 G
 r
 o
 w
 t
 h
-HTSP=Rate 
+t
+RateRentTension 
 t
 ​
- ×HomePriceGrowth
-df['tenure_switch_pressure'] = (
-    df['thirty_year_fixed_mortgage_rate']
-    * df['home_price_growth']
+ =TY 
+t
+​
+ −ExpectedRentGrowth 
+t
+​
+ 
+Why sophisticated
+
+CRE survives high rates only if rent growth offsets financing pressure.
+
+If rates rise faster than rent growth:
+
+development stops
+leasing weakens
+
+Excellent vacancy predictor.
+
+5. Treasury-Induced Yield-on-Cost Compression
+Developer feasibility signal.
+
+Y
+o
+C
+C
+o
+m
+p
+r
+e
+s
+s
+i
+o
+n
+t
+=
+P
+r
+o
+j
+e
+c
+t
+e
+d
+Y
+i
+e
+l
+d
+O
+n
+C
+o
+s
+t
+−
+(
+T
+Y
+t
++
+S
+p
+r
+e
+a
+d
 )
-Why:
+YoCCompression 
+t
+​
+ =ProjectedYieldOnCost−(TY 
+t
+​
+ +Spread)
+If this drops below hurdle:
 
-Mortgage rates alone miss affordability.
+projects shelved.
 
-Combined with price appreciation, this becomes very predictive.
+This strongly predicts future supply contraction.
 
-Institutional-grade interaction.
+Institutional developers monitor this constantly.
 
-8. Mortgage Constraint Saturation
-Captures diminishing marginal effect.
+6. Forward Treasury Roll Stress
+Not just spot rate.
 
-Once rates are already very high, further increases matter less.
+Use curve expectation.
 
-Log transform:
+F
+o
+r
+w
+a
+r
+d
+S
+t
+r
+e
+s
+s
+t
+=
+5
+Y
+F
+o
+r
+w
+a
+r
+d
+10
+Y
+−
+T
+Y
+t
+ForwardStress 
+t
+​
+ =5YForward10Y−TY 
+t
+​
+ 
+Why elite teams use it
 
-df['mortgage_constraint_saturation'] = np.log1p(
-    df['thirty_year_fixed_mortgage_rate']
-)
-Or sigmoid-like:
+Captures expected future financing environment.
 
-df['mortgage_saturation'] = (
-    1 / (1 + np.exp(
-        -(
-            df['thirty_year_fixed_mortgage_rate'] - 6.5
-        )
-    ))
-)
-This is often overlooked.
+CRE decisions are forward-looking.
 
-Very strong for nonlinear models.
+Spot rate alone misses this.
 
-9. Policy Shock Transmission Delay
-Captures delayed response intensity.
+7. Treasury Duration Mismatch Exposure
+Useful for markets with long lease structures.
 
-for lag in [2,4,6]:
-    df[f'mortgage_decay_lag_{lag}'] = (
-        df.groupby('market')['thirty_year_fixed_mortgage_rate']
-          .shift(lag) * np.exp(-lag/4)
-    )
-Why advanced:
+D
+u
+r
+a
+t
+i
+o
+n
+M
+i
+s
+m
+a
+t
+c
+h
+t
+=
+L
+e
+a
+s
+e
+D
+u
+r
+a
+t
+i
+o
+n
+−
+D
+e
+b
+t
+D
+u
+r
+a
+t
+i
+o
+n
+S
+e
+n
+s
+i
+t
+i
+v
+i
+t
+y
+DurationMismatch 
+t
+​
+ =LeaseDuration−DebtDurationSensitivity
+weighted by treasury movement.
 
-Real estate absorbs financing shocks gradually.
+Why
 
-Decay weighting mimics institutional transmission models.
+Office and industrial leases have long cash flow duration.
 
-10. Mortgage Disequilibrium Score
-Measures deviation from structural equilibrium.
+Higher treasury disproportionately hurts long-duration assets.
 
+This is institutional portfolio theory applied to CRE.
+
+8. Treasury Shock Absorption Ratio
+Measures market resilience.
+
+T
+S
+A
+R
+t
+=
+H
+i
+s
+t
+o
+r
+i
+c
+a
+l
+A
+b
+s
+o
+r
+p
+t
+i
+o
+n
 R
 a
 t
 e
+T
+Y
+t
+TSAR 
+t
+​
+ = 
+TY 
+t
+​
+ 
+HistoricalAbsorptionRate
+​
+ 
+Interpretation:
+
+High absorption + high rates = resilient
+
+Low absorption + high rates = fragile
+
+Very market-specific.
+
+Excellent for panel models.
+
+9. Treasury Pass-Through Efficiency
+How effectively a market reprices.
+
+P
+a
+s
+s
+T
+h
+r
+o
+u
+g
+h
+t
+=
+Δ
+C
+a
+p
+R
+a
+t
+e
+Δ
+T
+Y
+PassThrough 
+t
+​
+ = 
+ΔTY
+ΔCapRate
+​
+ 
+Institutional importance
+
+Markets differ.
+
+Example:
+
+NYC multifamily: low pass-through
+
+secondary office: high pass-through
+
+Low pass-through means valuation pressure accumulates.
+
+That often eventually hits vacancy.
+
+10. Refinance Probability Surface
+Very institutional.
+
+Construct:
+
+P
+(
+R
+e
+f
+i
+n
+a
+n
+c
+e
+S
+t
+r
+e
+s
+s
+)
+=
+f
+(
+T
+Y
+t
+,
+ 
+V
+a
+c
+a
+n
+c
+y
 t
 −
+1
+,
+ 
+N
+O
+I
+g
+r
+o
+w
+t
+h
+,
+ 
+D
+S
+C
 R
+)
+P(RefinanceStress)=f(TY 
+t
+​
+ , Vacancy 
+t−1
+​
+ , NOIgrowth, DSCR)
+This mimics credit committee logic.
+
+Huge explanatory power.
+
+11. Treasury-Liquidity Freeze Indicator
+F
+r
+e
+e
+z
+e
+t
+=
+1
+Freeze 
+t
+​
+ =1
+if:
+
+TY jump > threshold
+
+transaction volume drops
+
+spread widens
+
+Why important
+
+Transaction freeze precedes leasing softness.
+
+This became highly relevant in 2022–2024 CRE markets.
+
+12. Treasury Relative Attractiveness to Alternatives
+Capital allocation competition.
+
+R
+e
+l
+a
+t
+i
+v
+e
+Y
+i
+e
+l
+d
+t
+=
+C
+R
+E
+I
+n
+c
+o
+m
+e
+Y
+i
+e
+l
+d
+−
+T
+Y
+t
+RelativeYield 
+t
+​
+ =CREIncomeYield−TY 
+t
+​
+ 
+Institutional rationale
+
+If treasury yields become attractive enough,
+capital leaves real estate.
+
+Lower investment demand impacts vacancy indirectly.
+
+Very realistic.
+
+13. Treasury Volatility Risk Premium
+T
+V
+R
+P
+t
+=
+I
+m
+p
+l
+i
+e
+d
+R
+a
+t
+e
+V
 o
 l
+−
+R
+e
+a
 l
+i
+z
+e
+d
+R
+a
+t
+e
+V
+o
+l
+TVRP 
+t
+​
+ =ImpliedRateVol−RealizedRateVol
+Sophisticated macro feature.
+
+High premium = uncertainty.
+
+Uncertainty delays leasing / transactions.
+
+Used by advanced macro-sensitive shops.
+
+14. Treasury Cycle Phase Encoding
+Categorical regime feature.
+
+Classify into:
+
+Early rising cycle
+
+Late rising cycle
+
+Plateau
+
+Early easing
+
+Deep easing
+
+Why excellent
+
+Vacancy reacts differently in each.
+
+Much better than continuous rate variable alone.
+
+15. Treasury Financing Friction Score
+Composite institutional feature.
+
+F
+F
+S
+t
+=
+w
+1
+(
+T
+Y
+)
++
+w
+2
+(
+Δ
+T
+Y
+)
++
+w
+3
+(
+S
+p
+r
+e
+a
+d
+)
++
+w
+4
+(
+V
+o
+l
+a
+t
+i
+l
+i
+t
+y
+)
+FFS 
+t
+​
+ =w 
+1
+​
+ (TY)+w 
+2
+​
+ (ΔTY)+w 
+3
+​
+ (Spread)+w 
+4
+​
+ (Volatility)
+This is exactly how many real estate investment committees think.
+
+Single interpretable macro stress factor.
+
+Often very predictive.
+
+The features top CRE teams actually prioritize
+If your goal is serious industry-grade modeling, the strongest are:
+
+Tier 1 (Very common)
+Treasury-to-Cap Rate Gap
+
+Relative Yield to Alternatives
+
+Rate-Rent Tension
+
+Yield-on-Cost Compression
+
+Tier 2 (Sophisticated)
+Pass-Through Efficiency
+
+Refinance Probability Surface
+
+Financing Friction Score
+
+Tier 3 (Elite / hedge-fund style)
+Treasury Volatility Risk Premium
+
+Forward Treasury Roll Stress
+
+Duration Mismatch Exposure
+
+For your Moody’s quarterly vacancy panel, I’d specifically build:
+
+Core Institutional Set
+C
+a
+p
+S
+p
+r
+e
+a
+d
+CapSpread
+R
+a
+t
+e
+R
+e
+n
+t
+T
+e
+n
+s
+i
+o
+n
+RateRentTension
+Y
+o
+C
+C
+o
+m
+p
+r
+e
+s
+s
+i
+o
+n
+YoCCompression
+R
+e
+l
+a
+t
+i
+v
+e
+Y
+i
+e
+l
+d
+RelativeYield
+F
+i
+n
+a
+n
+c
 i
 n
 g
-M
-e
-d
+F
+r
 i
-a
+c
+t
+i
+o
 n
-20
-Rate 
+S
+c
+o
+r
+e
+FinancingFrictionScore
+These are exactly the kind of engineered macro-capital features that make clients think:
+
+“This model understands CRE market mechanics, not just statistics.”
+
+
+Show me some more features engineering with ten_year_treasure_rate which are realistic and don't try to keep the earlier feature.
+
+Understood. You want fresh, realistic feature engineering ideas for ten_year_treasury_rate only, without repeating the earlier capital-stress / spread / regime features.
+
+Here are additional CRE-realistic transformations that are genuinely used (or closely aligned with what quant real estate teams build).
+
+1. Treasury Rate Stickiness
+Measures how persistent rates are around current level.
+
+Feature
+S
+t
+i
+c
+k
+i
+n
+e
+s
+s
+t
+=
+1
+4
+∑
+i
+=
+0
+3
+∣
+T
+Y
+t
+−
+T
+Y
+t
+−
+i
+∣
+Stickiness 
 t
 ​
- −RollingMedian 
-20
+ = 
+4
+1
 ​
- 
-df['mortgage_disequilibrium'] = (
-    df['thirty_year_fixed_mortgage_rate']
-    -
-    df.groupby('market')['thirty_year_fixed_mortgage_rate']
-      .transform(lambda x: x.rolling(20).median())
-)
-Why:
-
-Vacancy responds to abnormal financing environments.
-
-11. Rate Shock Asymmetry Persistence
-Tracks whether upward shocks are clustering.
-
-shock = (
-    df.groupby('market')['thirty_year_fixed_mortgage_rate']
-      .diff()
-)
-
-df['positive_shock_cluster'] = (
-    shock.gt(0)
-      .rolling(6)
-      .sum()
-)
-Institutional reason:
-
-Repeated hikes create stronger behavioral adaptation than isolated moves.
-
-12. Mortgage Optionality Suppression
-Very advanced.
-
-Represents reduced homeowner mobility.
-
-Approximation:
-
-df['optionality_suppression'] = (
-    df['thirty_year_fixed_mortgage_rate']
-    -
-    df.groupby('market')['thirty_year_fixed_mortgage_rate']
-      .transform('min')
-)
-This is a strong proxy for lock-in effects.
-
-13. Capital Allocation Drag
-Mortgage rates impact investor acquisition decisions.
-
-Feature:
-
-df['capital_allocation_drag'] = (
-    df['thirty_year_fixed_mortgage_rate']
-    *
-    df['cap_rate_spread']
-)
-If you have cap-rate or NOI yield proxies, this is elite-tier.
-
-14. Mortgage Sentiment Breakpoint
-Detect structural breaks.
-
-df['mortgage_breakpoint'] = (
-    (
-        df['thirty_year_fixed_mortgage_rate']
-        -
-        df.groupby('market')['thirty_year_fixed_mortgage_rate']
-          .shift(1)
-    ).abs() > 0.75
-).astype(int)
-Markets often respond strongly after threshold jumps.
-
-What top real-estate analytics teams usually prioritize
-For vacancy forecasting, they heavily favor:
-
-Behavioral Friction Features
-refinance_friction
-
-optionality_suppression
-
-tenure_switch_pressure
-
-Regime Features
-regime_transition
-
-mortgage_disequilibrium
-
-saturation
-
-Persistence Features
-burden_persistence
-
-decay_lag
-
-Structural Break Features
-whiplash
-
-breakpoint
-
-If I were building your Moody’s vacancy model
-My “serious institutional” shortlist would be:
-
-refinance_friction
-
-tenure_switch_pressure
-
-mortgage_regime_transition
-
-mortgage_disequilibrium
-
-mortgage_burden_persistence
-
-optionality_suppression
-
-mortgage_whiplash
-
-policy_decay_lag_4
-
-These are the kinds of features that often separate a decent forecasting model from one that captures actual real-estate market mechanics.
-
-
-Show me some more features engineering with thirty_year_fixed_mortgage_rate which are realistic and don't try to keep the earlier feature.
-
-Understood. You want fresh, realistic feature engineering ideas using only thirty_year_fixed_mortgage_rate, and not reusing earlier lag/lock-in/regime/volatility-style features.
-
-Here are new, practical features grounded in real mortgage-market behavior that institutional real-estate models could plausibly use.
-
-1. Mortgage Rate Stickiness Index
-Captures whether rates are staying stubbornly elevated.
-
-Real estate markets react differently to:
+  
+i=0
+∑
+3
+​
+ ∣TY 
+t
+​
+ −TY 
+t−i
+​
+ ∣
+Why useful
+Real estate reacts differently to:
 
 temporary spike
 
-persistent plateau
+sustained plateau
 
-Feature
-df['mortgage_stickiness'] = (
-    df.groupby('market')['thirty_year_fixed_mortgage_rate']
-      .transform(lambda x:
-          x.rolling(6).apply(
-              lambda y: np.sum(np.abs(np.diff(y)) < 0.10)
-          )
-      )
+Stable elevated rates often trigger adaptation.
+
+Volatile rates delay decisions.
+
+2. Treasury Breakout Distance
+Distance from recent range.
+
+B
+r
+e
+a
+k
+o
+u
+t
+t
+=
+T
+Y
+t
+−
+M
+a
+x
+(
+T
+Y
+t
+−
+8
+:
+t
+−
+1
 )
+Breakout 
+t
+​
+ =TY 
+t
+​
+ −Max(TY 
+t−8:t−1
+​
+ )
+Why realistic
+
+When rates break above historical range:
+
+markets often reassess underwriting assumptions abruptly.
+
+Useful for detecting structural shifts.
+
+3. Treasury Mean Residence Time
+How long rates stay within a narrow band.
+
+M
+R
+T
+t
+=
+Consecutive quarters 
+∣
+T
+Y
+t
+−
+T
+Y
+t
+−
+1
+∣
+<
+ϵ
+MRT 
+t
+​
+ =Consecutive quarters ∣TY 
+t
+​
+ −TY 
+t−1
+​
+ ∣<ϵ
+Why this matters
+
+Real estate likes predictable environments.
+
+Long stable periods encourage:
+
+acquisitions
+
+leasing commitments
+
+refinancing
+
+High MRT often precedes capital deployment.
+
+4. Treasury Local Peak Proximity
+P
+e
+a
+k
+P
+r
+o
+x
+t
+=
+T
+Y
+t
+M
+a
+x
+(
+T
+Y
+t
+−
+12
+:
+t
+)
+PeakProx 
+t
+​
+ = 
+Max(TY 
+t−12:t
+​
+ )
+TY 
+t
+​
+ 
+​
+ 
+Interpretation
+
+Near 1:
+
+market near cycle peak
+
+Lower:
+
+cooling phase
+
+CRE often responds strongly near turning zones.
+
+5. Treasury Local Trough Proximity
+T
+r
+o
+u
+g
+h
+P
+r
+o
+x
+t
+=
+T
+Y
+t
+M
+i
+n
+(
+T
+Y
+t
+−
+12
+:
+t
+)
+TroughProx 
+t
+​
+ = 
+Min(TY 
+t−12:t
+​
+ )
+TY 
+t
+​
+ 
+​
+ 
+Why useful
+
+Helps identify re-expansion periods.
+
+Low relative treasury often stimulates:
+
+refinancing
+
+development starts
+
+tenant expansion
+
+6. Treasury Oscillation Frequency
+Count directional changes.
+
+F
+r
+e
+q
+t
+=
+∑
+i
+=
+1
+8
+1
+[
+(
+T
+Y
+t
+−
+i
+−
+T
+Y
+t
+−
+i
+−
+1
+)
+(
+T
+Y
+t
+−
+i
+−
+1
+−
+T
+Y
+t
+−
+i
+−
+2
+)
+<
+0
+]
+Freq 
+t
+​
+ = 
+i=1
+∑
+8
+​
+ 1[(TY 
+t−i
+​
+ −TY 
+t−i−1
+​
+ )(TY 
+t−i−1
+​
+ −TY 
+t−i−2
+​
+ )<0]
+Why
+
+High oscillation = policy uncertainty.
+
+CRE dislikes unstable monetary signals.
+
+Very practical macro-noise feature.
+
+7. Treasury Smoothness Ratio
+S
+m
+o
+o
+t
+h
+n
+e
+s
+s
+t
+=
+∣
+T
+Y
+t
+−
+T
+Y
+t
+−
+4
+∣
+∑
+i
+=
+1
+4
+∣
+T
+Y
+t
+−
+i
+−
+T
+Y
+t
+−
+i
+−
+1
+∣
+Smoothness 
+t
+​
+ = 
+∑ 
+i=1
+4
+​
+ ∣TY 
+t−i
+​
+ −TY 
+t−i−1
+​
+ ∣
+∣TY 
+t
+​
+ −TY 
+t−4
+​
+ ∣
+​
+ 
+Interpretation
+
+Near 1:
+
+steady directional trend
+
+Near 0:
+
+choppy movement
+
+Directional moves impact CRE more predictably.
+
+8. Treasury Quartile State
+Bucket rates by historical percentile.
+
+Feature categories:
+
+Q1 ultra-low
+
+Q2 low-normal
+
+Q3 elevated
+
+Q4 restrictive
+
+Why strong
+
+CRE responses are often threshold-based.
+
+Categorical encoding often beats raw numeric rate.
+
+Especially for tree-based models.
+
+9. Treasury Surprise Relative to Rolling Forecast
+S
+u
+r
+p
+r
+i
+s
+e
+t
+=
+T
+Y
+t
+−
+M
+A
+4
+(
+T
+Y
+)
+Surprise 
+t
+​
+ =TY 
+t
+​
+ −MA 
+4
+​
+ (TY)
+Why
+
+Real estate reacts to unexpected financing changes.
+
+Expected rates are often already priced into behavior.
+
+Unexpected deviations drive action.
+
+10. Treasury Path Curvature
+Measures nonlinear movement.
+
+C
+u
+r
+v
+a
+t
+u
+r
+e
+t
+=
+T
+Y
+t
+−
+2
+T
+Y
+t
+−
+1
++
+T
+Y
+t
+−
+2
+Curvature 
+t
+​
+ =TY 
+t
+​
+ −2TY 
+t−1
+​
+ +TY 
+t−2
+​
+ 
+Interpretation
+
+Positive:
+
+acceleration upward
+
+Negative:
+
+rapid deceleration
+
+Captures policy inflection.
+
+Highly relevant.
+
+11. Treasury Recovery Distance
+Measures how far rates have recovered from trough.
+
+R
+e
+c
+o
+v
+e
+r
+y
+t
+=
+T
+Y
+t
+−
+M
+i
+n
+(
+T
+Y
+t
+−
+8
+:
+t
+)
+Recovery 
+t
+​
+ =TY 
+t
+​
+ −Min(TY 
+t−8:t
+​
+ )
+Why useful
+
+Early recovery phases often trigger:
+
+refinancing windows closing
+
+repricing pressure
+
+Good transition indicator.
+
+12. Treasury Compression Ratio
+C
+o
+m
+p
+r
+e
+s
+s
+i
+o
+n
+t
+=
+S
+T
+D
+(
+T
+Y
+t
+−
+8
+:
+t
+−
+4
+)
+S
+T
+D
+(
+T
+Y
+t
+−
+4
+:
+t
+)
+Compression 
+t
+​
+ = 
+STD(TY 
+t−4:t
+​
+ )
+STD(TY 
+t−8:t−4
+​
+ )
+​
+ 
+Interpretation
+
+1:
+
+rates becoming stable
+
+<1:
+
+instability increasing
+
+Stability matters a lot for leasing confidence.
+
+13. Treasury Relative Speed
+R
+e
+l
+S
+p
+e
+e
+d
+t
+=
+T
+Y
+t
+−
+T
+Y
+t
+−
+2
+S
+T
+D
+(
+T
+Y
+t
+−
+8
+:
+t
+)
+RelSpeed 
+t
+​
+ = 
+STD(TY 
+t−8:t
+​
+ )
+TY 
+t
+​
+ −TY 
+t−2
+​
+ 
+​
+ 
+Why
+
+Normalizes movement by historical volatility.
+
+A 50bps move matters differently in calm vs volatile periods.
+
+14. Treasury Drift Direction Persistence
+D
+r
+i
+f
+t
+t
+=
+∑
+i
+=
+1
+6
+s
+i
+g
+n
+(
+T
+Y
+t
+−
+i
+−
+T
+Y
+t
+−
+i
+−
+1
+)
+Drift 
+t
+​
+ = 
+i=1
+∑
+6
+​
+ sign(TY 
+t−i
+​
+ −TY 
+t−i−1
+​
+ )
+Range:
+
+-6 to +6
+
 Interpretation:
 
-High value = rates barely moving.
+Strong positive → persistent tightening
 
-This often causes delayed occupancy adjustment because market participants wait less for reversals.
+Strong negative → persistent easing
 
-2. Mortgage Plateau Distance
-Measures distance from the highest sustained mortgage zone.
+Very interpretable.
 
-df['mortgage_plateau_distance'] = (
-    df.groupby('market')['thirty_year_fixed_mortgage_rate']
-      .transform(lambda x:
-          x.rolling(12).max()
-      )
-    -
-    df['thirty_year_fixed_mortgage_rate']
+15. Treasury Entitlement Pressure Proxy
+This is very CRE-practical.
+
+E
+P
+t
+=
+T
+Y
+t
+×
+P
+e
+r
+m
+i
+t
+A
+p
+p
+r
+o
+v
+a
+l
+L
+a
+g
+EP 
+t
+​
+ =TY 
+t
+​
+ ×PermitApprovalLag
+(if permit lag available)
+
+Why realistic
+
+High treasury hurts long entitlement-cycle markets more.
+
+Especially office / mixed-use development.
+
+Very strong market-specific feature.
+
+16. Treasury Relative Position in Cycle
+C
+y
+c
+l
+e
+P
+o
+s
+t
+=
+T
+Y
+t
+−
+M
+i
+n
+16
+Q
+M
+a
+x
+16
+Q
+−
+M
+i
+n
+16
+Q
+CyclePos 
+t
+​
+ = 
+Max 
+16Q
+​
+ −Min 
+16Q
+​
+ 
+TY 
+t
+​
+ −Min 
+16Q
+​
+ 
+​
+ 
+Normalized between 0 and 1.
+
+Institutionally useful because:
+
+Absolute rates mean less than where they sit in cycle.
+
+17. Treasury Persistence Shock
+P
+S
+t
+=
+(
+T
+Y
+t
+−
+T
+Y
+t
+−
+1
 )
-Why useful:
+×
+D
+u
+r
+a
+t
+i
+o
+n
+A
+b
+o
+v
+e
+M
+e
+a
+n
+PS 
+t
+​
+ =(TY 
+t
+​
+ −TY 
+t−1
+​
+ )×DurationAboveMean
+Captures:
 
-Small distance → market still near financing ceiling.
+a new rate increase after already elevated rates.
 
-Large distance → easing cycle.
+Much more harmful than first hike.
 
-This influences leasing confidence.
-
-3. Mortgage Rate Oscillation Score
-Captures choppy environments.
-
-Real estate hates uncertainty.
-
-df['mortgage_oscillation'] = (
-    df.groupby('market')['thirty_year_fixed_mortgage_rate']
-      .transform(
-          lambda x: x.rolling(8).apply(
-              lambda y: np.sum(np.diff(np.sign(np.diff(y))) != 0)
-          )
-      )
-)
+18. Treasury Momentum Exhaustion
+E
+x
+h
+a
+u
+s
+t
+i
+o
+n
+t
+=
+∣
+T
+Y
+t
+−
+T
+Y
+t
+−
+1
+∣
+−
+∣
+T
+Y
+t
+−
+1
+−
+T
+Y
+t
+−
+2
+∣
+Exhaustion 
+t
+​
+ =∣TY 
+t
+​
+ −TY 
+t−1
+​
+ ∣−∣TY 
+t−1
+​
+ −TY 
+t−2
+​
+ ∣
 Interpretation:
 
-Frequent direction flips signal unstable capital conditions.
+Negative:
 
-Developers delay action.
+rate move slowing
 
-4. Mortgage Drift Persistence
-Measures sustained directional drift.
+Positive:
 
-df['mortgage_drift'] = (
-    df.groupby('market')['thirty_year_fixed_mortgage_rate']
-      .transform(lambda x:
-          x.rolling(6).apply(
-              lambda y: np.polyfit(range(len(y)), y, 1)[0]
-          )
-      )
-)
-Why realistic:
-
-This approximates financing trajectory.
-
-A smooth upward drift impacts vacancy differently than abrupt spikes.
-
-5. Mortgage Curvature
-Detects inflection shape.
+acceleration
 
 Useful for identifying turning points.
 
-def curvature(arr):
-    x = np.arange(len(arr))
-    return np.polyfit(x, arr, 2)[0]
+19. Treasury Temporal Asymmetry
+Separate upward vs downward move persistence.
 
-df['mortgage_curvature'] = (
-    df.groupby('market')['thirty_year_fixed_mortgage_rate']
-      .transform(lambda x: x.rolling(8).apply(curvature))
-)
-Interpretation:
+U
+p
+P
+e
+r
+s
+i
+s
+t
+e
+n
+c
+e
+t
+UpPersistence 
+t
+​
+ 
+D
+o
+w
+n
+P
+e
+r
+s
+i
+s
+t
+e
+n
+c
+e
+t
+DownPersistence 
+t
+​
+ 
+Why
 
-Positive curvature → accelerating rise
+CRE reacts asymmetrically:
 
-Negative curvature → easing onset
+rate hikes hurt fast
 
-Institutional forecasting often exploits this.
+rate cuts help slowly
 
-6. Mortgage Recovery Ratio
-Measures how much of prior mortgage increase has reversed.
+This asymmetry is very real.
 
-rolling_max = (
-    df.groupby('market')['thirty_year_fixed_mortgage_rate']
-      .transform(lambda x: x.rolling(12).max())
-)
+20. Treasury Structural Shift Detector
+Binary feature:
 
-rolling_min = (
-    df.groupby('market')['thirty_year_fixed_mortgage_rate']
-      .transform(lambda x: x.rolling(12).min())
-)
+S
+h
+i
+f
+t
+t
+=
+1
+Shift 
+t
+​
+ =1
+if rolling mean changes significantly over 8 quarters.
 
-df['mortgage_recovery_ratio'] = (
-    (rolling_max - df['thirty_year_fixed_mortgage_rate']) /
-    (rolling_max - rolling_min + 1e-6)
-)
-Why:
+Why
 
-Markets respond strongly when mortgage stress begins unwinding.
+CRE often re-underwrites when structural shift is detected.
 
-7. Mortgage Conviction Score
-Measures how consistently rates remain above local trend.
+Very practical for regime-sensitive markets.
 
-rolling_avg = (
-    df.groupby('market')['thirty_year_fixed_mortgage_rate']
-      .transform(lambda x: x.rolling(8).mean())
-)
-
-df['mortgage_conviction'] = (
-    (df['thirty_year_fixed_mortgage_rate'] > rolling_avg)
-    .astype(int)
-)
-
-df['mortgage_conviction_score'] = (
-    df.groupby('market')['mortgage_conviction']
-      .transform(lambda x: x.rolling(8).sum())
-)
-Interpretation:
-
-Persistent above-trend rates signal durable tightening.
-
-8. Mortgage Shock Fatigue
-Captures reduced marginal reaction after repeated moves.
-
-shock = abs(
-    df.groupby('market')['thirty_year_fixed_mortgage_rate'].diff()
-)
-
-df['mortgage_shock_fatigue'] = (
-    shock.rolling(6).sum()
-)
-Economic logic:
-
-After repeated shocks, households and investors adapt.
-
-Response elasticity weakens.
-
-9. Mortgage Smoothness Ratio
-Distinguishes orderly repricing from disorderly repricing.
-
-rate = df['thirty_year_fixed_mortgage_rate']
-
-df['mortgage_smoothness'] = (
-    rate.rolling(8).mean() /
-    (rate.diff().abs().rolling(8).sum() + 1e-6)
-)
-Why realistic:
-
-Smooth repricing is easier for leasing markets to absorb.
-
-10. Mortgage Compression Window
-Measures how tightly rates are clustered recently.
-
-df['mortgage_compression_window'] = (
-    df.groupby('market')['thirty_year_fixed_mortgage_rate']
-      .transform(lambda x:
-          x.rolling(6).max() - x.rolling(6).min()
-      )
-)
-Low compression:
-
-Stable expectations
-
-High compression:
-
-Stress repricing phase
-
-11. Mortgage Decision Friction
-Captures indecision zone.
-
-When rates hover in a narrow high band, participants hesitate.
-
-df['mortgage_decision_friction'] = (
-    (
-        df['thirty_year_fixed_mortgage_rate'].between(6,7)
-    ).astype(int)
-)
-This is surprisingly practical.
-
-Many markets freeze when rates sit in uncertain middle zones.
-
-12. Mortgage Repricing Speed Burst
-Detects unusually fast adjustments.
-
-df['mortgage_speed_burst'] = (
-    df.groupby('market')['thirty_year_fixed_mortgage_rate']
-      .diff(2)
-      .abs()
-)
-Useful because:
-
-Fast repricing causes occupancy expectation resets.
-
-13. Mortgage Stability Confidence
-Inverse uncertainty proxy.
-
-df['mortgage_stability_confidence'] = (
-    1 /
-    (
-        df.groupby('market')['thirty_year_fixed_mortgage_rate']
-          .transform(lambda x: x.rolling(4).std())
-        + 1e-6
-    )
-)
-Higher confidence:
-
-More leasing activity.
-
-Lower confidence:
-
-Delayed transactions.
-
-14. Mortgage Turning-Point Probability
-Detects likely reversal zones.
-
-rolling_mean = (
-    df.groupby('market')['thirty_year_fixed_mortgage_rate']
-      .transform(lambda x: x.rolling(10).mean())
-)
-
-df['mortgage_turning_point'] = (
-    abs(df['thirty_year_fixed_mortgage_rate'] - rolling_mean)
-)
-Large deviations often precede normalization.
-
-Markets anticipate this.
-
-15. Mortgage Entropy
-Captures randomness of mortgage path.
-
-Advanced but realistic.
-
-def entropy(arr):
-    hist, _ = np.histogram(arr, bins=5)
-    p = hist / hist.sum()
-    p = p[p > 0]
-    return -(p * np.log(p)).sum()
-
-df['mortgage_entropy'] = (
-    df.groupby('market')['thirty_year_fixed_mortgage_rate']
-      .transform(lambda x: x.rolling(10).apply(entropy))
-)
-Why useful:
-
-Higher entropy = harder forecasting environment.
-
-Vacancy often becomes less responsive.
-
-My strongest new recommendations
-If you want realistic, differentiated features from this list:
+My strongest fresh recommendations for your vacancy model
+If you want features different from earlier suggestions, build these:
 
 Best 6
-mortgage_drift
+1. Treasury Path Curvature
 
-mortgage_curvature
+2. Treasury Oscillation Frequency
 
-mortgage_plateau_distance
+3. Treasury Smoothness Ratio
 
-mortgage_recovery_ratio
+4. Treasury Relative Position in Cycle
 
-mortgage_oscillation
+5. Treasury Breakout Distance
 
-mortgage_stickiness
+6. Treasury Drift Direction Persistence
 
-These are less generic and often reveal richer mortgage-cycle structure than basic lags or regime flags.
+These capture shape, rhythm, and cycle behavior of rates rather than just level or spread.
 
-For vacancy forecasting, I’d especially test:
-
-mortgage_curvature + mortgage_plateau_distance + mortgage_stickiness
-
-That combination often captures where the market sits in the mortgage cycle, which is exactly what vacancy reacts to.
+That’s often where hidden predictive signal exists in quarterly CRE vacancy forecasting.
 
 
