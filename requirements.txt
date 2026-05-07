@@ -250,13 +250,13 @@ t
 )
 Vacancy 
 t
-
+​
  =f(RetailSales 
 t−1
-
+​
  ,RetailSales 
 t−2
-
+​
  )
 Lagged features are usually more predictive than contemporaneous.
 
@@ -309,7 +309,7 @@ e
 t
 β 
 retailsales,market
-
+​
  
 not one global constant.
 
@@ -546,19 +546,19 @@ t
 )
 Accel 
 t
-
+​
  =(RS 
 t
-
+​
  −RS 
 t−1
-
+​
  )−(RS 
 t−1
-
+​
  −RS 
 t−2
-
+​
  )
 Equivalent:
 
@@ -587,16 +587,16 @@ t
 2
 Accel 
 t
-
+​
  =RS 
 t
-
+​
  −2RS 
 t−1
-
+​
  +RS 
 t−2
-
+​
  
 Why it matters
 Vacancy often reacts more to inflection points than levels.
@@ -656,20 +656,20 @@ d
 8
 Shock 
 t
-
+​
  = 
 RollingStd 
 8
-
+​
  
 RS 
 t
-
+​
  −RollingMean 
 8
-
+​
  
-
+​
  
 Why useful:
 
@@ -749,7 +749,7 @@ y
 RetailPressure= 
 OccupiedRetailInventory
 RetailSales
-
+​
  
 Where:
 
@@ -844,10 +844,10 @@ s
 t
 Vacancy 
 t
-
+​
  =α+βRetailSales 
 t
-
+​
  
 Use rolling window beta as feature.
 
@@ -941,13 +941,13 @@ t
 RecoveryDistance= 
 Max(RS 
 past 12
-
+​
  )
 RS 
 t
-
+​
  
-
+​
  
 Why useful
 
@@ -997,7 +997,7 @@ t
 )
 Volatility=Std(RS 
 t−4:t
-
+​
  )
 Why important
 
@@ -1098,13 +1098,13 @@ d
 t
 Cycle 
 t
-
+​
  =RS 
 t
-
+​
  −Trend 
 t
-
+​
  
 Why good
 
@@ -1169,7 +1169,7 @@ h
 AdjustedDemand= 
 NewSupplyGrowth+1
 RetailSalesGrowth
-
+​
  
 Interpretation
 
@@ -1297,13 +1297,13 @@ t
 AbsorptionCapacity= 
 AvailableRetailSF 
 t
-
+​
  
 RetailSales 
 t
-
+​
  
-
+​
  
 Where:
 
@@ -1409,7 +1409,7 @@ e
 MRDP= 
 ΔAvailableSpace
 ΔRetailSales
-
+​
  
 Why this is powerful:
 
@@ -1471,7 +1471,7 @@ h
 RenewalStress= 
 RentGrowth
 RetailSalesGrowth
-
+​
  
 Interpretation
 
@@ -1540,7 +1540,7 @@ y
 ConsumerDensity= 
 TotalRetailInventory
 RetailSales
-
+​
  
 This tells:
 
@@ -1600,7 +1600,7 @@ s
 Exhaustion= 
 ΔRetailSales
 ΔVacancy
-
+​
  
 Interpretation
 
@@ -1661,7 +1661,7 @@ e
 RetailYield= 
 AssetValue
 RetailSales
-
+​
  
 If asset values available.
 
@@ -1724,7 +1724,7 @@ e
 DemandStretch= 
 DisposableIncome
 RetailSales
-
+​
  
 Interpretation
 
@@ -1784,7 +1784,7 @@ I
 RealRetailSales= 
 CPI
 NominalRetailSales
-
+​
  
 Why
 
@@ -1827,10 +1827,10 @@ h
 Q
 RTS=Growth 
 2Q
-
+​
  −Growth 
 8Q
-
+​
  
 Interpretation
 
@@ -1923,16 +1923,16 @@ t
 y
 RLSC=w 
 1
-
+​
  SalesGrowth+w 
 2
-
+​
  SalesAcceleration+w 
 3
-
+​
  RecoveryDistance−w 
 4
-
+​
  Volatility
 This creates one latent demand-strength factor.
 
@@ -2022,10 +2022,10 @@ t
 s
 RelativeStrength=RetailSalesGrowth 
 market
-
+​
  −MedianRetailSalesGrowth 
 all markets
-
+​
  
 Why important
 
@@ -2121,3 +2121,854 @@ Must-have
 Inflation-adjusted
 
 2. ConsumerDensity
+
+Structural demand strength
+
+3. RetailAbsorptionCapacity
+
+Demand vs available space
+
+4. RelativeMarketStrength
+
+Cross-market differentiation
+
+5. LeaseRenewalStress
+
+Tenant affordability pressure
+
+6. RetailSalesTermStructure
+
+Cycle detection
+
+These are the kinds of transforms that move a model from:
+
+"generic forecasting model"
+
+to
+
+"institutional CRE demand model."
+
+Since you’re already working on a global multi-market framework, cross-market relative strength and supply-interaction features will probably give the biggest lift.
+
+
+Show me some more features engineering with total_retail_sales_monthly which are realistic and don't try to keep the earlier feature.
+
+Understood. You want fresh, realistic feature engineering ideas for total_retail_sales_monthly — not repeats of lag/rolling/acceleration/recovery/etc.
+
+Here are additional CRE-realistic transforms that capture different economic mechanisms.
+
+1. Retail Sales Compression Ratio
+Measures how tightly spending is concentrated relative to market size.
+
+Formula
+R
+S
+C
+R
+=
+R
+e
+t
+a
+i
+l
+S
+a
+l
+e
+s
+t
+P
+o
+p
+u
+l
+a
+t
+i
+o
+n
+t
+×
+R
+e
+t
+a
+i
+l
+I
+n
+v
+e
+n
+t
+o
+r
+y
+t
+RSCR= 
+Population 
+t
+​
+ ×RetailInventory 
+t
+​
+ 
+RetailSales 
+t
+​
+ 
+​
+ 
+Why realistic
+This tells:
+
+How much spending each sqft captures per resident
+
+Low ratio:
+
+oversupplied retail market
+
+High ratio:
+
+tight demand support
+
+This is very useful for vacancy.
+
+Python:
+
+df['retail_sales_compression_ratio'] = (
+    df['total_retail_sales_monthly'] /
+    (df['population'] * df['retail_inventory_sf'])
+)
+2. Retail Pull-Forward Detection
+Captures demand borrowed from future quarters.
+
+Common around:
+
+stimulus periods
+
+festive spikes
+
+tax rebate windows
+
+Formula
+P
+u
+l
+l
+F
+o
+r
+w
+a
+r
+d
+=
+R
+S
+t
+M
+e
+a
+n
+(
+R
+S
+t
++
+1
+,
+R
+S
+t
++
+2
+)
+PullForward= 
+Mean(RS 
+t+1
+​
+ ,RS 
+t+2
+​
+ )
+RS 
+t
+​
+ 
+​
+ 
+Why it matters
+
+Artificial demand spikes often precede retailer slowdown.
+
+Vacancy may rise afterward.
+
+Very realistic.
+
+3. Retail Saturation Drift
+Measures how long demand has failed to exceed inventory growth.
+
+Formula
+D
+r
+i
+f
+t
+t
+=
+C
+u
+m
+S
+u
+m
+(
+Δ
+I
+n
+v
+e
+n
+t
+o
+r
+y
+>
+Δ
+S
+a
+l
+e
+s
+)
+Drift 
+t
+​
+ =CumSum(ΔInventory>ΔSales)
+Interpretation
+
+Tracks prolonged structural oversupply.
+
+If inventory keeps growing faster than spending:
+
+future vacancy pressure builds.
+
+This is highly relevant in suburban expansion markets.
+
+4. Spending Efficiency Loss
+Measures declining ability of sales growth to reduce vacancy.
+
+Formula
+S
+E
+L
+=
+Δ
+R
+e
+t
+a
+i
+l
+S
+a
+l
+e
+s
+−
+Δ
+V
+a
+c
+a
+n
+c
+y
+SEL= 
+−ΔVacancy
+ΔRetailSales
+​
+ 
+Why useful
+
+If larger sales increases are required to reduce vacancy, market efficiency is deteriorating.
+
+Signals:
+
+obsolete space
+
+weak tenant mix
+
+ecommerce disruption
+
+Institutional analysts watch for this.
+
+5. Retail Sales Conviction Indicator
+Measures persistence of growth.
+
+Formula
+Count consecutive quarters:
+
+R
+S
+t
+>
+R
+S
+t
+−
+1
+RS 
+t
+​
+ >RS 
+t−1
+​
+ 
+Feature:
+
+number of consecutive positive quarters
+
+Why realistic
+
+Retailers expand only when demand strength persists.
+
+One good quarter isn't enough.
+
+Sustained gains matter.
+
+Python:
+
+# rolling consecutive growth streak
+6. Retail Demand Fragility
+Measures how dependent sales are on recent momentum.
+
+Formula
+F
+r
+a
+g
+i
+l
+i
+t
+y
+=
+R
+S
+t
+−
+R
+S
+t
+−
+1
+R
+S
+t
+Fragility= 
+RS 
+t
+​
+ 
+RS 
+t
+​
+ −RS 
+t−1
+​
+ 
+​
+ 
+High values:
+
+current demand heavily relies on recent surge
+
+Potentially unstable.
+
+Low stable values:
+
+more durable spending base.
+
+Useful for forecasting reversals.
+
+7. Sales-to-Store Replacement Threshold
+If store count / tenant count exists.
+
+R
+e
+p
+l
+a
+c
+e
+m
+e
+n
+t
+T
+h
+r
+e
+s
+h
+o
+l
+d
+=
+R
+e
+t
+a
+i
+l
+S
+a
+l
+e
+s
+T
+e
+n
+a
+n
+t
+C
+o
+u
+n
+t
+ReplacementThreshold= 
+TenantCount
+RetailSales
+​
+ 
+Why this matters
+
+Represents average spending support per retailer.
+
+Below threshold:
+
+tenants struggle
+
+lease default risk rises
+
+vacancy risk increases.
+
+Very operationally grounded.
+
+8. Retail Demand Concentration Stress
+Measures concentration of recent sales performance.
+
+Formula
+S
+t
+d
+(
+G
+r
+o
+w
+t
+h
+l
+a
+s
+t
+ 
+4
+Q
+)
+Std(Growth 
+last 4Q
+​
+ )
+But weighted toward latest quarter.
+
+Interpretation
+
+Erratic concentration signals unstable tenant demand.
+
+Retail landlords prefer stable demand.
+
+Useful signal.
+
+9. Consumer Exhaustion Recovery Gap
+Measures bounce-back weakness after decline.
+
+Formula
+C
+E
+R
+G
+=
+R
+S
+t
+−
+T
+r
+o
+u
+g
+h
+P
+r
+e
+v
+i
+o
+u
+s
+P
+e
+a
+k
+−
+T
+r
+o
+u
+g
+h
+CERG= 
+PreviousPeak−Trough
+RS 
+t
+​
+ −Trough
+​
+ 
+Interpretation
+
+0 = no recovery
+1 = full recovery
+
+Markets stuck at 0.6–0.8 often experience sticky vacancy.
+
+Very realistic post-downturn signal.
+
+10. Retail Demand Utilization Ratio
+Measures how much spending is being “used” by occupied inventory.
+
+Formula
+R
+D
+U
+R
+=
+R
+e
+t
+a
+i
+l
+S
+a
+l
+e
+s
+O
+c
+c
+u
+p
+i
+e
+d
+I
+n
+v
+e
+n
+t
+o
+r
+y
+RDUR= 
+OccupiedInventory
+RetailSales
+​
+ 
+Difference from simpler density metrics:
+
+Uses only occupied space.
+
+This better reflects actual tenant productivity.
+
+High ratio:
+
+landlords can fill vacant space faster
+
+Strong vacancy predictor.
+
+11. Sales Expansion Breadth Proxy
+Measures whether sales growth is broad enough to support leasing.
+
+Formula
+B
+r
+e
+a
+d
+t
+h
+=
+R
+S
+t
+−
+M
+i
+n
+(
+l
+a
+s
+t
+ 
+8
+Q
+)
+M
+a
+x
+(
+l
+a
+s
+t
+ 
+8
+Q
+)
+−
+M
+i
+n
+(
+l
+a
+s
+t
+ 
+8
+Q
+)
+Breadth= 
+Max(last 8Q)−Min(last 8Q)
+RS 
+t
+​
+ −Min(last 8Q)
+​
+ 
+Interpretation
+
+Near 1:
+
+broad cycle expansion
+
+Near 0:
+
+weak localized bounce
+
+Broad recoveries are more leasing-supportive.
+
+12. Retail Demand Decoupling Index
+Measures disconnect between retail sales and vacancy trend.
+
+Formula
+R
+D
+D
+I
+=
+R
+e
+t
+a
+i
+l
+S
+a
+l
+e
+s
+G
+r
+o
+w
+t
+h
++
+V
+a
+c
+a
+n
+c
+y
+G
+r
+o
+w
+t
+h
+RDDI=RetailSalesGrowth+VacancyGrowth
+Normally:
+
+sales ↑ → vacancy ↓
+
+So positive RDDI implies abnormal decoupling.
+
+This often flags:
+
+supply shock
+
+obsolete assets
+
+structural retail disruption
+
+Very informative.
+
+13. Seasonal Retail Dependence
+Measures how much annual sales depend on strongest quarter.
+
+Formula
+S
+R
+D
+=
+M
+a
+x
+Q
+u
+a
+r
+t
+e
+r
+S
+a
+l
+e
+s
+A
+n
+n
+u
+a
+l
+S
+a
+l
+e
+s
+SRD= 
+AnnualSales
+MaxQuarterSales
+​
+ 
+Why realistic
+
+Markets overly dependent on holiday-driven retail are more vulnerable.
+
+High dependence means fragile occupancy.
+
+Very practical for tourism-heavy markets.
+
+14. Retail Demand Conversion Lag
+Measures time required for sales increase to affect vacancy.
+
+Approximate:
+
+find lag maximizing correlation.
+
+Feature:
+
+optimal lag length.
+
+Why useful
+
+Different markets lease at different speeds.
+
+This creates a structural market characteristic.
+
+Very strong in panel models.
+
+15. Sales Shock Absorption Score
+Measures resilience after sharp decline.
+
+Formula
+S
+A
+S
+=
+R
+e
+c
+o
+v
+e
+r
+y
+S
+p
+e
+e
+d
+V
+a
+c
+a
+n
+c
+y
+I
+n
+c
+r
+e
+a
+s
+e
+SAS= 
+VacancyIncrease
+RecoverySpeed
+​
+ 
+Interpretation
+
+High score:
+
+market absorbs shocks efficiently
+
+Low score:
+
+persistent vacancy scarring
+
+Institutional investors care deeply about this.
+
+Strongest new realistic features from this list
+If I had to choose 5 completely fresh ones:
+
+Best structural
+retail_sales_compression_ratio
+
+retail_demand_utilization_ratio
+
+Best cycle signals
+consumer_exhaustion_recovery_gap
+
+sales_expansion_breadth_proxy
+
+Best regime detector
+retail_demand_decoupling_index
+
+These are all materially different from the earlier ideas and much closer to the kinds of signals professional CRE forecasting systems try to approximate.
+
+
