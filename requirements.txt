@@ -473,19 +473,19 @@ t
 )
 TSA 
 t
-
+​
  =(r 
 t
-
+​
  −r 
 t−1
-
+​
  )−(r 
 t−1
-
+​
  −r 
 t−2
-
+​
  )
 Equivalent to second derivative.
 
@@ -643,13 +643,13 @@ r
 )
 Surprise 
 t
-
+​
  =r 
 t
-
+​
  −MA 
 8
-
+​
  (r)
 df['rate_surprise'] = (
     df['two_year_treasury_rate']
@@ -676,7 +676,7 @@ t
 FPI=r 
 t
 2
-
+​
  
 df['financing_pressure'] = df['two_year_treasury_rate'] ** 2
 Why:
@@ -733,7 +733,7 @@ Y
 )
 β 
 m
-
+​
  =Cov(vacancy,2Y)
 Then:
 
@@ -872,17 +872,17 @@ r
 1
 CRS 
 t
-
+​
  = 
 MA 
 8
-
+​
  (r)
 r 
 t
-
+​
  
-
+​
  −1
 df['capital_repricing_shock'] = (
     df['two_year_treasury_rate'] /
@@ -942,10 +942,10 @@ r
 e
 RWS 
 t
-
+​
  =2Y 
 t
-
+​
  ×DebtMaturityExposure
 If no maturity data, proxy using lagged construction volume.
 
@@ -986,15 +986,15 @@ t
 i
 PPS 
 t
-
+​
  = 
 i=0
 ∑
 3
-
+​
  Δr 
 t−i
-
+​
  
 df['policy_shock_persistence'] = (
     df['two_year_treasury_rate'].diff().rolling(4).sum()
@@ -1054,7 +1054,7 @@ t
 2
 Stress=max(0,r 
 t
-
+​
  −4) 
 2
  
@@ -1138,7 +1138,7 @@ n
 Mismatch= 
 LeaseDuration
 2Y
-
+​
  
 If average lease term available.
 
@@ -1250,7 +1250,7 @@ d
 )
 FRE 
 t
-
+​
  =consecutive(r>threshold)
 Institutional logic:
 
@@ -1296,19 +1296,19 @@ t
 3
 DS 
 t
-
+​
  =0.4Δr 
 t
-
+​
  +0.3Δr 
 t−1
-
+​
  +0.2Δr 
 t−2
-
+​
  +0.1Δr 
 t−3
-
+​
  
 This mirrors actual transmission into:
 
@@ -1402,13 +1402,13 @@ t
 )
 MRG 
 t
-
+​
  =r 
 t
-
+​
  −Median(r 
 t−12:t
-
+​
  )
 df['twoY_mean_reversion_gap'] = (
     df['two_year_treasury_rate']
@@ -1452,13 +1452,13 @@ t
 )
 OS 
 t
-
+​
  =max(0,r 
 t
-
+​
  −P75 
 hist
-
+​
  )
 threshold = df['two_year_treasury_rate'].quantile(0.75)
 
@@ -1501,17 +1501,17 @@ t
 1
 Burden 
 t
-
+​
  = 
 1+Vacancy 
 t−1
-
+​
  
 2Y 
 t
-
+​
  
-
+​
  
 df['rate_vacancy_burden'] = (
     df['two_year_treasury_rate'] /
@@ -1565,17 +1565,308 @@ t
 )
 CR 
 t
-
+​
  = 
 std(r 
 t−8:t
-
+​
  )
 r 
 t
-
+​
  
-
+​
  
 df['twoY_compression_ratio'] = (
-    df['two_year_treasu
+    df['two_year_treasury_rate']
+    /
+    df['two_year_treasury_rate'].rolling(8).std()
+)
+Why
+Stable high rates and unstable high rates have different implications.
+
+This helps distinguish orderly tightening from disorderly repricing.
+
+6. Financing Cost Saturation Signal
+Measures diminishing sensitivity after prolonged high-rate periods.
+
+S
+t
+=
+l
+o
+g
+(
+1
++
+r
+t
+)
+S 
+t
+​
+ =log(1+r 
+t
+​
+ )
+df['twoY_saturation'] = np.log1p(
+    df['two_year_treasury_rate']
+)
+Why realistic
+The first increases hurt more than later ones.
+
+Markets partially adapt.
+
+This nonlinear transformation can help.
+
+7. Treasury Reversal Probability Proxy
+Captures turning-point expectations.
+
+df['twoY_reversal_proxy'] = (
+    df['two_year_treasury_rate'].shift(1)
+    - df['two_year_treasury_rate'].rolling(4).mean()
+)
+Why useful
+If rates are elevated far above recent trend, market participants anticipate cuts.
+
+That expectation can influence leasing and capital deployment.
+
+Very relevant in cyclical CRE.
+
+8. Treasury Stress Concentration
+Measures how clustered rate increases are.
+
+S
+C
+t
+=
+∑
+∣
+Δ
+r
+∣
+l
+a
+s
+t
+4
+∑
+∣
+Δ
+r
+∣
+l
+a
+s
+t
+12
+SC 
+t
+​
+ = 
+∑∣Δr∣ 
+last12
+​
+ 
+∑∣Δr∣ 
+last4
+​
+ 
+​
+ 
+short = df['two_year_treasury_rate'].diff().abs().rolling(4).sum()
+long = df['two_year_treasury_rate'].diff().abs().rolling(12).sum()
+
+df['twoY_stress_concentration'] = short / long
+Why realistic
+A rapid cluster of hikes creates stronger vacancy shock than gradual moves over years.
+
+This is very aligned with real-world financing disruptions.
+
+9. Treasury Rate Relative to Market Cycle Phase
+Cross-sectional macro interaction.
+
+C
+y
+c
+l
+e
+A
+d
+j
+u
+s
+t
+e
+d
+=
+2
+Y
+t
+×
+M
+a
+r
+k
+e
+t
+E
+x
+p
+a
+n
+s
+i
+o
+n
+F
+l
+a
+g
+CycleAdjusted=2Y 
+t
+​
+ ×MarketExpansionFlag
+If you have absorption/rent growth.
+
+df['cycle_adjusted_rate']
+Why
+The same rate level affects:
+
+expanding markets differently
+
+contracting markets differently
+
+This is highly realistic.
+
+10. Treasury Rate Distance from Last Local Minimum
+Tracks tightening since easiest financing point.
+
+df['twoY_distance_from_trough']
+Why
+Developers benchmark against the lowest recent financing environment.
+
+The farther current rates are from that trough, the greater capital market friction.
+
+Very CRE-relevant.
+
+11. Treasury Elasticity Drift
+Measures changing sensitivity over time.
+
+E
+D
+t
+=
+C
+o
+r
+r
+(
+2
+Y
+,
+V
+a
+c
+a
+n
+c
+y
+)
+r
+o
+l
+l
+i
+n
+g
+ED 
+t
+​
+ =Corr(2Y,Vacancy) 
+rolling
+​
+ 
+df['twoY_elasticity_drift']
+Why realistic
+Post-pandemic, many market relationships changed.
+
+Dynamic elasticity helps the model adapt.
+
+Institutional forecasters increasingly use this.
+
+12. Treasury Relative Affordability Index
+Normalize against historical financing affordability.
+
+R
+A
+I
+t
+=
+H
+i
+s
+t
+o
+r
+i
+c
+a
+l
+A
+v
+g
+C
+u
+r
+r
+e
+n
+t
+R
+a
+t
+e
+RAI 
+t
+​
+ = 
+CurrentRate
+HistoricalAvg
+​
+ 
+hist_avg = df['two_year_treasury_rate'].expanding().mean()
+
+df['twoY_affordability_index'] = hist_avg / df['two_year_treasury_rate']
+Why useful
+Represents whether current financing is cheap or expensive relative to market memory.
+
+CRE participants anchor heavily to historical borrowing costs.
+
+My strongest new recommendations
+If you want genuinely fresh signal, I’d test:
+
+Best for tree models
+twoY_breakout
+
+twoY_overshoot
+
+twoY_stress_concentration
+
+Best for linear / panel models
+twoY_mean_reversion_gap
+
+rate_vacancy_burden
+
+twoY_affordability_index
+
+Best for regime-sensitive forecasting
+twoY_distance_from_trough
+
+twoY_reversal_proxy
+
+twoY_elasticity_drift
+
+These are realistic because they encode how institutional real estate participants actually interpret short-end Treasury movements, rather than treating rates as just another macro variable.
+
+
