@@ -9,497 +9,482 @@ This is a copy of a shared ChatGPT conversation
 
 Report conversation
 We are working on Moody's dataset with multiple features and responses for each market.It is quarterly data that means, that every quarter, new record come for each market .It is real estate dataset.
-I am currently working with feature name wage_salary_disbursement and response vacancy. Help me understand how it worked 
+I am currently working with feature name total_personal_income and response vacancy. Help me understand how it worked 
 
-wage_salary_disbursement is actually a very meaningful macro feature for predicting real estate vacancy, because it captures the income-generating strength of a market.
+total_personal_income is actually a very powerful macroeconomic driver for real estate vacancy, because it reflects the economic strength and spending power of people living in a market.
 
-Think of it as:
+In Moody’s real estate datasets, this variable often influences vacancy differently across property types (apartment, retail, office, industrial).
 
-Total wages and salaries paid to employees in a market during a quarter
+What is total_personal_income?
+It is the aggregate income earned by residents in a market.
 
-It reflects:
+Typically includes:
 
-Employment health
+Salaries/wages
 
-Payroll growth
+Business income
 
-Business activity
+Rental income
 
-Consumer purchasing power
+Investment income
 
-Tenant demand strength
+Government transfers
 
-In commercial real estate, vacancy is rarely driven by one direct factor. It moves through economic transmission channels.
+Mathematically:
 
-1. What this feature is economically telling us
-If wage_salary_disbursement increases in a market, it usually means:
-
-Case A: More people are employed
-More jobs → more workers → stronger space demand
-
-Impact:
-
-Office: firms need more workspace
-
-Retail: more consumer spending
-
-Apartments: more renters can afford leases
-
-Industrial: stronger goods movement
-
-This tends to reduce vacancy
-
-Case B: Existing workers are earning more
-This indicates:
-
-Wage inflation
-
-Higher purchasing power
-
-Better economic confidence
-
-Effects:
-
-For apartments:
-Higher rent affordability → lower residential vacancy
-
-For retail:
-Higher discretionary spending → stronger tenant sales → fewer closures
-
-Case C: Business expansion
-Higher payroll often means firms are expanding.
-
-Expansion often precedes:
-
-Leasing additional office space
-
-Warehouse expansion
-
-New retail footprints
-
-Again → lower vacancy
-
-2. Why relationship may differ by property type
-This is important for your global model.
-
-Apartments
-Usually strongest negative relationship
-
-Why:
-
-Income directly affects rent affordability.
-
-Higher wage disbursement
-→ more lease absorption
-→ lower vacancy
-
-Office
-Moderate relationship
-
-Because payroll growth often means hiring.
-
-But hybrid work can weaken this.
-
-Example:
-
-A tech market may show high wage growth but still high office vacancy because remote work reduces footprint.
-
-So here interaction matters.
-
-Retail
-Indirect but strong
-
-Mechanism:
-
-Higher wages
-→ higher local consumption
-→ stronger tenant sales
-→ fewer store closures
-→ lower vacancy
-
-Industrial
-Weakest direct relationship
-
-Industrial demand is more tied to:
-
-Logistics
-
-Trade
-
-Manufacturing output
-
-E-commerce activity
-
-Wages matter, but less directly.
-
-3. Why it may sometimes increase vacancy
-You might observe positive correlation in some markets.
-
-That happens when:
-
-Scenario 1: Overbuilding
-Strong wage growth attracts development.
-
-New supply enters faster than absorption.
-
-So:
-
-Higher wages + higher vacancy
-
-temporarily.
-
-Scenario 2: Sector concentration distortion
-Example:
-
-A market dominated by high-paying finance jobs.
-
-Payroll rises sharply.
-
-But those workers may not create proportional retail/industrial demand.
-
-Scenario 3: Lagged real estate response
-Economic payroll improves first.
-
-Real estate occupancy responds later.
-
-Quarterly data especially shows this.
-
-Current quarter:
-
-Wages up
-
-Next 2–6 quarters:
-
-Vacancy falls
-
-This lag structure is often critical.
-
-4. How this likely behaves mathematically
-Usually not linear.
-
-Low wage growth zone
-Small changes have little vacancy effect.
-
-Moderate growth zone
-Vacancy drops meaningfully.
-
-Very high growth zone
-Effect saturates.
-
-Because occupancy cannot exceed physical limits.
-
-This creates:
-
-Diminishing marginal impact
-
-Tree models often capture this well.
-
-For linear models, log transforms help.
-
-5. Best interpretation for your Moody's quarterly panel
-Since you have:
-
-Multiple markets
-
-Quarterly observations
-
-Different property types
-
-wage_salary_disbursement acts as a market liquidity and demand proxy
-
-It captures:
-
-"How much economic income is circulating in this market right now?"
-
-Higher circulation generally supports occupancy.
-
-6. What to check in your data
-To understand how it worked in your model, inspect:
-
-A. Correlation by property type
-Not globally.
-
-Compute:
-
-Apartments vs wage_salary_disbursement
-
-Office vs wage_salary_disbursement
-
-Retail vs wage_salary_disbursement
-
-Industrial vs wage_salary_disbursement
-
-You’ll likely see different signs/magnitudes.
-
-B. Lagged correlations
-Very important.
-
-Test:
-
-current wage vs current vacancy
-
-wage(t-1) vs vacancy(t)
-
-wage(t-2) vs vacancy(t)
-
-wage(t-4) vs vacancy(t)
-
-Often lagged versions outperform contemporaneous.
-
-C. Market normalization
-Raw wage disbursement is scale-sensitive.
-
-Normalized Wage
+Total Personal Income
 =
-Wage Salary Disbursement
-Population
-Normalized Wage= 
-Population
-Wage Salary Disbursement
+∑
+i
+=
+1
+N
+Income of Individual
+i
+Total Personal Income=∑ 
+i=1
+N
+​
+ Income of Individual 
+i
 ​
  
 
-Without normalization, NYC-like markets dominate.
+Higher value means:
 
-7. Real estate intuition in one line
-The cleanest intuition:
+Stronger local economy
 
-wage_salary_disbursement measures economic energy in a market.
+Higher purchasing power
 
-More economic energy usually means:
+More consumer activity
 
-More jobs
-More spending
-More tenant demand
-Lower vacancy
+More demand for space
 
-—but with supply lags and sector effects.
+Why does it affect vacancy?
+Vacancy is fundamentally:
 
-For your forecasting models, this feature is usually strongest when engineered as:
+Vacancy Rate
+=
+Vacant Space
+Total Inventory
+Vacancy Rate= 
+Total Inventory
+Vacant Space
+​
+ 
 
-YoY growth
+So vacancy falls when demand for space rises faster than supply.
 
-Lagged growth
+total_personal_income acts as a demand-side economic indicator.
 
-Per-capita wage disbursement
+Mechanism by Property Type
+1. Apartments / Multifamily
+This relationship is usually the strongest.
 
-Deviation from long-term market trend
+How it works
+When personal income rises:
 
-Those reveal the real signal better than raw quarterly values.
+People can afford rents
+
+Household formation increases
+
+Migration into market improves
+
+Fewer people double-up with roommates
+
+Luxury apartment demand rises
+
+Result:
+
+Apartment absorption rises
+
+Vacancy falls
+
+Typical relationship
+Income Growth	Apartment Vacancy
+Strong increase	Falls
+Weak/stagnant	Rises
+Important nuance
+Sometimes very high income growth can temporarily increase vacancy because:
+
+Developers overbuild luxury apartments
+
+Supply enters faster than demand
+
+So relationship may become nonlinear.
+
+2. Retail
+Retail vacancy is heavily tied to consumer spending.
+
+Higher personal income means:
+
+More shopping
+
+Better restaurant sales
+
+Stronger discretionary spending
+
+More retailer expansion
+
+Result:
+
+Retail tenants lease more space
+
+Vacancy declines
+
+Especially sensitive sectors
+Restaurants
+
+Lifestyle retail
+
+Luxury retail
+
+Entertainment centers
+
+Weak markets
+If income stagnates:
+
+Store closures increase
+
+Retail vacancy rises
+
+3. Office
+Office relationship is more indirect.
+
+Income growth usually implies:
+
+More high-paying jobs
+
+Expansion of corporate sectors
+
+Business formation growth
+
+This increases office demand.
+
+But office vacancy is also affected by:
+
+Remote work
+
+Corporate downsizing
+
+Space efficiency
+
+So today the relationship is weaker than before 2020.
+
+4. Industrial
+Industrial responds indirectly.
+
+Higher personal income means:
+
+More consumption
+
+Higher e-commerce activity
+
+More goods movement
+
+That increases:
+
+Warehousing demand
+
+Logistics demand
+
+Result:
+
+Industrial vacancy often declines
+
+Time Lag Effect (VERY IMPORTANT)
+Real estate reacts slowly.
+
+Income today does not instantly reduce vacancy.
+
+Usually:
+
+Income rises first
+
+Businesses respond later
+
+Leasing activity follows
+
+Vacancy changes after several quarters
+
+So lag features are critical.
+
+Example:
+
+Quarter	Income Growth	Vacancy Impact
+Q1	Income rises	No change
+Q2	Spending rises	Small effect
+Q3	Leasing activity increases	Vacancy falls
+Q4	Strong absorption	Major impact
+What top real estate firms usually observe
+Strong markets
+Markets like:
+
+Austin
+
+Nashville
+
+Atlanta
+
+Often show:
+
+Rising personal income
+
+Population growth
+
+Falling apartment/industrial vacancy
+
+These variables usually move together.
+
+Econometric Interpretation
+In regression:
+
+Vacancy
+t
+=
+β
+0
++
+β
+1
+×
+Income
+t
+−
+k
++
+ϵ
+t
+Vacancy 
+t
+​
+ =β 
+0
+​
+ +β 
+1
+​
+ ×Income 
+t−k
+​
+ +ϵ 
+t
+​
+ 
+
+Usually:
+
+β₁ is negative for apartments and retail
+
+meaning higher income → lower vacancy
+
+Where:
+
+k
+k = lag quarters
+
+Important Real-World Behavior
+Income level vs income growth
+These are different.
+
+Income level
+Rich market:
+
+San Francisco
+
+New York
+
+May still have high vacancy.
+
+Income growth
+Fast-growing income markets usually see stronger absorption.
+
+Growth is often more predictive than absolute level.
+
+Why global models benefit from this feature
+Since you mentioned you moved from isolated models to a global model:
+
+total_personal_income is a macroeconomic signal that transfers well across markets.
+
+Example:
+
+Income growth improving apartment demand in Atlanta
+
+Similar mechanism also exists in Austin
+
+This is exactly why global models often outperform local-only models:
+they learn shared economic relationships.
+
+Advanced interpretation used by institutional real estate teams
+Top firms rarely use raw income directly.
+
+Instead they analyze:
+
+Income growth rate
+
+Income acceleration
+
+Income per capita
+
+Real income (inflation-adjusted)
+
+Income relative to rent growth
+
+Income elasticity of vacancy
+
+Because vacancy reacts more to:
+
+changes in economic momentum
+than static income values.
+
+One very important insight
+total_personal_income is often acting as a proxy for multiple hidden drivers:
+
+It indirectly captures:
+
+labor market strength
+
+migration
+
+corporate expansion
+
+consumer confidence
+
+spending capacity
+
+So even if income itself is not causal, it becomes an extremely valuable predictive variable.
+
+That is why it appears in many institutional CRE forecasting systems.
 
 
 Help with out of box features engineering for this column.
 
-For wage_salary_disbursement, basic lagging and growth rates are useful, but if you want out-of-box real-estate-grade feature engineering (the kind that can materially improve a Moody’s-style forecasting model), think in terms of labor-market regime shifts, wage pressure, tenant affordability stress, and market overheating signals.
+For total_personal_income, most beginner feature engineering stops at:
 
-This variable is powerful because it sits at the intersection of:
+lag
 
-labor demand
+growth rate
 
-business expansion
+rolling mean
 
-income creation
+But institutional real estate forecasting teams usually engineer features that capture:
 
-local spending power
+economic momentum
 
-leasing absorption capacity
+affordability stress
 
-Here are stronger feature engineering ideas.
+cyclical turning points
 
-1. Wage Momentum Acceleration
-Not just growth — change in growth
+market relative strength
 
-This detects whether economic expansion is speeding up or slowing down.
+structural regime shifts
+
+Below are stronger and more realistic features specifically for quarterly CRE vacancy forecasting.
+
+1. Income Momentum Shock
+Instead of simple growth, measure whether income growth itself is accelerating.
+
+Formula:
 
 Δ
 2
-W
-a
-g
-e
+Income
 t
 =
-G
-r
-o
-w
-t
-h
+(
+Growth
 t
 −
-G
-r
-o
-w
-t
-h
+Growth
 t
 −
 1
+)
 Δ 
 2
- Wage 
+ Income 
 t
 ​
- =Growth 
+ =(Growth 
 t
 ​
  −Growth 
 t−1
 ​
- 
+ )
 
-Where:
+Interpretation:
 
-Positive → accelerating expansion
+Positive → economy accelerating
 
-Negative → decelerating economy
+Negative → economy slowing
 
 Why it matters:
+Vacancy often reacts more to economic acceleration/deceleration than absolute growth.
 
-Vacancy often reacts more strongly to economic acceleration/deceleration than level changes.
+Very useful for:
 
-A market with:
+office
 
-5% growth last quarter
+retail
 
-2% growth this quarter
+2. Real Income After Inflation
+Nominal income can be misleading.
 
-is weakening even though growth is positive.
+Feature:
 
-This is often an early vacancy warning.
-
-2. Payroll Shock Indicator
-Capture abnormal jumps.
-
-S
-h
-o
-c
-k
+Real Income
 t
 =
-W
+Personal Income
 t
-−
-μ
-8
-Q
-σ
-8
-Q
-Shock 
+CPI
+t
+Real Income 
 t
 ​
  = 
-σ 
-8Q
-​
- 
-W 
+CPI 
 t
 ​
- −μ 
-8Q
+ 
+Personal Income 
+t
 ​
  
 ​
  
-
-Interpretation:
-
-+2 → unusually strong payroll shock
-
-< -2 → labor contraction shock
-
-Why this works:
-
-Vacancy often responds disproportionately to extreme labor events.
-
-This helps tree models isolate turning points.
-
-3. Wage Regime State
-Convert continuous values into economic states.
-
-Example buckets:
-
-Expansion
-
-YoY > 6%
-
-Stable
-
-2–6%
-
-Softening
-
-0–2%
-
-Contraction
-
-< 0
 
 Why powerful:
+If income rises 5% but inflation rises 7%, consumers are actually weaker.
 
-Real estate behaves differently across regimes.
+This becomes highly predictive for:
 
-Vacancy elasticity is not constant.
+retail vacancy
 
-Your model can learn:
+apartment affordability stress
 
-“Retail vacancy reacts strongly only when wages enter contraction.”
+3. Income-to-Rent Capacity Ratio
+Institutional multifamily models love this.
 
-4. Wage-to-Rent Pressure Ratio
-If you have asking rent / effective rent.
+Feature:
 
-A
-f
-f
-o
-r
-d
-a
-b
-i
-l
-i
-t
-y
+Income Rent Capacity
 t
 =
-W
-a
-g
-e
- 
-G
-r
-o
-w
+Personal Income
 t
-h
+Market Rent
 t
-R
-e
-n
-t
- 
-G
-r
-o
-w
-t
-h
-t
-Affordability 
+Income Rent Capacity 
 t
 ​
  = 
-Rent Growth 
+Market Rent 
 t
 ​
  
-Wage Growth 
+Personal Income 
 t
 ​
  
@@ -508,481 +493,588 @@ t
 
 Interpretation:
 
-High ratio:
-Income growth supports occupancy
+High ratio → residents can comfortably absorb rent
 
-Low ratio:
-Rent rising faster than wages
-
-This is huge for:
-
-Apartments
-Tenant affordability stress
-
-Retail
-Consumer discretionary squeeze
-
-This often predicts future vacancy better than wage growth alone.
-
-5. Payroll Trend Deviation
-Separate structural growth from short-term noise.
-
-Fit market-specific rolling trend.
-
-Feature:
-
-Current wage disbursement minus trend expectation.
-
-This detects:
-
-overheating
-
-underperformance
-
-cyclical weakness
+Low ratio → affordability stress
 
 Why useful:
+Apartment vacancy often rises after affordability deteriorates.
 
-Markets revert toward trend.
-
-Extreme positive deviations often precede:
-
-supply response
-
-vacancy normalization
-
-6. Payroll Breadth Persistence
-Count consecutive positive quarters.
-
-Example:
-
-If wage growth positive for last 6 quarters → persistent expansion.
+4. Income Elasticity of Vacancy
+This is advanced and extremely useful.
 
 Feature:
 
-positive_streak_length
-
-Why useful:
-
-Sustained expansion is much more meaningful than one-off spikes.
-
-Real estate absorption needs persistence.
-
-A single strong quarter rarely reduces vacancy.
-
-7. Wage Mean Reversion Pressure
-Measure distance from historical norm.
-
-M
-R
+Elasticity
 t
 =
-W
+%
+Δ
+Vacancy
 t
-A
-v
-g
-(
-W
-20
-Q
-)
-MR 
+%
+Δ
+Income
 t
-​
- = 
-Avg(W 
-20Q
-​
- )
-W 
-t
-​
- 
-​
- 
-
-Interpretation:
-
-Very high values may indicate:
-
-cyclical peak
-
-overheating
-
-future normalization
-
-This is especially useful for office and apartments.
-
-8. Payroll Volatility
-Rolling standard deviation of wage growth.
-
-High volatility = unstable market.
-
-Feature:
-
-rolling_std_4q_growth
-
-Why this matters:
-
-Stable growth supports long-term leasing.
-
-Volatile payroll creates tenant uncertainty.
-
-This often predicts:
-
-delayed leasing decisions
-
-shorter lease terms
-
-elevated vacancy
-
-Especially office.
-
-9. Wage Elasticity to Previous Vacancy
-Interaction feature:
-
-E
-l
-a
-s
-t
-i
-c
-i
-t
-y
-t
-=
-W
-a
-g
-e
-G
-r
-o
-w
-t
-h
-t
-×
-V
-a
-c
-a
-n
-c
-y
-t
-−
-1
 Elasticity 
 t
 ​
- =WageGrowth 
+ = 
+%ΔIncome 
 t
 ​
- ×Vacancy 
-t−1
+ 
+%ΔVacancy 
+t
+​
+ 
 ​
  
 
-This asks:
+Interpretation:
 
-“Does payroll growth matter more when vacancy is already elevated?”
+Measures how sensitive vacancy is to income changes
 
-Often yes.
+Different markets behave differently
 
-Why:
+Example:
 
-Strong labor growth in distressed markets drives absorption faster.
+Austin may respond strongly
 
-This is highly predictive.
+NYC may respond weakly
 
-10. Payroll Recovery Distance
-For downturn/recovery cycles.
+This helps global models learn market heterogeneity.
 
-Measure:
+5. Relative Income Strength vs National Trend
+Instead of raw income, compare market to national economy.
 
-Current wage relative to prior peak.
+Feature:
 
-R
-e
-c
-o
-v
-e
-r
-y
+Relative Income Strength
 t
 =
-W
+Local Income Growth
 t
-M
-a
-x
-(
-W
-p
-r
-e
 −
-d
-o
-w
-n
+US Income Growth
 t
-u
-r
-n
+Relative Income Strength 
+t
+​
+ =Local Income Growth 
+t
+​
+ −US Income Growth 
+t
+​
+ 
+
+Why strong:
+CRE capital flows toward outperforming metros.
+
+This captures:
+
+migration attractiveness
+
+local economic competitiveness
+
+Very important in cross-market forecasting.
+
+6. Income Regime Classification
+Convert continuous values into economic regimes.
+
+Example regimes:
+
+recession
+
+slowdown
+
+stable
+
+expansion
+
+boom
+
+Example rule:
+
+Income Growth	Regime
+<0%	Recession
+0–2%	Slow
+2–5%	Stable
+>5%	Expansion
+Why useful:
+Vacancy relationships are often nonlinear.
+
+Models like:
+
+XGBoost
+
+LightGBM
+
+CatBoost
+
+benefit heavily from regime features.
+
+7. Income Volatility
+Quarterly instability matters.
+
+Feature:
+
+σ
+t
+=
+StdDev
+(
+Income Growth
+t
+−
+4
+:
+t
 )
-Recovery 
+σ 
+t
+​
+ =StdDev(Income Growth 
+t−4:t
+​
+ )
+
+Why useful:
+High volatility signals:
+
+unstable economy
+
+uncertain leasing demand
+
+cautious tenants
+
+This can predict:
+
+office vacancy spikes
+
+retail stress
+
+8. Income Trend Deviation
+Measure how far current income is from long-term trend.
+
+Feature:
+
+Deviation
+t
+=
+Income
+t
+−
+RollingTrend
+t
+Deviation 
+t
+​
+ =Income 
+t
+​
+ −RollingTrend 
+t
+​
+ 
+
+Interpretation:
+
+Positive deviation → overheating economy
+
+Negative deviation → weakening market
+
+Very effective for cycle turning points.
+
+9. Income-per-Capita Growth
+Raw income rises simply because population rises.
+
+Adjust for population:
+
+Income Per Capita
+t
+=
+Total Personal Income
+t
+Population
+t
+Income Per Capita 
 t
 ​
  = 
-Max(W 
-pre−downturn
+Population 
+t
 ​
- )
-W 
+ 
+Total Personal Income 
 t
 ​
  
 ​
  
 
-Useful for identifying:
+This isolates:
 
-incomplete recoveries
+true earning power
+instead of market size expansion.
 
-post-recession absorption phases
-
-Very relevant for office after structural disruptions.
-
-11. Cross-Market Relative Strength
-Since your dataset is multi-market, this is gold.
+10. Income vs Employment Divergence
+This is sophisticated macro signal engineering.
 
 Feature:
 
-Market wage growth minus national median wage growth.
-
-R
-e
-l
-a
-t
-i
-v
-e
-S
-t
-r
-e
-n
-g
-t
-h
+Divergence
 t
 =
-M
-a
-r
-k
-e
-t
-G
-r
-o
-w
-t
-h
+Income Growth
 t
 −
-N
-a
+Employment Growth
 t
-i
-o
-n
-a
-l
-G
-r
-o
-w
-t
-h
-t
-RelativeStrength 
+Divergence 
 t
 ​
- =MarketGrowth 
+ =Income Growth 
 t
 ​
- −NationalGrowth 
+ −Employment Growth 
 t
 ​
  
 
-Why this is powerful:
+Interpretation:
 
-Absolute growth may look strong, but if every market is strong, relative competitiveness matters more.
+Income rising faster than jobs:
 
-Real estate capital allocation often follows relative winners.
+high wage inflation
 
-12. Wage Saturation Signal
-When wage growth remains high but vacancy stops improving.
+skilled labor demand
+
+Jobs rising faster than income:
+
+weaker wage quality
+
+Useful especially for:
+
+office
+
+apartments
+
+11. Income Leading Indicator Composite
+Create composite score:
+
+Example:
+
+income growth
+
+wage growth
+
+payroll growth
+
+savings growth
+
+Combined into one latent economic strength factor.
+
+This often performs better than individual macro variables.
+
+Institutional firms frequently use:
+
+PCA
+
+dynamic factor models
+
+autoencoders
+
+for this.
+
+12. Income Shock Recovery Feature
+Capture post-downturn rebound speed.
 
 Feature:
 
-Rolling divergence:
-
-S
-a
-t
-u
-r
-a
-t
-i
-o
-n
+Recovery Speed
 t
 =
-W
-a
-g
-e
-G
-r
-o
-w
-t
-h
+Income
 t
 −
-∣
-V
-a
-c
-a
-n
-c
-y
-C
-h
-a
-n
-g
-e
-t
-∣
-Saturation 
+Income Bottom
+Quarters Since Bottom
+Recovery Speed 
 t
 ​
- =WageGrowth 
+ = 
+Quarters Since Bottom
+Income 
 t
 ​
- −∣VacancyChange 
+ −Income Bottom
+​
+ 
+
+Why useful:
+Fast recoveries often lead to:
+
+rapid absorption
+
+sharp vacancy compression
+
+Especially useful after:
+
+recessions
+
+COVID-like shocks
+
+13. Market Share of National Income
+Feature:
+
+Market Share
+t
+=
+Local Income
+t
+US Total Income
+t
+Market Share 
 t
 ​
- ∣
+ = 
+US Total Income 
+t
+​
+ 
+Local Income 
+t
+​
+ 
+​
+ 
 
-High positive values suggest:
+Why powerful:
+Measures long-term economic importance of market.
 
-Economic growth no longer reducing vacancy.
+Markets gaining share usually attract:
 
-Possible reasons:
+capital
 
-oversupply
+employers
 
-remote work
+migration
 
-structural demand shift
+14. Income Saturation Signal
+High income growth eventually saturates.
 
-This is a sophisticated early-warning feature.
+Feature:
+Use nonlinear transforms:
 
-My top 5 recommendations for your Moody’s setup
-If I were building your production model, I’d prioritize:
+log income
 
-1.
-Lagged YoY wage growth (2Q and 4Q lag)
+spline
 
-2.
-Cross-market relative strength
+threshold features
 
-3.
-Payroll shock z-score
+Because:
+Going from 2% → 5% growth matters more than 12% → 15%.
 
-4.
-Wage-to-rent affordability ratio
+15. Cross-Property Spillover Income Effect
+Very institutional-level idea.
 
-5.
-Growth acceleration
+Example:
 
-These usually capture:
+strong income growth first reduces apartment vacancy
 
-cyclical turning points
+later boosts retail occupancy
 
-structural competitiveness
+later office demand improves
 
-nonlinear vacancy response
+You can engineer lagged cross-sector interactions:
 
-better than raw wage disbursement.
+Example:
+
+apartment absorption × income growth
+→ predict retail vacancy
+
+This is exactly the kind of relationship global multi-market models can learn very well.
+
+Features I would prioritize first
+For real-world CRE forecasting, the strongest practical ones are usually:
+
+Real income growth
+
+Relative income strength
+
+Income-to-rent ratio
+
+Income acceleration
+
+Income volatility
+
+Income per capita growth
+
+Lagged income growth (2Q, 4Q, 6Q)
+
+Regime classification
+
+Deviation from trend
+
+Cross-market relative ranking
+
+These tend to outperform raw total_personal_income by a large margin.
 
 
 Sorry I was asking can you look for some more top notch features engineering which top real estate industry use
 
-Got it — you're asking for institutional-grade / CRE-industry style feature engineering, beyond standard time-series transformations.
+Yes — if you want truly institutional-grade feature engineering, then the focus shifts from simple macro transformations toward:
 
-For a feature like wage_salary_disbursement, top real estate research teams (think macro forecasting groups, REIT quant desks, and Moody’s-style economic modeling teams) often engineer features around market structure, demand sustainability, labor composition, and cycle positioning.
+demand transmission mechanisms
 
-These are the kinds of features that can make a global panel model materially smarter.
+capital market behavior
 
-1. Wage Absorption Efficiency
-This is very CRE-specific.
+migration economics
 
-It measures:
+affordability stress
 
-How efficiently payroll growth translates into occupancy improvement
+cyclical positioning
 
-E
-f
-f
-i
-c
-i
-e
-n
-c
-y
+market relative competitiveness
+
+latent economic pressure signals
+
+Below are the kinds of features that sophisticated CRE shops, REIT analytics teams, and institutional forecasting groups actually build around total_personal_income.
+
+1. Income-to-Housing Cost Burden
+This is one of the strongest multifamily stress indicators.
+
+Feature:
+
+Housing Burden
 t
 =
-−
-Δ
-V
-a
-c
-a
-n
-c
-y
+Average Rent
 t
-Δ
-W
-a
-g
-e
+Income Per Capita
 t
-Efficiency 
+Housing Burden 
 t
 ​
  = 
-ΔWage 
+Income Per Capita 
 t
 ​
  
-−ΔVacancy 
+Average Rent 
+t
+​
+ 
+​
+ 
+
+Why top firms use it:
+Vacancy often rises when affordability breaks.
+
+Extremely predictive in:
+
+Austin
+
+Miami
+
+Phoenix
+
+Nashville
+
+because rapid rent inflation eventually destroys absorption.
+
+2. Income Growth Minus Rent Growth Spread
+This captures whether income can keep up with rents.
+
+Feature:
+
+Income-Rent Spread
+t
+=
+Income Growth
+t
+−
+Rent Growth
+t
+Income-Rent Spread 
+t
+​
+ =Income Growth 
+t
+​
+ −Rent Growth 
+t
+​
+ 
+
+Interpretation:
+
+Positive → tenants gaining purchasing power
+
+Negative → affordability deterioration
+
+Institutional multifamily teams monitor this constantly.
+
+3. Income Efficiency of Occupied Space
+Very advanced.
+
+Feature:
+
+Income Efficiency
+t
+=
+Occupied Inventory
+t
+Total Personal Income
+t
+Income Efficiency 
+t
+​
+ = 
+Total Personal Income 
+t
+​
+ 
+Occupied Inventory 
+t
+​
+ 
+​
+ 
+
+Interpretation:
+Measures how much space demand is generated per dollar of income.
+
+Useful for:
+
+detecting market saturation
+
+identifying inefficient overbuilt metros
+
+4. Incremental Income per New Supply Delivered
+Top developers care about this.
+
+Feature:
+
+Supply Support Ratio
+t
+=
+Δ
+Personal Income
+t
+New Supply Delivered
+t
+Supply Support Ratio 
+t
+​
+ = 
+New Supply Delivered 
+t
+​
+ 
+ΔPersonal Income 
 t
 ​
  
@@ -991,1571 +1083,1167 @@ t
 
 Interpretation:
 
-High value:
-Small wage gains create strong occupancy improvement
+High ratio → economy can absorb new supply
 
-Low value:
-Economic growth is not converting into leasing demand
+Low ratio → likely oversupply
 
-This helps identify structurally weak markets.
+This becomes extremely predictive for:
+
+apartment vacancy
+
+office vacancy
+
+5. Income Migration Pull Factor
+Institutional investors love relative attractiveness metrics.
+
+Feature:
+
+Migration Pull
+t
+=
+Local Income Growth
+t
+National Income Growth
+t
+Migration Pull 
+t
+​
+ = 
+National Income Growth 
+t
+​
+ 
+Local Income Growth 
+t
+​
+ 
+​
+ 
+
+Why powerful:
+Markets outperforming nationally attract:
+
+workers
+
+companies
+
+capital
+
+This indirectly predicts future occupancy growth.
+
+6. High-Income Concentration Proxy
+Instead of total income, estimate concentration of wealthy households.
+
+Approximation:
+
+High Income Proxy
+t
+=
+Income Per Capita
+t
+Median Income
+t
+High Income Proxy 
+t
+​
+ = 
+Median Income 
+t
+​
+ 
+Income Per Capita 
+t
+​
+ 
+​
+ 
+
+Interpretation:
+
+Higher ratio → more affluent concentration
+
+stronger luxury demand
+
+Useful for:
+
+Class A apartments
+
+trophy office
+
+luxury retail
+
+7. Income Shock Absorption Capacity
+Very sophisticated cyclical feature.
+
+Feature:
+
+Shock Capacity
+t
+=
+Savings Rate
+t
+×
+Income
+t
+Debt Service
+t
+Shock Capacity 
+t
+​
+ = 
+Debt Service 
+t
+​
+ 
+Savings Rate 
+t
+​
+ ×Income 
+t
+​
+ 
+​
+ 
+
+Why important:
+Markets with stronger household balance sheets maintain occupancy better during downturns.
+
+Used heavily post-COVID.
+
+8. Income Dispersion Trend
+Institutional firms increasingly study inequality effects.
+
+Feature:
+
+top income growth minus median income growth
+
+Why useful:
+High inequality markets can:
+
+support luxury CRE
+
+weaken mid-market occupancy
+
+Very important in:
+
+NYC
+
+SF
+
+LA
+
+9. Income-Cycle Position Indicator
+This is highly institutional.
+
+Build z-score relative to long-term trend:
+
+Z
+t
+=
+Income
+t
+−
+μ
+σ
+Z 
+t
+​
+ = 
+σ
+Income 
+t
+​
+ −μ
+​
+ 
+
+Interpretation:
+
+High z-score → overheated economy
+
+Low z-score → recessionary environment
+
+Helps models identify cycle phase.
+
+10. Income Convexity Feature
+CRE relationships are rarely linear.
+
+Feature:
+
+square term
+
+spline
+
+piecewise bucket
 
 Example:
 
-Two markets both show +5% wage growth.
+low income growth hurts badly
 
-Austin vacancy drops sharply
+moderate growth helps strongly
 
-San Francisco vacancy barely moves
+ultra-high growth may trigger overbuilding
 
-This feature captures that structural difference.
+Institutional models often explicitly model this nonlinear behavior.
 
-This is heavily used in market diagnostics.
+11. Income Persistence Score
+Measures whether growth is stable or temporary.
 
-2. Labor Demand Saturation Index
-Detect when payroll expansion is no longer producing real estate demand.
+Feature:
 
-S
-a
-t
-u
-r
-a
-t
-i
-o
-n
+Persistence
 t
 =
-W
-a
-g
-e
-G
-r
-o
+∑
+i
+=
+1
+4
 w
-t
-h
-t
+i
 ×
-V
-a
-c
-a
-n
-c
-y
-P
-e
-r
-s
-i
-s
-t
-e
-n
-c
-e
-t
-Saturation 
-t
-​
- =WageGrowth 
-t
-​
- ×VacancyPersistence 
-t
-​
- 
-
-Where vacancy persistence = rolling elevated vacancy indicator.
-
-Why elite CRE teams use this:
-
-Late-cycle markets often show:
-
-strong payroll
-
-stubborn vacancy
-
-That signals:
-
-oversupply
-
-structural demand shift
-
-sector disruption
-
-This is extremely valuable for office.
-
-3. Payroll Density Gradient
-Normalize wage disbursement by occupied stock.
-
-D
-e
-n
-s
-i
-t
-y
-t
-=
-W
-a
-g
-e
-S
-a
-l
-a
-r
-y
-D
-i
-s
-b
-u
-r
-s
-e
-m
-e
-n
-t
-t
-O
-c
-c
-u
-p
-i
-e
-d
-I
-n
-v
-e
-n
-t
-o
-r
-y
-t
-Density 
-t
-​
- = 
-OccupiedInventory 
-t
-​
- 
-WageSalaryDisbursement 
-t
-​
- 
-​
- 
-
-This captures:
-
-Economic payroll intensity per occupied real estate unit.
-
-Why it matters:
-
-It tells you whether economic activity is becoming:
-
-space-intensive
-or
-
-space-light
-
-Very important post-remote-work.
-
-A falling density often predicts office vacancy expansion.
-
-This is absolutely institutional-grade.
-
-4. Wage Compression Signal
-Measures whether wage growth is broad-based or top-heavy.
-
-Proxy using rolling smoothness:
-
-C
-o
-m
-p
-r
-e
-s
-s
-i
-o
-n
-t
-=
-M
-e
-d
-i
-a
-n
-(
-W
-4
-Q
-)
-M
-e
-a
-n
-(
-W
-4
-Q
-)
-Compression 
-t
-​
- = 
-Mean(W 
-4Q
-​
- )
-Median(W 
-4Q
-​
- )
-​
- 
-
-Interpretation:
-
-Stable/high:
-Broad healthy wage growth
-
-Low:
-Volatile concentrated payroll spikes
-
-Why useful:
-
-Broad wage growth supports:
-
-apartments
-
-neighborhood retail
-
-Concentrated wage spikes often only support select submarkets.
-
-5. Payroll-to-Supply Expansion Mismatch
-One of the strongest institutional signals.
-
-M
-i
-s
-m
-a
-t
-c
-h
-t
-=
-W
-a
-g
-e
-G
-r
-o
-w
-t
-h
+Income Growth
 t
 −
-I
-n
-v
-e
-n
-t
-o
-r
-y
-G
-r
-o
-w
-t
-h
-t
-Mismatch 
+i
+Persistence 
 t
 ​
- =WageGrowth 
-t
+ =∑ 
+i=1
+4
 ​
- −InventoryGrowth 
-t
+ w 
+i
+​
+ ×Income Growth 
+t−i
 ​
  
 
-Interpretation:
+where recent quarters get larger weights.
 
-Positive:
-Demand outpacing supply
+Why useful:
+Stable growth supports long-term leasing confidence.
 
-Negative:
-Supply outpacing economic support
+12. Tradable vs Local Income Split Proxy
+Very advanced economic base theory.
 
-This is directly tied to vacancy mechanics.
+Approximate whether income comes from:
 
-Top CRE models care deeply about this.
+export industries
 
-If your Moody’s dataset has inventory/new supply, build this immediately.
+local services
 
-6. Economic Leasing Capacity
-Estimate how much space the wage base can theoretically support.
+Why important:
+Export-driven income creates stronger long-term office/industrial demand.
 
-Concept:
+Example:
 
-Translate payroll growth into implied occupancy demand.
+tech hubs
 
-Example approximation:
+manufacturing hubs
 
-C
-a
-p
-a
-c
-i
-t
-y
+logistics hubs
+
+You can proxy using:
+
+wage composition
+
+industry employment mix
+
+13. Income Quality Feature
+Not all income is equal.
+
+Separate:
+
+wage income
+
+transfer income
+
+investment income
+
+Markets dependent on transfer income may have weaker real estate demand durability.
+
+Top CRE economists absolutely distinguish this.
+
+14. Income-to-Cap-Rate Interaction
+This is institutional capital markets engineering.
+
+Feature:
+
+Capital Pressure
 t
 =
-W
-a
-g
-e
+Income Growth
 t
-H
-i
-s
+Cap Rate
 t
-o
-r
-i
-c
-a
-l
- 
-W
-a
-g
-e
- 
-p
-e
-r
- 
-O
-c
-c
-u
-p
-i
-e
-d
- 
-U
-n
-i
-t
-Capacity 
+Capital Pressure 
 t
 ​
  = 
-Historical Wage per Occupied Unit
-Wage 
+Cap Rate 
+t
+​
+ 
+Income Growth 
 t
 ​
  
 ​
  
 
-Then compare against actual occupied inventory.
+Interpretation:
+Strong income growth + compressed cap rates
+→ aggressive capital inflows
+→ future development wave
+→ later vacancy pressure
 
-This reveals:
+Very advanced forward-looking signal.
 
-overbuilt markets
+15. Income-Based Demand Exhaustion Signal
+One of the smartest multifamily signals.
 
-underutilized demand
+Feature:
 
-hidden absorption potential
-
-This is sophisticated but highly valuable.
-
-7. Wage Cycle Position Score
-Locate where market sits in labor cycle.
-
-Construct using:
-
-level percentile
-
-growth percentile
-
-acceleration percentile
-
-Composite score:
-
-0–100
+Demand Exhaustion
+t
+=
+Rent Growth
+t
+Income Growth
+t
+Demand Exhaustion 
+t
+​
+ = 
+Income Growth 
+t
+​
+ 
+Rent Growth 
+t
+​
+ 
+​
+ 
 
 Interpretation:
 
-0–20 contraction
+If rents grow much faster than income,
+future absorption weakens.
 
-20–40 recovery
+This frequently predicts:
 
-40–70 expansion
+apartment vacancy spikes 4–8 quarters ahead.
 
-70–90 late-cycle
+16. Income × Interest Rate Interaction
+Very important today.
 
-90–100 peak
+Feature:
 
-Why this is powerful:
-
-Vacancy behaves differently across cycle stages.
-
-Institutional forecasters frequently segment this way.
-
-8. Payroll Resilience Ratio
-Measures stability through shocks.
-
-R
-e
-s
-i
-l
-i
-e
-n
-c
-e
+Income Financing Pressure
 t
 =
-W
+Income Growth
 t
-M
-i
-n
-(
-W
-l
-a
-s
+×
+Interest Rate
 t
+Income Financing Pressure 
+t
+​
+ =Income Growth 
+t
+​
+ ×Interest Rate 
+t
+​
  
-r
-e
-c
-e
-s
-s
-i
-o
-n
-)
+
+Reason:
+Strong income growth behaves differently under:
+
+low-rate environment
+vs
+
+high-rate environment.
+
+Top firms model these interaction effects heavily now.
+
+17. Cross-Market Income Rank
+Institutional global models love relative ranking.
+
+Feature:
+Rank each market quarterly by:
+
+income growth
+
+real income growth
+
+income acceleration
+
+Because capital allocators think relatively, not absolutely.
+
+18. Income-to-Construction Wage Divergence
+Extremely advanced supply-side signal.
+
+Feature:
+
+local income growth minus construction wage growth
+
+Interpretation:
+If construction costs rise too fast:
+
+supply pipeline slows
+
+future vacancy compression occurs
+
+Very useful in multifamily forecasting.
+
+19. Income Heatmap Clustering
+Instead of raw feature:
+cluster markets by:
+
+income growth behavior
+
+volatility
+
+persistence
+
+affordability
+
+Then use cluster labels as features.
+
+Top firms use:
+
+k-means
+
+HDBSCAN
+
+Gaussian mixtures
+
+to identify economic archetypes.
+
+20. Income Network Spillover Feature
+This is frontier-level global modeling.
+
+Example:
+
+Austin income boom impacts Dallas industrial demand
+
+NYC finance income affects Miami luxury occupancy
+
+Create:
+
+spatial lag income features
+
+neighboring market influence metrics
+
+Very powerful in multi-market systems like yours.
+
+Features institutional CRE teams prioritize most
+If I were building a production-grade vacancy forecasting system, I would heavily prioritize:
+
+Feature	Importance
+Income-rent spread	Extremely high
+Demand exhaustion	Extremely high
+Relative market income strength	Extremely high
+Supply support ratio	Extremely high
+Income acceleration	High
+Real income growth	High
+Affordability burden	High
+Income persistence	High
+Cross-market rank	High
+Income-cap-rate interaction	High
+These are much closer to how sophisticated real estate research teams think about macroeconomic transmission into vacancy.
+
+
+Show me some more features engineering with total_personal_income which are realistic and don't try to keep the earlier feature.
+
+1. Income Density per Developed Land
+Instead of looking at total income alone, measure how much economic power exists per developed area.
+
+Feature:
+
+Income Density
+t
+=
+Total Personal Income
+t
+Developed Land Area
+t
+Income Density 
+t
+​
+ = 
+Developed Land Area 
+t
+​
+ 
+Total Personal Income 
+t
+​
+ 
+​
+ 
+
+Why realistic:
+High income concentrated in small urban cores usually supports:
+
+lower office vacancy
+
+stronger retail productivity
+
+higher apartment absorption
+
+Very useful for:
+
+CBD vs suburban comparisons
+
+2. Income Absorption Efficiency
+Measures how efficiently new income converts into occupied space.
+
+Feature:
+
+Absorption Efficiency
+t
+=
+Net Absorption
+t
+Δ
+Total Personal Income
+t
+Absorption Efficiency 
+t
+​
+ = 
+ΔTotal Personal Income 
+t
+​
+ 
+Net Absorption 
+t
+​
+ 
+​
+ 
+
+Interpretation:
+
+High value → income growth strongly converts into leasing demand
+
+Low value → weak transmission
+
+Extremely useful in cross-market modeling.
+
+3. Income Saturation Pressure
+Captures whether income growth is becoming too mature to drive incremental demand.
+
+Feature:
+
+Saturation Pressure
+t
+=
+Δ
+Income Growth
+t
+Income Level
+t
+Saturation Pressure 
+t
+​
+ = 
+Income Level 
+t
+​
+ 
+ΔIncome Growth 
+t
+​
+ 
+​
+ 
+
+Why useful:
+Mature high-income markets often show:
+
+slowing marginal space demand
+
+slower occupancy expansion
+
+Good for:
+
+gateway metros
+
+4. Income Resilience During Economic Slowdowns
+Measures stability of local economy during weak periods.
+
+Feature:
+
+Resilience
+t
+=
+Income Growth
+t
+∣
+GDP Growth
+t
+∣
 Resilience 
 t
 ​
  = 
-Min(W 
-last recession
-​
- )
-W 
+∣GDP Growth 
 t
 ​
- 
-​
- 
-
-Markets with higher resilience:
-
-recover occupancy faster
-
-show lower structural vacancy
-
-Excellent for cross-market transfer learning.
-
-9. Competitive Wage Drift
-Tracks whether a market is gaining payroll share.
-
-D
-r
-i
-f
-t
-t
-=
-M
-a
-r
-k
-e
-t
-W
-a
-g
-e
-t
-N
-a
-t
-i
-o
-n
-a
-l
-W
-a
-g
-e
-t
-Drift 
-t
-​
- = 
-NationalWage 
-t
-​
- 
-MarketWage 
+ ∣
+Income Growth 
 t
 ​
  
 ​
  
-
-Then use change in drift.
-
-Why real estate teams love this:
-
-It identifies structural winners.
-
-Markets gaining national payroll share often outperform in:
-
-rent growth
-
-absorption
-
-vacancy compression
-
-10. Payroll Conviction Signal
-Measures persistence of wage direction.
-
-C
-o
-n
-v
-i
-c
-t
-i
-o
-n
-t
-=
-∑
-i
-=
-1
-4
-s
-i
-g
-n
-(
-Δ
-W
-a
-g
-e
-t
-−
-i
-)
-Conviction 
-t
-​
- =∑ 
-i=1
-4
-​
- sign(ΔWage 
-t−i
-​
- )
 
 Interpretation:
+Markets maintaining income despite macro slowdown usually defend occupancy better.
 
-+4 = strong sustained expansion
+Used for:
 
--4 = persistent contraction
+downside-risk forecasting
 
-Why useful:
+5. Income Expansion Breadth
+Instead of aggregate income, evaluate how broad the growth is across industries.
 
-CRE occupancy reacts to persistent labor trends, not one-off moves.
+Approximation:
 
-11. Demand Translation Lag Surface
-This is advanced.
-
-Instead of one lag:
-
-Create multiple lagged payroll transformations and let model learn.
-
-Feature family:
-
-wage_growth_lag1
-
-lag2
-
-lag3
-
-lag4
-
-weighted distributed lag
-
-Example:
-
-D
-L
+Breadth
 t
 =
-0.4
-W
+Number of Industries with Positive Wage Growth
 t
-−
-1
-+
-0.3
-W
+Total Industries
 t
-−
-2
-+
-0.2
-W
-t
-−
-3
-+
-0.1
-W
-t
-−
-4
-DL 
-t
-​
- =0.4W 
-t−1
-​
- +0.3W 
-t−2
-​
- +0.2W 
-t−3
-​
- +0.1W 
-t−4
-​
- 
-
-This mirrors professional macro forecasting systems.
-
-12. Structural Break Detector
-Identify permanent labor regime changes.
-
-Use rolling Chow-like proxy.
-
-Feature:
-
-Difference between short-run and long-run wage trend.
-
-B
-r
-e
-a
-k
-t
-=
-T
-r
-e
-n
-d
-4
-Q
-−
-T
-r
-e
-n
-d
-20
-Q
-Break 
-t
-​
- =Trend 
-4Q
-​
- −Trend 
-20Q
-​
- 
-
-This catches:
-
-tech migration
-
-industry exits
-
-labor market reconfiguration
-
-Very useful for global models.
-
-If I were building a serious Moody’s vacancy model
-My first production features would be:
-
-Core Demand Mechanics
-Payroll-to-supply mismatch
-
-Wage absorption efficiency
-
-Economic leasing capacity
-
-Structural Market Strength
-Competitive wage drift
-
-Payroll resilience ratio
-
-Cycle Timing
-Wage cycle position
-
-Distributed lag surface
-
-Structural break detector
-
-These are the kinds of engineered signals that move you from:
-
-generic forecasting
-
-to
-
-institutional CRE intelligence modeling.
-
-
-Show me some more features engineering with wage_salary_disbursement which are realistic and don't try to keep the earlier feature.
-
-Understood. You want fresh, realistic feature engineering ideas specifically for wage_salary_disbursement, without repeating the earlier concepts.
-
-I’ll focus on features that are practical for quarterly Moody’s-style panel real estate data and can genuinely help vacancy forecasting.
-
-1. Wage Growth Consistency Score
-Measures whether wage expansion is stable or erratic.
-
-C
-o
-n
-s
-i
-s
-t
-e
-n
-c
-y
-t
-=
-1
-−
-S
-t
-d
-(
-G
-r
-o
-w
-t
-h
-l
-a
-s
-t
-4
-Q
-)
-∣
-M
-e
-a
-n
-(
-G
-r
-o
-w
-t
-h
-l
-a
-s
-t
-4
-Q
-)
-∣
-Consistency 
-t
-​
- =1− 
-∣Mean(Growth 
-last4Q
-​
- )∣
-Std(Growth 
-last4Q
-​
- )
-​
- 
-
-Why useful:
-
-Markets with consistent payroll expansion usually generate steadier absorption.
-
-Erratic payroll growth often leads to uncertain leasing demand.
-
-This is especially predictive for office.
-
-2. Wage Expansion Breadth Window
-Count how many of the last 8 quarters had positive wage growth.
-
-B
-r
-e
-a
-d
-t
-h
-t
-=
-∑
-i
-=
-1
-8
-I
-(
-G
-r
-o
-w
-t
-h
-t
-−
-i
->
-0
-)
 Breadth 
 t
 ​
+ = 
+Total Industries 
+t
+​
+ 
+Number of Industries with Positive Wage Growth 
+t
+​
+ 
+​
+ 
+
+Why important:
+Broad-based income growth is more sustainable than single-sector booms.
+
+Helps detect fragile tech-boom or energy-boom markets.
+
+6. Income Pull Forward Signal
+Captures overheating periods where demand may have been borrowed from future quarters.
+
+Feature:
+
+Pull Forward
+t
+=
+Current Income Growth
+t
+Future 4Q Average Income Growth
+t
+Pull Forward 
+t
+​
+ = 
+Future 4Q Average Income Growth 
+t
+​
+ 
+Current Income Growth 
+t
+​
+ 
+​
+ 
+
+Interpretation:
+Very high values may indicate temporary spikes that later reverse.
+
+Useful around:
+
+stimulus periods
+
+post-recession rebounds
+
+7. Income-to-Transit Accessibility Interaction
+Advanced urban CRE feature.
+
+Feature:
+
+Transit Income Score
+t
+=
+Income Per Capita
+t
+×
+Transit Accessibility
+t
+Transit Income Score 
+t
+​
+ =Income Per Capita 
+t
+​
+ ×Transit Accessibility 
+t
+​
+ 
+
+Why realistic:
+High-income transit-oriented markets often maintain stronger occupancy.
+
+Especially useful for:
+
+office
+
+mixed-use
+
+urban apartments
+
+8. Income Compression Signal
+Measures whether income growth is slowing rapidly after a boom.
+
+Feature:
+
+Compression
+t
+=
+Income Growth
+t
+−
+1
+−
+Income Growth
+t
+Compression 
+t
+​
+ =Income Growth 
+t−1
+​
+ −Income Growth 
+t
+​
+ 
+
+Why powerful:
+Vacancy often rises AFTER income momentum collapses.
+
+Very predictive near turning points.
+
+9. Income-to-New Household Formation Ratio
+Excellent multifamily feature.
+
+Feature:
+
+Income Household Ratio
+t
+=
+Δ
+Total Personal Income
+t
+Δ
+Households
+t
+Income Household Ratio 
+t
+​
+ = 
+ΔHouseholds 
+t
+​
+ 
+ΔTotal Personal Income 
+t
+​
+ 
+​
+ 
+
+Interpretation:
+Measures economic quality of household growth.
+
+Markets adding households but weak income may produce weaker occupancy quality.
+
+10. Income Fragility Index
+Captures dependence on unstable income growth.
+
+Feature:
+
+Fragility
+t
+=
+σ
+(
+Income Growth
+)
+Average Income Growth
+Fragility 
+t
+​
+ = 
+Average Income Growth
+σ(Income Growth)
+​
+ 
+
+Why useful:
+High volatility economies produce:
+
+unstable leasing behavior
+
+weaker long-term occupancy stability
+
+11. Income-to-Inventory Expansion Gap
+Very realistic development-cycle feature.
+
+Feature:
+
+Expansion Gap
+t
+=
+Income Growth
+t
+−
+Inventory Growth
+t
+Expansion Gap 
+t
+​
+ =Income Growth 
+t
+​
+ −Inventory Growth 
+t
+​
+ 
+
+Interpretation:
+
+Positive → demand fundamentals outrunning supply
+
+Negative → oversupply risk
+
+One of the most practical vacancy predictors.
+
+12. Income Recovery Asymmetry
+Measures whether recovery speed differs from decline speed.
+
+Feature:
+
+Recovery Asymmetry
+t
+=
+∣
+Recovery Slope
+t
+∣
+∣
+Decline Slope
+t
+∣
+Recovery Asymmetry 
+t
+​
+ = 
+∣Decline Slope 
+t
+​
+ ∣
+∣Recovery Slope 
+t
+​
+ ∣
+​
+ 
+
+Why useful:
+Fast recoveries usually compress vacancy rapidly.
+
+Slow recoveries signal structural weakness.
+
+13. Income Embedded Demand Score
+Estimate latent future leasing demand from income trajectory.
+
+Feature:
+
+Embedded Demand
+t
+=
+∑
+i
+=
+1
+4
+w
+i
+×
+Δ
+Income
+t
+−
+i
+Embedded Demand 
+t
+​
  =∑ 
 i=1
-8
+4
 ​
- I(Growth 
+ w 
+i
+​
+ ×ΔIncome 
 t−i
 ​
- >0)
-
-Interpretation:
-
-8 → broad sustained expansion
-
-2 → weak unstable economy
-
-Why it matters:
-
-Vacancy responds better to sustained payroll gains than short spikes.
-
-3. Rolling Wage Trend Slope
-Fit linear trend over trailing quarters.
-
-S
-l
-o
-p
-e
-t
-=
-β
-(
-W
-t
-−
-8
-:
-t
-)
-Slope 
-t
-​
- =β(W 
-t−8:t
-​
- )
-
-What it captures:
-
-Underlying economic direction.
-
-Unlike simple growth rates, this removes quarter noise.
-
-Useful for identifying:
-
-gradual deterioration
-
-steady acceleration
-
-4. Wage Peak Distance
-Distance from historical local maximum.
-
-P
-e
-a
-k
-D
-i
-s
-t
-a
-n
-c
-e
-t
-=
-W
-t
-M
-a
-x
-(
-W
-l
-a
-s
-t
-20
-Q
-)
-PeakDistance 
-t
-​
- = 
-Max(W 
-last20Q
-​
- )
-W 
-t
-​
- 
-​
  
 
-Interpretation:
+This smooths temporary quarterly noise and captures sustained economic pressure.
 
-Close to 1:
-Near cycle peak
-
-Low:
-Still recovering
-
-Why useful:
-
-Markets near prior peaks often behave differently than recovery-stage markets.
-
-5. Wage Recovery Speed
-After a decline, how fast wages rebound.
-
-R
-e
-c
-o
-v
-e
-r
-y
-S
-p
-e
-e
-d
-t
-=
-W
-t
-−
-W
-t
-r
-o
-u
-g
-h
-t
-−
-t
-t
-r
-o
-u
-g
-h
-RecoverySpeed 
-t
-​
- = 
-t−t 
-trough
-​
- 
-W 
-t
-​
- −W 
-trough
-​
- 
-​
- 
-
-Why it matters:
-
-Fast payroll recovery usually signals stronger leasing confidence.
-
-This often predicts vacancy compression ahead of reported occupancy improvement.
-
-6. Wage Dispersion Ratio Across Markets
-Relative market competitiveness.
-
-For each quarter:
-
-D
-i
-s
-p
-e
-r
-s
-i
-o
-n
-t
-=
-W
-m
-a
-r
-k
-e
-t
-,
-t
-M
-e
-d
-i
-a
-n
-(
-W
-a
-l
-l
- 
-m
-a
-r
-k
-e
-t
-s
-,
-t
-)
-Dispersion 
-t
-​
- = 
-Median(W 
-all markets,t
-​
- )
-W 
-market,t
-​
- 
-​
- 
-
-Why useful:
-
-Shows whether a market is outperforming peers.
-
-This often matters more than absolute level.
-
-7. Payroll Deceleration Flag
-Binary turning-point detector.
+14. Income-to-Business Formation Ratio
+Strong office and retail indicator.
 
 Feature:
 
-1 if:
-
-growth positive
-
-but growth lower than previous 2 quarters
-
-Else 0
-
-Why useful:
-
-Captures early economic cooling before outright contraction.
-
-Vacancy often reacts during deceleration.
-
-8. Wage Relative Momentum
-Compare short-term vs long-term payroll growth.
-
-R
-e
-l
-a
-t
-i
-v
-e
-M
-o
-m
-e
-n
-t
-u
-m
+Business Formation Efficiency
 t
 =
-G
-r
-o
-w
+New Business Applications
 t
-h
-2
-Q
-−
-G
-r
-o
-w
+Δ
+Total Personal Income
 t
-h
-8
-Q
-RelativeMomentum 
-t
-​
- =Growth 
-2Q
-​
- −Growth 
-8Q
-​
- 
-
-Interpretation:
-
-Positive:
-Near-term acceleration
-
-Negative:
-Momentum weakening
-
-This helps identify inflection points.
-
-9. Wage Drawdown Magnitude
-Measures decline from recent highs.
-
-D
-r
-a
-w
-d
-o
-w
-n
-t
-=
-W
-t
-−
-M
-a
-x
-(
-W
-l
-a
-s
-t
-12
-Q
-)
-M
-a
-x
-(
-W
-l
-a
-s
-t
-12
-Q
-)
-Drawdown 
+Business Formation Efficiency 
 t
 ​
  = 
-Max(W 
-last12Q
-​
- )
-W 
+ΔTotal Personal Income 
 t
 ​
- −Max(W 
-last12Q
+ 
+New Business Applications 
+t
 ​
- )
+ 
 ​
  
 
-Why useful:
+Why important:
+Some markets convert income growth into entrepreneurship better than others.
 
-Payroll drawdowns often precede rising vacancy.
+Very useful for:
 
-Particularly effective for cyclical office markets.
+office demand
 
-10. Wage Seasonal Residual
-Since quarterly data often has payroll seasonality.
+neighborhood retail
+
+15. Income Concentration Momentum
+Captures whether growth is becoming concentrated in elite earners.
 
 Feature:
 
-Actual wage minus expected seasonal quarter average.
-
-R
-e
-s
-i
-d
-u
-a
-l
+Concentration Momentum
 t
 =
-W
-t
-−
-A
-v
-g
+Δ
 (
-W
-s
-a
-m
-e
- 
-q
-u
-a
-r
+Income Per Capita
 t
-e
-r
+Median Income
+t
 )
-Residual 
+Concentration Momentum 
 t
 ​
- =W 
+ =Δ( 
+Median Income 
 t
 ​
- −Avg(W 
-same quarter
+ 
+Income Per Capita 
+t
+​
+ 
 ​
  )
 
 Why useful:
+Luxury-oriented CRE performs differently from workforce housing.
 
-Detects abnormal quarter-specific economic strength/weakness.
-
-Removes recurring seasonal distortions.
-
-11. Wage Compression Duration
-How long wages have stayed below prior peak.
+16. Income-to-Commuting Burden Interaction
+Interesting urban feature.
 
 Feature:
 
-Number of consecutive quarters where:
-
-W
+Commute Burden Score
 t
-<
-0.95
-⋅
-P
-e
-a
-k
-h
-i
-s
+=
+Income Per Capita
 t
-o
-r
-i
-c
-a
-l
-W 
+Average Commute Cost
+t
+Commute Burden Score 
 t
 ​
- <0.95⋅Peak 
-historical
+ = 
+Average Commute Cost 
+t
+​
+ 
+Income Per Capita 
+t
+​
+ 
 ​
  
 
-Why useful:
+Why realistic:
+Markets where commuting becomes too expensive may see:
 
-Persistent below-peak payroll often indicates structural softness.
+suburban migration
 
-Very useful for distinguishing cyclical dip vs structural decline.
+office demand shifts
 
-12. Wage Inflection Score
-Detect curvature.
+multifamily relocation patterns
 
-I
-n
-f
-l
-e
-c
-t
-i
-o
-n
+17. Income Persistence Decay
+Measures how quickly economic momentum fades.
+
+Feature:
+
+Persistence Decay
 t
 =
-(
-W
-t
-−
-W
-t
-−
-2
-)
-−
-(
-W
-t
-−
-2
-−
-W
+Income Growth
 t
 −
 4
-)
-Inflection 
+Income Growth
 t
-​
- =(W 
-t
-​
- −W 
-t−2
-​
- )−(W 
-t−2
-​
- −W 
-t−4
-​
- )
-
-Interpretation:
-
-Positive:
-Acceleration
-
-Negative:
-Loss of momentum
-
-This often catches turning points earlier than standard growth.
-
-13. Payroll Expansion Persistence Ratio
-Ratio of positive-growth quarters to total quarters over rolling window.
-
-P
-e
-r
-s
-i
-s
-t
-e
-n
-c
-e
-t
-=
-P
-o
-s
-i
-t
-i
-v
-e
-G
-r
-o
-w
-t
-h
-Q
-u
-a
-r
-t
-e
-r
-s
-W
-i
-n
-d
-o
-w
-L
-e
-n
-g
-t
-h
-Persistence 
+Persistence Decay 
 t
 ​
  = 
-WindowLength
-PositiveGrowthQuarters
+Income Growth 
+t
+​
+ 
+Income Growth 
+t−4
+​
+ 
 ​
  
 
-Why useful:
+Useful for:
 
-Stable labor expansion is more supportive of occupancy than intermittent growth.
+detecting unsustainable growth cycles
 
-14. Wage Rank Within Market History
-Percentile rank of current payroll within market’s historical distribution.
+forecasting reversal risk
 
-R
-a
-n
-k
+18. Income-to-Credit Expansion Imbalance
+Captures unhealthy debt-driven economies.
+
+Feature:
+
+Credit Imbalance
 t
 =
-P
-e
-r
-c
-e
-n
+Credit Growth
 t
-i
-l
-e
+−
+Income Growth
+t
+Credit Imbalance 
+t
+​
+ =Credit Growth 
+t
+​
+ −Income Growth 
+t
+​
+ 
+
+Why powerful:
+If credit grows much faster than income:
+
+temporary demand may inflate
+
+future vacancy risk rises
+
+Especially relevant before downturns.
+
+19. Income Seasonal Stability Score
+Quarterly data often has local seasonality.
+
+Feature:
+
+Seasonal Stability
+t
+=
+1
+−
+σ
 (
-W
-t
-∣
-H
-i
-s
-t
-o
-r
-y
+Quarterly Income Pattern
 )
-Rank 
+μ
+(
+Quarterly Income Pattern
+)
+Seasonal Stability 
 t
 ​
- =Percentile(W 
-t
+ =1− 
+μ(Quarterly Income Pattern)
+σ(Quarterly Income Pattern)
 ​
- ∣History)
+ 
 
-Why useful:
+Markets with stable seasonal behavior often have:
 
-Normalizes market-specific scale differences.
+more predictable occupancy
 
-Your global model will love this.
+lower volatility in leasing
 
-15. Wage Entropy
-Measures unpredictability.
+20. Income-to-Tenant Mix Compatibility
+Advanced retail/office signal.
 
-Higher entropy = unstable labor market.
+Feature:
+Measure similarity between:
 
-Why useful:
+income profile
 
-Unpredictable payroll environments create leasing hesitation.
+tenant target demographics
 
-Especially relevant for office and retail.
+Example:
+Luxury retail performs best where local income structure matches target consumers.
 
-My strongest realistic picks for your vacancy modeling
-If I were selecting only 5 from this fresh list:
+This can be engineered using:
 
-1. Wage Relative Momentum
-(best turning-point detector)
+cosine similarity
 
-2. Seasonal Residual
-(great for quarterly data)
+embedding distance
 
-3. Wage Rank Within Market History
-(excellent for global panel models)
+demographic alignment score
 
-4. Drawdown Magnitude
-(strong recession signal)
-
-5. Growth Consistency Score
-(captures leasing confidence)
-
-These are practical, realistic, and highly defensible in a Moody’s-style forecasting framework.
+Very institutional and highly realistic.
 
 
