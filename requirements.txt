@@ -8,2237 +8,154 @@ Open
 This is a copy of a shared ChatGPT conversation
 
 Report conversation
-For Federal_Reserve_Total_Assets, simple lags and growth rates are only the beginning.
-Top CRE research teams usually transform this variable into liquidity regime, financial stress, and capital flow signals.
+For Other_Services_Employment_Extended, the best feature engineering is usually not simple lags or growth rates.
+Top CRE and macro forecasting teams try to transform it into signals about:
 
-Since your data is:
+local economic resilience
 
-quarterly
+neighborhood commercial intensity
 
-multi-market
+labor fragility
 
-multiple property types
+recovery persistence
 
-vacancy forecasting
+service-sector dependency
 
-you can engineer features that capture:
+urban vibrancy cycles
 
-liquidity transmission
+Below are more advanced and realistic feature ideas specifically designed for quarterly real estate vacancy modeling.
 
-delayed CRE response
+1. Service Employment Momentum Acceleration
+Not just growth — growth acceleration.
 
-overbuilding cycles
-
-risk appetite
-
-monetary regime shifts
-
-Below are some high-value, institutional-style feature ideas.
-
-1. Liquidity Impulse Acceleration
-Instead of growth level, measure whether liquidity injection itself is accelerating.
-
-(
-F
-e
-d
 A
-s
-s
+c
+c
 e
+l
+e
+r
+a
 t
-s
+i
+o
+n
+t
+=
+Y
+o
+Y
+G
+r
+o
+w
+t
+h
 t
 −
-F
-e
-d
-A
-s
-s
-e
+Y
+o
+Y
+G
+r
+o
+w
 t
-s
+h
 t
 −
 1
-)
-−
-(
-F
-e
-d
-A
-s
-s
-e
-t
-s
-t
-−
-1
-−
-F
-e
-d
-A
-s
-s
-e
-t
-s
-t
-−
-2
-)
-(FedAssets 
+Acceleration 
 t
 ​
- −FedAssets 
+ =YoYGrowth 
+t
+​
+ −YoYGrowth 
 t−1
 ​
- )−(FedAssets 
-t−1
-​
- −FedAssets 
-t−2
-​
- )
-Interpretation:
-
-Positive → Fed easing becoming stronger
-
-Negative → liquidity support fading
-
-Why useful:
-CRE reacts strongly to second derivative of liquidity.
-
-Very useful during:
-
-QE transitions
-
-QT periods
-
-crisis recovery
-
-2. Liquidity-to-Economy Ratio
-Normalize Fed balance sheet relative to economy size.
-
-F
-e
-d
+ 
 A
-s
-s
+c
+c
 e
+l
+e
+r
+a
 t
-s
+i
+o
+n
+t
+=
+Y
+o
+Y
 G
-D
-P
-GDP
-FedAssets
-​
- 
-or
-
-F
-e
-d
-A
-s
-s
-e
-t
-s
-T
-o
-t
-a
-l
-P
-e
 r
-s
 o
-n
-a
-l
-I
-n
-c
-o
-m
-e
-TotalPersonalIncome
-FedAssets
-​
- 
-This measures:
-
-excess monetary accommodation
-
-systemic liquidity saturation
-
-Why powerful:
-Raw Fed assets trend upward structurally.
-Normalization removes long-term drift.
-
-3. Market Liquidity Exposure Score
-Create market-level sensitivity.
-
-Step 1:
-Estimate historical correlation:
-
-C
-o
-r
-r
-(
-Δ
-V
-a
-c
-a
-n
-c
-y
-,
-Δ
-F
-e
-d
-A
-s
-s
-e
+w
 t
-s
-)
-Corr(ΔVacancy,ΔFedAssets)
-for each market.
-
-Step 2:
-Use this as a market feature.
-
-Interpretation:
-
-Austin office may have high liquidity beta
-
-NYC retail may have lower beta
-
-This becomes a structural market characteristic.
-
-Extremely sophisticated feature.
-
-4. Liquidity Shock Regime
-Measure deviation from long-term trend.
-
-F
-e
-d
-A
-s
-s
-e
-t
-s
+h
 t
 −
-M
-A
-12
-Q
-S
-T
-D
-12
-Q
-STD 
-12Q
-​
- 
-FedAssets 
-t
-​
- −MA 
-12Q
-​
- 
-​
- 
-Interpretation:
-
-large positive → abnormal liquidity regime
-
-negative → tightening regime
-
-This behaves like a monetary z-score.
-
-Very effective in tree models.
-
-5. Liquidity Persistence
-Measure how long easing/tightening has continued.
-
-Example:
-
-Quarter	QE Indicator
-t-5	1
-t-4	1
-t-3	1
-t-2	1
-t-1	1
-Feature:
-
-R
+Y
 o
-l
-l
-i
-n
-g
-S
-u
-m
-(
-Q
-E
-I
-n
-d
-i
-c
-a
-t
-o
-r
-,
-8
-Q
-)
-RollingSum(QEIndicator,8Q)
-Why useful:
-CRE responds more to sustained liquidity than temporary injections.
-
-6. Liquidity Elasticity of Vacancy
-Very advanced feature.
-
-Δ
-V
-a
-c
-a
-n
-c
-y
-Δ
-F
-e
-d
-A
-s
-s
-e
-t
-s
-ΔFedAssets
-ΔVacancy
-​
- 
-rolling over 8–12 quarters.
-
-Measures:
-“How responsive is this market currently to liquidity?”
-
-Markets change sensitivity over time.
-
-Useful for:
-
-regime adaptation
-
-dynamic relationships
-
-7. Liquidity × Supply Pipeline
-One of the strongest real estate interactions.
-
-F
-e
-d
-A
-s
-s
-e
-t
-s
+Y
 G
 r
 o
 w
 t
 h
-×
-C
-o
-n
-s
-t
-r
-u
-c
-t
-i
-o
-n
-P
-e
-r
-m
-i
-t
-s
-FedAssetsGrowth×ConstructionPermits
-or
-
-F
-e
-d
-A
-s
-s
-e
-t
-s
-G
-r
-o
-w
-t
-h
-×
-U
-n
-d
-e
-r
-C
-o
-n
-s
-t
-r
-u
-c
-t
-i
-o
-n
-I
-n
-v
-e
-n
-t
-o
-r
-y
-FedAssetsGrowth×UnderConstructionInventory
-Interpretation:
-
-abundant liquidity + aggressive construction
-= future oversupply risk
-
-This predicts future vacancy spikes surprisingly well.
-
-8. Liquidity × Cap Rate Compression
-F
-e
-d
-A
-s
-s
-e
-t
-s
-G
-r
-o
-w
-t
-h
-×
-C
-a
-p
-R
-a
-t
-e
-S
-p
-r
-e
-a
-d
-FedAssetsGrowth×CapRateSpread
-Why useful:
-Liquidity affects markets differently depending on valuation tightness.
-
-Example:
-
-if spreads already compressed → liquidity creates bubbles
-
-if spreads wide → liquidity stimulates healthy growth
-
-9. Liquidity Cycle Turning Point
-Detect policy inflection.
-
-Feature:
-
-S
-i
-g
-n
-(
-Δ
-F
-e
-d
-A
-s
-s
-e
-t
-s
-t
-)
-≠
-S
-i
-g
-n
-(
-Δ
-F
-e
-d
-A
-s
-s
-e
-t
-s
 t
 −
 1
-)
-Sign(ΔFedAssets 
+Acceleration 
 t
 ​
- )
-
-=Sign(ΔFedAssets 
+ =YoYGrowth 
+t
+​
+ −YoYGrowth 
 t−1
 ​
- )
-Binary variable:
-
-1 when Fed shifts from easing to tightening
-
-0 otherwise
-
-Turning points often matter more than levels.
-
-10. Liquidity Momentum Exhaustion
-Measure weakening QE effect.
-
-Δ
-F
-e
-d
-A
-s
-s
-e
-t
-s
-t
-R
-o
-l
-l
-i
-n
-g
-M
-e
-a
-n
-(
-Δ
-F
-e
-d
-A
-s
-s
-e
-t
-s
-,
-4
-Q
-)
-RollingMean(ΔFedAssets,4Q)
-ΔFedAssets 
-t
-​
  
-​
- 
-Interpretation:
-
-high values → fresh stimulus
-
-falling values → policy losing momentum
-
-Useful around late-cycle expansions.
-
-11. Distance from Crisis Liquidity Peak
-F
-e
-d
-A
-s
-s
-e
-t
-s
-t
-−
-M
-a
-x
-(
-F
-e
-d
-A
-s
-s
-e
-t
-s
-p
-a
-s
-t
- 
-c
-r
-i
-s
-i
-s
-)
-FedAssets 
-t
-​
- −Max(FedAssets 
-past crisis
-​
- )
-or percentile distance.
 
 Why useful:
-Post-crisis CRE behavior differs dramatically.
 
-Captures:
+detects turning points early
 
-recovery stage
+vacancy often reacts to second derivative changes
 
-normalization phase
+leasing markets care about momentum shifts
 
-12. Liquidity Volatility
-S
-T
-D
-(
-Δ
-F
-e
-d
-A
-s
-s
-e
-t
-s
-,
-8
-Q
-)
-STD(ΔFedAssets,8Q)
-Measures policy instability.
-
-High volatility periods usually imply:
-
-macro uncertainty
-
-unstable tenant demand
-
-cautious leasing
-
-Can improve vacancy forecasting.
-
-13. Liquidity Breadth Indicator
-If you have:
-
-corporate spreads
-
-M2
-
-bank lending
-
-mortgage spreads
-
-Create composite liquidity index.
-
-Example:
-
-0.4
-(
-F
-e
-d
-A
-s
-s
-e
-t
-s
-G
-r
-o
-w
-t
-h
-)
-+
-0.3
-(
-M
-2
-G
-r
-o
-w
-t
-h
-)
-−
-0.3
-(
-C
-r
-e
-d
-i
-t
-S
-p
-r
-e
-a
-d
-)
-0.4(FedAssetsGrowth)+0.3(M2Growth)−0.3(CreditSpread)
-This is how institutional macro models work.
-
-14. Time Since Last QE Expansion
-Feature:
-
-C
-u
-r
-r
-e
-n
-t
-Q
-u
-a
-r
-t
-e
-r
-−
-L
-a
-s
-t
-Q
-E
-Q
-u
-a
-r
-t
-e
-r
-CurrentQuarter−LastQEQuarter
-Why useful:
-Liquidity effects decay over time.
-
-CRE demand often weakens several quarters after stimulus stops.
-
-15. Liquidity Saturation Threshold
-Nonlinear feature.
-
-Example:
-
-1
-(
-F
-e
-d
-A
-s
-s
-e
-t
-s
-/
-G
-D
-P
->
-95
-t
-h
-P
-e
-r
-c
-e
-n
-t
-i
-l
-e
-)
-1(FedAssets/GDP>95thPercentile)
 Interpretation:
-“Extreme liquidity regime.”
 
-Tree models LOVE this.
+positive acceleration → improving local ecosystem
 
-Because:
+negative acceleration → hidden slowdown before vacancy rises
 
-normal QE behaves differently from extreme QE.
+2. Local Service Economy Regime Score
+Create market states.
 
-16. Fed Assets Relative to CRE Prices
-F
-e
-d
-A
-s
-s
-e
-t
-s
-C
-o
-m
-m
-e
-r
-c
-i
-a
-l
-R
-e
-a
-l
-E
-s
-t
-a
-t
-e
-P
-r
-i
-c
-e
-I
-n
-d
-e
-x
-CommercialRealEstatePriceIndex
-FedAssets
-​
- 
-Captures:
-
-whether liquidity is outrunning asset fundamentals.
-
-Potentially predictive of:
-
-bubbles
-
-future vacancy reversals
-
-17. Liquidity Transmission Delay Surface
-Instead of one lag:
-create distributed lag structure.
-
-Feature
-Lag 1Q
-Lag 2Q
-Lag 4Q
-Lag 6Q
-Lag 8Q
-Lag 12Q
-Then:
-
-PCA compress
-OR
-
-allow boosting model to select
-
-Very common in macro forecasting.
-
-18. Cross-Market Liquidity Divergence
-Compute:
-
-M
-a
-r
-k
-e
-t
-V
-a
-c
-a
-n
-c
-y
-G
-r
-o
-w
-t
-h
-−
-N
-a
-t
-i
-o
-n
-a
-l
-V
-a
-c
-a
-n
-c
-y
-G
-r
-o
-w
-t
-h
-MarketVacancyGrowth−NationalVacancyGrowth
-during high liquidity periods.
-
-Measures:
-Which markets outperform when liquidity is abundant?
-
-Excellent for global models.
-
-19. Liquidity Driven Demand Proxy
-Interaction:
-
-F
-e
-d
-A
-s
-s
-e
-t
-s
-G
-r
-o
-w
-t
-h
-×
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-G
-r
-o
-w
-t
-h
-FedAssetsGrowth×EmploymentGrowth
-Why powerful:
-Liquidity only matters if economic demand transmits.
-
-This separates:
-
-“liquidity trap” markets
-from
-
-“growth transmission” markets.
-
-20. Regime Embedding Feature
-Create categorical regimes:
+Example:
 
 Regime	Condition
-Crisis QE	FedAssets growth > 20%
-Expansion QE	5–20%
-Neutral	-5% to 5%
-QT	< -5%
-Then:
+Expansion	growth > 4%
+Stable	1–4%
+Weakening	-2% to 1%
+Stress	< -2%
+Then encode regime.
 
-one-hot encode
-
-interact with property type
-
-Institutional models use this extensively.
-
-Most underrated idea
-This one is extremely realistic:
-
-Liquidity-induced oversupply score
-F
-e
-d
-A
-s
-s
-e
-t
-s
-G
-r
-o
-w
-t
-h
-t
-−
-4
-×
-C
-o
-n
-s
-t
-r
-u
-c
-t
-i
-o
-n
-G
-r
-o
-w
-t
-h
-t
-×
-L
-o
-w
-C
-a
-p
-R
-a
-t
-e
-E
-n
-v
-i
-r
-o
-n
-m
-e
-n
-t
-FedAssetsGrowth 
-t−4
-​
- ×ConstructionGrowth 
-t
-​
- ×LowCapRateEnvironment
-This captures:
-
-cheap capital
-
-aggressive building
-
-speculative pricing
-
-which is EXACTLY how future vacancy spikes emerge in CRE cycles.
-
-Very powerful for:
-
-industrial
-
-multifamily
-
-Sunbelt markets.
-
-
-Sorry I was asking can you look for some more top notch features engineering which top real estate industry use
-
-Yes — if you want the kind of feature engineering that top CRE shops, REIT research teams, institutional investors, and macro hedge funds actually use, then you need to move beyond:
-
-simple lags
-
-rolling averages
-
-YoY growth
-
-The real edge comes from building:
-
-regime-aware features
-
-capital flow proxies
-
-disequilibrium indicators
-
-reflexivity measures
-
-liquidity transmission signals
-
-For Federal_Reserve_Total_Assets, here are much more advanced and realistic CRE-style engineered features.
-
-1. Liquidity Mispricing Indicator
-This is extremely institutional.
-
-Idea:
-Compare liquidity expansion vs actual economic absorption.
-
-Liquidity Mispricing
-=
-F
-e
-d
-A
-s
-s
-e
-t
-s
-G
-r
-o
-w
-t
-h
-−
-N
-o
-m
-i
-n
-a
-l
-G
-D
-P
-G
-r
-o
-w
-t
-h
-Liquidity Mispricing=FedAssetsGrowth−NominalGDPGrowth
-Interpretation:
-
-liquidity growing much faster than economy
-→ speculative asset inflation likely
-
-In CRE:
-
-prices rise faster than fundamentals
-
-future vacancy risk increases later
-
-Very useful for:
-
-office bubbles
-
-multifamily oversupply
-
-industrial euphoria periods
-
-2. Monetary Excess per Available Space
-Highly CRE-specific.
-
-F
-e
-d
-A
-s
-s
-e
-t
-s
-A
-v
-a
-i
-l
-a
-b
-l
-e
-I
-n
-v
-e
-n
-t
-o
-r
-y
-AvailableInventory
-FedAssets
-​
- 
-or
-
-F
-e
-d
-A
-s
-s
-e
-t
-s
-V
-a
-c
-a
-n
-t
-S
-F
-VacantSF
-FedAssets
-​
- 
-Interpretation:
-“How much liquidity exists per unit of empty space?”
-
-This captures:
-
-capital abundance relative to space supply
-
-Very advanced institutional-style feature.
-
-3. Liquidity-Induced Development Pressure
-Top developers monitor this indirectly.
-
-F
-e
-d
-A
-s
-s
-e
-t
-s
-G
-r
-o
-w
-t
-h
-×
-C
-o
-n
-s
-t
-r
-u
-c
-t
-i
-o
-n
-L
-o
-a
-n
-G
-r
-o
-w
-t
-h
-FedAssetsGrowth×ConstructionLoanGrowth
-or
-
-F
-e
-d
-A
-s
-s
-e
-t
-s
-G
-r
-o
-w
-t
-h
-×
-B
-u
-i
-l
-d
-i
-n
-g
-P
-e
-r
-m
-i
-t
-s
-G
-r
-o
-w
-t
-h
-FedAssetsGrowth×BuildingPermitsGrowth
 Why powerful:
-Cheap liquidity alone does not create oversupply.
 
-Cheap liquidity + financing appetite does.
+vacancy behaves nonlinearly
 
-This predicts:
+recessionary service collapse impacts vacancy disproportionately
 
-future construction waves
-
-future vacancy surges
-
-4. Cap Rate Artificial Compression Score
-Very sophisticated.
-
-F
-e
-d
-A
-s
-s
-e
-t
-s
-G
-r
-o
-w
-t
-h
-C
-a
-p
-R
-a
-t
-e
-CapRate
-FedAssetsGrowth
-​
- 
-Interpretation:
-“How aggressively liquidity is suppressing yields.”
-
-When this becomes extreme:
-
-asset valuations disconnect from occupancy fundamentals.
-
-Very predictive before corrections.
-
-5. Liquidity Crowding Signal
-Measures whether too much institutional capital is chasing CRE.
-
-F
-e
-d
-A
-s
-s
-e
-t
-s
-G
-r
-o
-w
-t
-h
-×
-C
-R
-E
-T
-r
-a
-n
-s
-a
-c
-t
-i
-o
-n
-V
-o
-l
-u
-m
-e
-G
-r
-o
-w
-t
-h
-FedAssetsGrowth×CRETransactionVolumeGrowth
-Interpretation:
-
-rising liquidity + exploding transaction activity
-→ crowded investment regime
-
-Usually followed later by:
-
-slower leasing
-
-rising concessions
-
-vacancy normalization
-
-6. Vacancy Reflexivity Feature
-This is hedge-fund-level thinking.
-
-F
-e
-d
-A
-s
-s
-e
-t
-s
-G
-r
-o
-w
-t
-h
-t
-−
-4
-×
-V
-a
-c
-a
-n
-c
-y
-C
-o
-m
-p
-r
-e
-s
-s
-i
-o
-n
-t
-−
-2
-FedAssetsGrowth 
-t−4
-​
- ×VacancyCompression 
-t−2
-​
- 
-Interpretation:
-Liquidity causes vacancy improvement,
-which attracts more capital,
-which causes overbuilding later.
-
-Captures reflexive CRE cycles.
-
-Very advanced.
-
-7. Liquidity-to-New-Supply Efficiency
-Institutional research loves efficiency ratios.
-
-N
-e
-t
-A
-b
-s
-o
-r
-p
-t
-i
-o
-n
-F
-e
-d
-A
-s
-s
-e
-t
-s
-G
-r
-o
-w
-t
-h
-×
-N
-e
-w
-S
-u
-p
-p
-l
-y
-FedAssetsGrowth×NewSupply
-NetAbsorption
-​
- 
-Interpretation:
-“How efficiently is liquidity translating into real demand?”
-
-Low values:
-
-speculative supply boom
-
-weak tenant absorption
-
-Huge predictor of future vacancy problems.
-
-8. Monetary Transmission Friction
-Very underrated feature.
-
-F
-e
-d
-A
-s
-s
-e
-t
-s
-G
-r
-o
-w
-t
-h
-−
-L
-o
-a
-n
-G
-r
-o
-w
-t
-h
-FedAssetsGrowth−LoanGrowth
-Interpretation:
-Fed injects liquidity,
-but banks may not lend.
-
-This measures broken monetary transmission.
-
-Especially useful post-2008 and post-2022.
-
-Markets with high friction behave differently.
-
-9. Liquidity Dependency Ratio
-Measures how dependent a market is on easy money.
-
-Step:
-Train local rolling regression:
-
-V
-a
-c
-a
-n
-c
-y
-t
-=
-β
-⋅
-F
-e
-d
-A
-s
-s
-e
-t
-s
-G
-r
-o
-w
-t
-h
-t
-Vacancy 
-t
-​
- =β⋅FedAssetsGrowth 
-t
-​
- 
-Feature:
-rolling beta itself.
-
-Interpretation:
-
-high beta markets collapse harder during QT.
-
-Very powerful for:
-
-Sunbelt
-
-tech-heavy markets
-
-speculative industrial markets
-
-10. QE Sensitivity by Property Type
-This is extremely realistic.
-
-Create interaction:
-
-F
-e
-d
-A
-s
-s
-e
-t
-s
-G
-r
-o
-w
-t
-h
-×
-P
-r
-o
-p
-e
-r
-t
-y
-T
-y
-p
-e
-FedAssetsGrowth×PropertyType
-because liquidity affects:
-
-industrial
-
-office
-
-retail
-differently.
-
-Example:
-
-industrial reacts immediately
-
-office reacts slowly
-
-retail weaker transmission
-
-Tree models capture this well.
-
-11. Monetary Divergence Stress
-Compare Fed expansion vs local economic weakness.
-
-F
-e
-d
-A
-s
-s
-e
-t
-s
-G
-r
-o
-w
-t
-h
-−
-L
-o
-c
-a
-l
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-G
-r
-o
-w
-t
-h
-FedAssetsGrowth−LocalEmploymentGrowth
-Interpretation:
-Liquidity is rising,
-but local fundamentals weak.
-
-This often signals:
-
-artificial pricing
-
-weak occupier market
-
-hidden vacancy risk
-
-Very institutional feature.
-
-12. Asset Inflation Without Occupancy
-Extremely important.
-
-C
-R
-E
-P
-r
-i
-c
-e
-G
-r
-o
-w
-t
-h
-−
-O
-c
-c
-u
-p
-a
-n
-c
-y
-G
-r
-o
-w
-t
-h
-CREPriceGrowth−OccupancyGrowth
-then interact with liquidity:
-
-(
-F
-e
-d
-A
-s
-s
-e
-t
-s
-G
-r
-o
-w
-t
-h
-)
-×
-(
-C
-R
-E
-P
-r
-i
-c
-e
-G
-r
-o
-w
-t
-h
-−
-O
-c
-c
-u
-p
-a
-n
-c
-y
-G
-r
-o
-w
-t
-h
-)
-(FedAssetsGrowth)×(CREPriceGrowth−OccupancyGrowth)
-Interpretation:
-Prices rising without tenant support.
-
-Classic bubble indicator.
-
-13. Liquidity Duration Exposure
-CRE behaves differently depending on how long easy money lasts.
-
-Feature:
-
-R
-o
-l
-l
-i
-n
-g
-Q
-E
-Q
-u
-a
-r
-t
-e
-r
-s
-RollingQEQuarters
-Example:
-number of consecutive quarters where:
-
-F
-e
-d
-A
-s
-s
-e
-t
-s
-G
-r
-o
-w
-t
-h
->
-0
-FedAssetsGrowth>0
-Long-duration QE usually creates:
-
-aggressive underwriting
-
-supply booms
-
-later vacancy spikes
-
-14. Monetary Shock Absorption Capacity
-Very advanced.
-
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-G
-r
-o
-w
-t
-h
-F
-e
-d
-A
-s
-s
-e
-t
-s
-G
-r
-o
-w
-t
-h
-FedAssetsGrowth
-EmploymentGrowth
-​
- 
-Interpretation:
-How much real economic demand is generated per unit liquidity?
-
-Low ratio:
-
-liquidity trapped in asset inflation
-
-High ratio:
-
-healthy economic expansion
-
-Useful distinction.
-
-15. Liquidity-Adjusted Vacancy Momentum
-V
-a
-c
-a
-n
-c
-y
-C
-h
-a
-n
-g
-e
-−
-F
-e
-d
-A
-s
-s
-e
-t
-s
-G
-r
-o
-w
-t
-h
-E
-f
-f
-e
-c
-t
-VacancyChange−FedAssetsGrowthEffect
-This isolates:
-“organic vacancy behavior”
-
-Markets where vacancy rises despite QE are structurally weak.
-
-Institutional investors care deeply about this.
-
-16. Financial Conditions Spillover Feature
-If you have:
-
-CMBS spreads
-
-BBB spreads
-
-mortgage spreads
-
-Create:
-
-F
-e
-d
-A
-s
-s
-e
-t
-s
-G
-r
-o
-w
-t
-h
-×
-C
-r
-e
-d
-i
-t
-S
-p
-r
-e
-a
-d
-C
-o
-m
-p
-r
-e
-s
-s
-i
-o
-n
-FedAssetsGrowth×CreditSpreadCompression
-This directly captures:
-
-refinancing ease
-
-acquisition financing conditions
-
-investor risk appetite
-
-This is VERY realistic.
-
-17. Cross-Market Liquidity Winner Score
-During QE periods:
-
-Compute:
-market absorption relative to national average.
-
-M
-a
-r
-k
-e
-t
-A
-b
-s
-o
-r
-p
-t
-i
-o
-n
-−
-N
-a
-t
-i
-o
-n
-a
-l
-A
-b
-s
-o
-r
-p
-t
-i
-o
-n
-MarketAbsorption−NationalAbsorption
-conditioned on:
-high Fed liquidity regime.
-
-This identifies:
-which markets absorb liquidity best.
-
-Very useful in global models.
-
-18. Liquidity Exhaustion Threshold
-At some point QE stops helping occupancy.
-
-Feature:
-
-F
-e
-d
-A
-s
-s
-e
-t
-s
-P
-e
-r
-c
-e
-n
-t
-i
-l
-e
-FedAssetsPercentile
-Then nonlinear interaction:
-
-very high percentile liquidity
-may indicate late-cycle overheating.
-
-Tree boosting models exploit this beautifully.
-
-19. Liquidity-to-Labor Imbalance
-F
-e
-d
-A
-s
-s
-e
-t
-s
-G
-r
-o
-w
-t
-h
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-G
-r
-o
-w
-t
-h
-EmploymentGrowth
-FedAssetsGrowth
-​
- 
-Interpretation:
-too much liquidity chasing too little real labor demand.
-
-Often precedes:
-
-overpricing
-
-weak tenant quality
-
-future vacancy issues
-
-20. Monetary Policy Convexity
-This is elite-level feature engineering.
-
-Measure whether vacancy reacts asymmetrically.
-
-Example:
-
-Δ
-V
-a
-c
-a
-n
-c
-y
-/
-(
-Δ
-F
-e
-d
-A
-s
-s
-e
-t
-s
-)
-2
-ΔVacancy/(ΔFedAssets) 
-2
- 
-Why?
-Huge QE shocks have nonlinear effects.
-
-CRE markets rarely react linearly to monetary policy.
-
-Very useful in:
+This works very well with:
 
 XGBoost
 
@@ -2246,673 +163,394 @@ LightGBM
 
 CatBoost
 
-The features most likely to produce alpha
-If I were building a production CRE forecasting system, I would prioritize:
-
-Priority	Feature
-High	Liquidity-induced development pressure
-High	Asset inflation without occupancy
-High	Monetary divergence stress
-High	Liquidity dependency ratio
-High	Liquidity-to-new-supply efficiency
-Medium	QE duration exposure
-Medium	Cap rate artificial compression
-Medium	Liquidity crowding signal
-Medium	Monetary transmission friction
-These are genuinely close to what sophisticated CRE macro models try to capture.
-
-
-Show me some more features engineering with Federal_Reserve_Total_Assets which are realistic and don't try to keep the earlier feature.
-
-Absolutely. Let’s go even deeper into realistic CRE/macroeconomic feature engineering specifically for Federal_Reserve_Total_Assets, while avoiding the earlier ideas.
-
-These are the kinds of engineered signals that resemble what:
-
-institutional CRE research teams,
-
-macro strategists,
-
-REIT quant groups,
-
-CMBS analytics teams,
-
-and private equity real estate funds
-
-actually experiment with.
-
-The goal is to transform Fed assets into:
-
-capital availability signals,
-
-refinancing stress signals,
-
-speculative behavior indicators,
-
-leasing-cycle predictors,
-
-and market fragility measures.
-
-1. Liquidity Half-Life Feature
-Measure how quickly the effect of liquidity fades.
-
-Feature:
-
-F
+3. Service Employment Relative to Population
+S
 e
-d
-A
-s
-s
-e
-t
-s
-t
-−
-4
-F
-e
-d
-A
-s
-s
-e
-t
-s
-t
-FedAssets 
-t
-​
- 
-FedAssets 
-t−4
-​
- 
-​
- 
-Interpretation:
-
-near 1 → liquidity staying elevated
-
-low → rapid tightening
-
-This captures:
-“how persistent previous stimulus still is.”
-
-CRE responds heavily to lingering liquidity.
-
-2. Monetary Whiplash Indicator
-Measures sudden policy reversal severity.
-
-∣
-Δ
-F
-e
-d
-A
-s
-s
-e
-t
-s
-t
-−
-Δ
-F
-e
-d
-A
-s
-s
-e
-t
-s
-t
-−
-1
-∣
-∣ΔFedAssets 
-t
-​
- −ΔFedAssets 
-t−1
-​
- ∣
-Large values indicate:
-
-abrupt QE/QT transition
-
-unstable financing environment
-
-Highly predictive for:
-
-transaction slowdown
-
-leasing hesitation
-
-refinancing stress
-
-3. Capital Repricing Pressure
-F
-e
-d
-A
-s
-s
-e
-t
-s
-D
-e
-c
-l
-i
-n
-e
-×
-D
-e
-b
-t
-M
-a
-t
-u
 r
+v
+i
+c
+e
+D
+e
+n
+s
 i
 t
 y
-W
-a
-l
-l
-FedAssetsDecline×DebtMaturityWall
-If you have debt maturity data:
-
-markets with large refinancing needs suffer more during QT.
-
-This is extremely realistic in office markets.
-
-4. Fed Support per Occupied Space
-F
-e
-d
-A
-s
-s
-e
-t
-s
+=
 O
+t
+h
+e
+r
+S
+e
+r
+v
+i
 c
-c
-u
+e
+s
+E
+m
 p
+l
+o
+y
+m
+e
+n
+t
+P
+o
+p
+u
+l
+a
+t
+i
+o
+n
+ServiceDensity= 
+Population
+OtherServicesEmployment
+​
+ 
+S
+e
+r
+v
+i
+c
+e
+D
+e
+n
+s
+i
+t
+y
+=
+O
+t
+h
+e
+r
+S
+e
+r
+v
+i
+c
+e
+s
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+P
+o
+p
+u
+l
+a
+t
+i
+o
+n
+ServiceDensity= 
+Population
+OtherServicesEmployment
+​
+ 
+
+This measures:
+
+local service intensity
+
+urban commercial depth
+
+neighborhood consumption infrastructure
+
+Very important for:
+
+retail
+
+multifamily
+
+mixed-use assets
+
+Markets with high service density often have:
+
+lower structural vacancy
+
+stronger tenant retention
+
+4. Employment Efficiency Feature
+E
+f
+f
+i
+c
 i
 e
-d
-I
 n
+c
+y
+=
+O
+t
+h
+e
+r
+S
+e
+r
+v
+i
+c
+e
+s
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+R
+e
+t
+a
+i
+l
+S
+q
+u
+a
+r
+e
+F
+e
+e
+t
+Efficiency= 
+RetailSquareFeet
+OtherServicesEmployment
+​
+ 
+E
+f
+f
+i
+c
+i
+e
+n
+c
+y
+=
+O
+t
+h
+e
+r
+S
+e
+r
+v
+i
+c
+e
+s
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+R
+e
+t
+a
+i
+l
+S
+q
+u
+a
+r
+e
+F
+e
+e
+t
+Efficiency= 
+RetailSquareFeet
+OtherServicesEmployment
+​
+ 
+
+This estimates:
+
+how much service employment exists per retail inventory
+
+Why interesting:
+
+oversupplied retail markets show low efficiency
+
+dense productive markets show high efficiency
+
+Institutional retail models love inventory-normalized features.
+
+5. Service Employment Volatility
+Rolling instability matters more than average growth.
+
+V
+o
+l
+a
+t
+i
+l
+i
+t
+y
+t
+=
+S
+t
+d
+D
+e
+v
+(
+Y
+o
+Y
+G
+r
+o
+w
+t
+h
+l
+a
+s
+t
+ 
+8
+Q
+)
+Volatility 
+t
+​
+ =StdDev(YoYGrowth 
+last 8Q
+​
+ )
+V
+o
+l
+a
+t
+i
+l
+i
+t
+y
+t
+=
+S
+t
+d
+D
+e
+v
+(
+Y
+o
+Y
+G
+r
+o
+w
+t
+h
+l
+a
+s
+t
+ 
+8
+Q
+)
+Volatility 
+t
+​
+ =StdDev(YoYGrowth 
+last 8Q
+​
+ )
+
+Why powerful:
+
+unstable service employment → unstable tenant demand
+
+vacancy persistence rises in volatile economies
+
+Especially useful during:
+
+post-COVID normalization
+
+recession periods
+
+6. Employment Recovery Gap
+Measure distance from prior peak.
+
+R
+e
+c
+o
 v
 e
-n
-t
-o
 r
 y
-OccupiedInventory
-FedAssets
-​
- 
-Different from vacant-space metrics.
-
-Captures:
-“How much monetary support exists relative to actually utilized space.”
-
-Can identify:
-
-inflated occupancy environments.
-
-5. Liquidity Decoupling Ratio
-Measures whether capital markets and occupier markets diverge.
-
+G
+a
+p
+=
 C
-R
+u
+r
+r
+e
+n
+t
 E
-T
-r
-a
-n
-s
-a
-c
-t
-i
-o
-n
-V
-o
-l
-u
-m
-e
-G
-r
-o
-w
-t
-h
-−
-N
-e
-t
-A
-b
-s
-o
-r
-p
-t
-i
-o
-n
-G
-r
-o
-w
-t
-h
-CRETransactionVolumeGrowth−NetAbsorptionGrowth
-then condition with Fed liquidity:
-
-(
-F
-e
-d
-A
-s
-s
-e
-t
-s
-G
-r
-o
-w
-t
-h
-)
-×
-(
-T
-r
-a
-n
-s
-a
-c
-t
-i
-o
-n
-G
-r
-o
-w
-t
-h
-−
-A
-b
-s
-o
-r
-p
-t
-i
-o
-n
-G
-r
-o
-w
-t
-h
-)
-(FedAssetsGrowth)×(TransactionGrowth−AbsorptionGrowth)
-Interpretation:
-capital flowing into assets faster than tenants use space.
-
-Massively important in bubble periods.
-
-6. Policy Dependency Drift
-Rolling trend in market sensitivity to Fed assets.
-
-Step:
-Estimate rolling regression beta every 8 quarters.
-
-Then:
-
-B
-e
-t
-a
-t
-−
-B
-e
-t
-a
-t
-−
-8
-Beta 
-t
-​
- −Beta 
-t−8
-​
- 
-Interpretation:
-market becoming increasingly dependent on monetary easing.
-
-Very sophisticated structural feature.
-
-7. Liquidity Efficiency Collapse
-L
-e
-a
-s
-i
-n
-g
-V
-e
-l
-o
-c
-i
-t
-y
-F
-e
-d
-A
-s
-s
-e
-t
-s
-G
-r
-o
-w
-t
-h
-FedAssetsGrowth
-LeasingVelocity
-​
- 
-If liquidity rises but leasing velocity slows:
-
-monetary policy losing effectiveness.
-
-Useful during late-cycle conditions.
-
-8. Shadow Tightening Feature
-Sometimes Fed assets expand while financing still tightens.
-
-Feature:
-
-F
-e
-d
-A
-s
-s
-e
-t
-s
-G
-r
-o
-w
-t
-h
-−
-C
-M
-B
-S
-I
-s
-s
-u
-a
-n
-c
-e
-G
-r
-o
-w
-t
-h
-FedAssetsGrowth−CMBSIssuanceGrowth
-Interpretation:
-official liquidity ≠ actual CRE liquidity.
-
-Very realistic.
-
-9. Liquidity Rotation Indicator
-Captures where liquidity is flowing.
-
-I
-n
-d
-u
-s
-t
-r
-i
-a
-l
-P
-r
-i
-c
-e
-G
-r
-o
-w
-t
-h
-−
-O
-f
-f
-i
-c
-e
-P
-r
-i
-c
-e
-G
-r
-o
-w
-t
-h
-IndustrialPriceGrowth−OfficePriceGrowth
-conditioned on QE regime.
-
-Why useful:
-Fed liquidity rotates unevenly across sectors.
-
-Great for multi-property models.
-
-10. Monetary Saturation Burden
-F
-e
-d
-A
-s
-s
-e
-t
-s
-P
-o
-p
-u
-l
-a
-t
-i
-o
-n
-G
-r
-o
-w
-t
-h
-PopulationGrowth
-FedAssets
-​
- 
-Interpretation:
-liquidity expansion unsupported by demographic demand.
-
-Can indicate:
-
-speculative development
-
-future vacancy imbalance
-
-Very useful in Sunbelt overbuilding studies.
-
-11. QE-Induced Yield Chasing Signal
-F
-e
-d
-A
-s
-s
-e
-t
-s
-G
-r
-o
-w
-t
-h
-×
-M
-u
-l
-t
-i
-f
-a
-m
-i
-l
-y
-C
-a
-p
-R
-a
-t
-e
-C
-o
 m
 p
-r
-e
-s
-s
-i
-o
-n
-FedAssetsGrowth×MultifamilyCapRateCompression
-Captures:
-investors reaching for yield because liquidity suppresses bond yields.
-
-Common institutional framework.
-
-12. Monetary Fragility Score
-V
-a
-c
-a
-n
-c
-y
-R
-a
-t
-e
-×
-F
-e
-d
-A
-s
-s
-e
-t
-s
-D
-e
-c
 l
-i
-n
-e
-VacancyRate×FedAssetsDecline
-Interpretation:
-high vacancy markets become fragile during QT.
-
-This creates:
-
-refinancing risk
-
-distress probability
-
-value impairment
-
-Very practical for office distress models.
-
-13. Liquidity Embedded Supply Risk
-U
-n
-d
-e
-r
-C
 o
-n
-s
-t
-r
-u
-c
-t
-i
-o
-n
-S
-h
-a
-r
+y
+m
 e
-×
+n
+t
 H
 i
 s
@@ -2923,31 +561,1051 @@ i
 c
 a
 l
-F
+P
 e
-d
+a
+k
 E
-x
+m
 p
+l
+o
+y
+m
+e
+n
+t
+RecoveryGap= 
+HistoricalPeakEmployment
+CurrentEmployment
+​
+ 
+R
+e
+c
+o
+v
+e
+r
+y
+G
+a
+p
+=
+C
+u
+r
+r
+e
+n
+t
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+H
+i
+s
+t
+o
+r
+i
+c
+a
+l
+P
+e
+a
+k
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+RecoveryGap= 
+HistoricalPeakEmployment
+CurrentEmployment
+​
+ 
+
+Why strong:
+
+many markets never fully recover after shocks
+
+vacancy behaves differently in partially recovered cities
+
+Example:
+
+NYC office recovery
+
+SF retail recovery post-pandemic
+
+7. Service Employment Pressure Index
+Create labor pressure on local commercial space.
+
+P
+r
+e
+s
+s
+u
+r
+e
+=
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+G
+r
+o
+w
+t
+h
+V
+a
+c
 a
 n
+c
+y
+R
+a
+t
+e
+Pressure= 
+VacancyRate
+EmploymentGrowth
+​
+ 
+P
+r
+e
+s
+s
+u
+r
+e
+=
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+G
+r
+o
+w
+t
+h
+V
+a
+c
+a
+n
+c
+y
+R
+a
+t
+e
+Pressure= 
+VacancyRate
+EmploymentGrowth
+​
+ 
+
+Interpretation:
+
+strong employment growth + low vacancy
+→ leasing pressure building
+
+This often predicts:
+
+rent growth
+
+future occupancy tightening
+
+8. Local Consumer Activity Composite
+Combine:
+
+C
+o
+m
+p
+o
+s
+i
+t
+e
+=
+0.4
+(
+S
+e
+r
+v
+i
+c
+e
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+G
+r
+o
+w
+t
+h
+)
++
+0.3
+(
+P
+e
+r
+s
+o
+n
+a
+l
+I
+n
+c
+o
+m
+e
+G
+r
+o
+w
+t
+h
+)
++
+0.3
+(
+R
+e
+t
+a
+i
+l
+S
+a
+l
+e
+s
+G
+r
+o
+w
+t
+h
+)
+Composite=0.4(ServiceEmploymentGrowth)+0.3(PersonalIncomeGrowth)+0.3(RetailSalesGrowth)
+C
+o
+m
+p
+o
+s
+i
+t
+e
+=
+0.4
+(
+S
+e
+r
+v
+i
+c
+e
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+G
+r
+o
+w
+t
+h
+)
++
+0.3
+(
+P
+e
+r
+s
+o
+n
+a
+l
+I
+n
+c
+o
+m
+e
+G
+r
+o
+w
+t
+h
+)
++
+0.3
+(
+R
+e
+t
+a
+i
+l
+S
+a
+l
+e
+s
+G
+r
+o
+w
+t
+h
+)
+Composite=0.4(ServiceEmploymentGrowth)+0.3(PersonalIncomeGrowth)+0.3(RetailSalesGrowth)
+
+This creates:
+
+local demand pulse
+
+urban vitality score
+
+Very realistic institutional-style feature.
+
+9. Structural Dependency Ratio
+D
+e
+p
+e
+n
+d
+e
+n
+c
+y
+R
+a
+t
+i
+o
+=
+O
+t
+h
+e
+r
+S
+e
+r
+v
+i
+c
+e
+s
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+T
+o
+t
+a
+l
+P
+r
+i
+v
+a
+t
+e
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+DependencyRatio= 
+TotalPrivateEmployment
+OtherServicesEmployment
+​
+ 
+D
+e
+p
+e
+n
+d
+e
+n
+c
+y
+R
+a
+t
+i
+o
+=
+O
+t
+h
+e
+r
+S
+e
+r
+v
+i
+c
+e
+s
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+T
+o
+t
+a
+l
+P
+r
+i
+v
+a
+t
+e
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+DependencyRatio= 
+TotalPrivateEmployment
+OtherServicesEmployment
+​
+ 
+
+This tells you:
+
+whether a market is overly dependent on small service jobs
+
+High dependency markets:
+
+recover fast in expansions
+
+crash harder during downturns
+
+This introduces cyclical sensitivity into vacancy forecasts.
+
+10. Market Divergence Feature
+Compare local market to national trend.
+
+D
+i
+v
+e
+r
+g
+e
+n
+c
+e
+=
+L
+o
+c
+a
+l
+G
+r
+o
+w
+t
+h
+−
+N
+a
+t
+i
+o
+n
+a
+l
+G
+r
+o
+w
+t
+h
+Divergence=LocalGrowth−NationalGrowth
+D
+i
+v
+e
+r
+g
+e
+n
+c
+e
+=
+L
+o
+c
+a
+l
+G
+r
+o
+w
+t
+h
+−
+N
+a
+t
+i
+o
+n
+a
+l
+G
+r
+o
+w
+t
+h
+Divergence=LocalGrowth−NationalGrowth
+
+Very important.
+
+Because investors care about:
+
+relative market strength
+not just absolute growth.
+
+A market outperforming national service employment trends often sees:
+
+stronger leasing
+
+cap rate compression
+
+lower vacancy
+
+11. Service Employment Saturation
+Detect mature markets.
+
+S
+a
+t
+u
+r
+a
+t
+i
+o
+n
+=
+C
+u
+r
+r
+e
+n
+t
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+R
+o
+l
+l
+i
+n
+g
+T
+r
+e
+n
+d
+20
+Q
+Saturation= 
+RollingTrend 
+20Q
+​
+ 
+CurrentEmployment
+​
+ 
+S
+a
+t
+u
+r
+a
+t
+i
+o
+n
+=
+C
+u
+r
+r
+e
+n
+t
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+R
+o
+l
+l
+i
+n
+g
+T
+r
+e
+n
+d
+20
+Q
+Saturation= 
+RollingTrend 
+20Q
+​
+ 
+CurrentEmployment
+​
+ 
+
+Interpretation:
+
+far above trend → overheating
+
+below trend → underutilized economy
+
+Can help predict:
+
+vacancy reversals
+
+mean reversion
+
+12. Service-to-Office Interaction
+For office vacancy models:
+
+I
+n
+t
+e
+r
+a
+c
+t
+i
+o
+n
+=
+O
+t
+h
+e
+r
+S
+e
+r
+v
+i
+c
+e
+s
+G
+r
+o
+w
+t
+h
+×
+O
+f
+f
+i
+c
+e
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+G
+r
+o
+w
+t
+h
+Interaction=OtherServicesGrowth×OfficeEmploymentGrowth
+I
+n
+t
+e
+r
+a
+c
+t
+i
+o
+n
+=
+O
+t
+h
+e
+r
+S
+e
+r
+v
+i
+c
+e
+s
+G
+r
+o
+w
+t
+h
+×
+O
+f
+f
+i
+c
+e
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+G
+r
+o
+w
+t
+h
+Interaction=OtherServicesGrowth×OfficeEmploymentGrowth
+
+Reason:
+
+downtown ecosystems require both
+
+office alone is insufficient now post-COVID
+
+This is extremely realistic.
+
+13. Neighborhood Economic Fragility
+F
+r
+a
+g
+i
+l
+i
+t
+y
+=
+V
+o
+l
+a
+t
+i
+l
+i
+t
+y
+T
+r
+e
+n
+d
+G
+r
+o
+w
+t
+h
+Fragility= 
+TrendGrowth
+Volatility
+​
+ 
+F
+r
+a
+g
+i
+l
+i
+t
+y
+=
+V
+o
+l
+a
+t
+i
+l
+i
+t
+y
+T
+r
+e
+n
+d
+G
+r
+o
+w
+t
+h
+Fragility= 
+TrendGrowth
+Volatility
+​
+ 
+
+High fragility markets:
+
+unstable leasing demand
+
+higher vacancy persistence
+
+weaker tenant quality
+
+14. Employment Elasticity to Vacancy
+Advanced panel feature:
+
+Estimate:
+
+E
+l
+a
+s
+t
+i
+c
+i
+t
+y
+=
+Δ
+V
+a
+c
+a
+n
+c
+y
+Δ
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+Elasticity= 
+ΔEmployment
+ΔVacancy
+​
+ 
+E
+l
+a
+s
+t
+i
+c
+i
+t
+y
+=
+Δ
+V
+a
+c
+a
+n
+c
+y
+Δ
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+Elasticity= 
+ΔEmployment
+ΔVacancy
+​
+ 
+
+Per market over rolling windows.
+
+This captures:
+
+sensitivity of occupancy to service economy
+
+Some markets are:
+
+highly employment-sensitive
+
+others structurally resilient
+
+Huge alpha feature for institutional forecasting.
+
+15. Hidden Recession Detector
+R
+e
+c
+e
+s
 s
 i
 o
 n
-UnderConstructionShare×HistoricalFedExpansion
-Idea:
-current projects were financed under prior QE conditions.
-
-Captures delayed oversupply risk.
-
-Extremely realistic.
-
-14. Policy Conviction Feature
-Measure consistency of Fed direction.
-
-Example:
-
+S
+i
+g
+n
+a
+l
+=
+1
+(
+Y
+o
+Y
+G
+r
+o
+w
+t
+h
+<
+0
+∧
 R
 o
 l
@@ -2959,46 +1617,715 @@ M
 e
 a
 n
-(
+4
+Q
+<
+R
+o
+l
+l
+i
+n
+g
+M
+e
+a
+n
+12
+Q
+)
+RecessionSignal=1(YoYGrowth<0∧RollingMean 
+4Q
+​
+ <RollingMean 
+12Q
+​
+ )
+R
+e
+c
+e
+s
+s
+i
+o
+n
 S
 i
 g
 n
+a
+l
+=
+1
 (
-Δ
-F
-e
-d
-A
-s
-s
-e
+Y
+o
+Y
+G
+r
+o
+w
 t
-s
-)
-,
-6
+h
+<
+0
+∧
+R
+o
+l
+l
+i
+n
+g
+M
+e
+a
+n
+4
+Q
+<
+R
+o
+l
+l
+i
+n
+g
+M
+e
+a
+n
+12
 Q
 )
-RollingMean(Sign(ΔFedAssets),6Q)
+RecessionSignal=1(YoYGrowth<0∧RollingMean 
+4Q
+​
+ <RollingMean 
+12Q
+​
+ )
+
+This acts like:
+
+local economic deterioration detector
+
+Very useful for:
+
+early vacancy stress prediction
+
+regime-switching models
+
+What Top CRE Teams Usually Prefer
+The most valuable features are usually:
+
+Feature Type	Practical Power
+Relative-to-national	Very high
+Recovery gap	Very high
+Regime states	Very high
+Volatility	High
+Interaction features	High
+Density features	High
+Simple lagged growth	Moderate
+My Suggestion for Your Dataset
+For quarterly panel real estate data across markets, I would prioritize:
+
+Relative market divergence
+
+Recovery gap
+
+Volatility regime
+
+Population-normalized density
+
+Interaction with income growth
+
+Service pressure index
+
+Local fragility score
+
+Market regime encoding
+
+Those are much closer to what sophisticated CRE forecasting systems actually use.
+
+
+Sorry I was asking can you look for some more top notch features engineering which top real estate industry use
+
+Yes — if we think like top institutional CRE shops (Blackstone, Brookfield, Green Street, CBRE Econometric Advisors, Moody’s Analytics CRE, Clarion, PGIM, etc.), they usually do cross-market structural features, cycle-state signals, and spatial relative features, not just basic time-series transformations.
+
+For Other_Services_Employment_Extended, here are much more institutional-grade feature engineering ideas specifically for quarterly market-level vacancy forecasting.
+
+1. Service Employment Beta to National Economy
+Instead of raw growth, estimate:
+
+β
+=
+C
+o
+v
+(
+L
+o
+c
+a
+l
+G
+r
+o
+w
+t
+h
+,
+N
+a
+t
+i
+o
+n
+a
+l
+G
+r
+o
+w
+t
+h
+)
+V
+a
+r
+(
+N
+a
+t
+i
+o
+n
+a
+l
+G
+r
+o
+w
+t
+h
+)
+β= 
+Var(NationalGrowth)
+Cov(LocalGrowth,NationalGrowth)
+​
+ 
+β
+=
+C
+o
+v
+(
+L
+o
+c
+a
+l
+G
+r
+o
+w
+t
+h
+,
+N
+a
+t
+i
+o
+n
+a
+l
+G
+r
+o
+w
+t
+h
+)
+V
+a
+r
+(
+N
+a
+t
+i
+o
+n
+a
+l
+G
+r
+o
+w
+t
+h
+)
+β= 
+Var(NationalGrowth)
+Cov(LocalGrowth,NationalGrowth)
+​
+ 
+
+This measures:
+
+“How cyclically sensitive is this market’s service economy?”
+
 Interpretation:
 
-strong positive → persistent easing
+high beta markets:
 
-unstable values → uncertain policy environment
+boom harder
 
-Markets dislike policy inconsistency.
+crash harder
 
-15. Excess Liquidity Absorption Gap
-F
+vacancy volatility higher
+
+low beta markets:
+
+defensive markets
+
+stable occupancy
+
+This is heavily used in institutional portfolio allocation.
+
+2. Employment Breadth Diffusion Signal
+Instead of looking only at level growth:
+
+Create:
+
+B
+r
 e
+a
 d
-A
+t
+h
+=
+#
+P
+o
 s
+i
+t
+i
+v
+e
+S
+u
+b
+S
+e
+c
+t
+o
+r
 s
+#
+T
+o
+t
+a
+l
+S
+u
+b
+S
+e
+c
+t
+o
+r
+s
+Breadth= 
+#TotalSubSectors
+#PositiveSubSectors
+​
+ 
+B
+r
+e
+a
+d
+t
+h
+=
+#
+P
+o
+s
+i
+t
+i
+v
+e
+S
+u
+b
+S
+e
+c
+t
+o
+r
+s
+#
+T
+o
+t
+a
+l
+S
+u
+b
+S
+e
+c
+t
+o
+r
+s
+Breadth= 
+#TotalSubSectors
+#PositiveSubSectors
+​
+ 
+
+Why elite:
+
+broad-based service growth is healthier
+
+narrow growth is fragile
+
+Example:
+
+only salons growing = weak
+
+all service subsectors growing = strong ecosystem
+
+This predicts:
+
+sustainability of occupancy recovery
+
+3. Local Urban Vitality Factor
+One of the most powerful modern CRE concepts post-COVID.
+
+Build latent factor:
+
+V
+i
+t
+a
+l
+i
+t
+y
+=
+f
+(
+S
+e
+r
+v
+i
+c
+e
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+G
+r
+o
+w
+t
+h
+,
+T
+r
+a
+n
+s
+i
+t
+M
+o
+b
+i
+l
+i
+t
+y
+,
+R
+e
+s
+t
+a
+u
+r
+a
+n
+t
+T
+r
+a
+f
+f
+i
+c
+,
+R
 e
 t
+a
+i
+l
+S
+a
+l
+e
 s
+)
+Vitality=f(ServiceEmploymentGrowth,TransitMobility,RestaurantTraffic,RetailSales)
+V
+i
+t
+a
+l
+i
+t
+y
+=
+f
+(
+S
+e
+r
+v
+i
+c
+e
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+G
+r
+o
+w
+t
+h
+,
+T
+r
+a
+n
+s
+i
+t
+M
+o
+b
+i
+l
+i
+t
+y
+,
+R
+e
+s
+t
+a
+u
+r
+a
+n
+t
+T
+r
+a
+f
+f
+i
+c
+,
+R
+e
+t
+a
+i
+l
+S
+a
+l
+e
+s
+)
+Vitality=f(ServiceEmploymentGrowth,TransitMobility,RestaurantTraffic,RetailSales)
+
+This captures:
+
+downtown activation
+
+mixed-use vibrancy
+
+neighborhood attractiveness
+
+Especially predictive for:
+
+retail
+
+multifamily
+
+CBD office recovery
+
+4. Service Employment Persistence Score
+CRE investors care more about persistence than one-quarter spikes.
+
+Estimate rolling autocorrelation:
+
+P
+e
+r
+s
+i
+s
+t
+e
+n
+c
+e
+=
+C
+o
+r
+r
+(
+G
+r
+o
+w
+t
+h
+t
+,
+G
+r
+o
+w
+t
+h
+t
+−
+1
+)
+Persistence=Corr(Growth 
+t
+​
+ ,Growth 
+t−1
+​
+ )
+P
+e
+r
+s
+i
+s
+t
+e
+n
+c
+e
+=
+C
+o
+r
+r
+(
+G
+r
+o
+w
+t
+h
+t
+,
+G
+r
+o
+w
+t
+h
+t
+−
+1
+)
+Persistence=Corr(Growth 
+t
+​
+ ,Growth 
+t−1
+​
+ )
+
+Why useful:
+
+persistent employment trends drive leasing confidence
+
+unstable trends hurt tenant decision-making
+
+5. Employment-to-Housing Imbalance
+Very institutional.
+
+I
+m
+b
+a
+l
+a
+n
+c
+e
+=
+S
+e
+r
+v
+i
+c
+e
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
 G
 r
 o
@@ -3006,112 +2333,503 @@ w
 t
 h
 −
+H
+o
+u
+s
+i
+n
+g
 S
+u
 p
+p
+l
+y
+G
+r
+o
+w
+t
+h
+Imbalance=ServiceEmploymentGrowth−HousingSupplyGrowth
+I
+m
+b
 a
+l
+a
+n
 c
 e
+=
+S
+e
+r
+v
+i
+c
+e
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+G
+r
+o
+w
+t
+h
+−
+H
+o
+u
+s
+i
+n
+g
+S
+u
+p
+p
+l
+y
+G
+r
+o
+w
+t
+h
+Imbalance=ServiceEmploymentGrowth−HousingSupplyGrowth
+
+Interpretation:
+
+employment growing faster than housing
+→ tighter apartment markets
+→ lower vacancy
+
+Huge multifamily alpha feature.
+
+6. Real Estate Demand Intensity Signal
+Normalize employment by occupied space instead of total space.
+
 D
 e
 m
 a
 n
 d
-G
-r
-o
-w
+I
+n
+t
+e
+n
+s
+i
+t
+y
+=
+O
 t
 h
-FedAssetsGrowth−SpaceDemandGrowth
-Where:
-
-demand growth = absorption, employment, or occupied SF growth.
-
-Measures:
-whether liquidity exceeds real occupier demand.
-
-Critical in identifying unsustainable CRE rallies.
-
-16. Monetary Regime Transition Age
-How long since current regime started?
-
-Example:
-
-Regime	Condition
-QE	growth > 0
-QT	growth < 0
-Feature:
-quarters elapsed since regime began.
-
-Why useful:
-early QE behaves differently from late QE.
-
-17. Liquidity Shock Recovery Speed
-After large liquidity expansion:
-
-V
-a
+e
+r
+S
+e
+r
+v
+i
 c
-a
-n
-c
+e
+s
+E
+m
+p
+l
+o
 y
-t
-+
-4
-−
-V
-a
-c
-a
+m
+e
 n
-c
-y
 t
-F
+O
+c
+c
+u
+p
+i
 e
 d
-A
-s
-s
+R
 e
 t
+a
+i
+l
+S
+F
+DemandIntensity= 
+OccupiedRetailSF
+OtherServicesEmployment
+​
+ 
+D
+e
+m
+a
+n
+d
+I
+n
+t
+e
+n
 s
+i
+t
+y
+=
+O
+t
+h
+e
+r
+S
+e
+r
+v
+i
+c
+e
+s
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+O
+c
+c
+u
+p
+i
+e
+d
+R
+e
+t
+a
+i
+l
+S
+F
+DemandIntensity= 
+OccupiedRetailSF
+OtherServicesEmployment
+​
+ 
+
+This detects:
+
+tenant saturation
+
+leasing pressure
+
+underutilized retail ecosystems
+
+Very sophisticated retail feature.
+
+7. Service Employment Shock Absorption Capacity
+Top firms model resilience.
+
+R
+e
+s
+i
+l
+i
+e
+n
+c
+e
+=
+P
+o
+s
+t
 S
 h
 o
 c
 k
-t
-FedAssetsShock 
-t
-​
- 
-Vacancy 
-t+4
-​
- −Vacancy 
-t
-​
- 
-​
- 
-Measures:
-how efficiently a market recovers after intervention.
-
-Can become a market quality factor.
-
-18. Funding Abundance Mismatch
-F
+R
+e
+c
+o
+v
+e
+r
+y
+S
+p
+e
 e
 d
-A
-s
-s
-e
+S
+h
+o
+c
+k
+M
+a
+g
+n
+i
 t
+u
+d
+e
+Resilience= 
+ShockMagnitude
+PostShockRecoverySpeed
+​
+ 
+R
+e
 s
+i
+l
+i
+e
+n
+c
+e
+=
+P
+o
+s
+t
+S
+h
+o
+c
+k
+R
+e
+c
+o
+v
+e
+r
+y
+S
+p
+e
+e
+d
+S
+h
+o
+c
+k
+M
+a
+g
+n
+i
+t
+u
+d
+e
+Resilience= 
+ShockMagnitude
+PostShockRecoverySpeed
+​
+ 
+
+Markets recovering rapidly after shocks:
+
+sustain occupancy better
+
+attract capital faster
+
+experience lower distress
+
+8. Economic Complexity Proxy
+Not obvious — but extremely powerful.
+
+C
+o
+m
+p
+l
+e
+x
+i
+t
+y
+=
+1
+−
+(
+O
+t
+h
+e
+r
+S
+e
+r
+v
+i
+c
+e
+s
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+T
+o
+t
+a
+l
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+)
+Complexity=1−( 
+TotalEmployment
+OtherServicesEmployment
+​
+ )
+C
+o
+m
+p
+l
+e
+x
+i
+t
+y
+=
+1
+−
+(
+O
+t
+h
+e
+r
+S
+e
+r
+v
+i
+c
+e
+s
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+T
+o
+t
+a
+l
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+)
+Complexity=1−( 
+TotalEmployment
+OtherServicesEmployment
+​
+ )
+
+Idea:
+
+overly service-dependent markets may lack diversified economic engines
+
+diversified markets have more resilient vacancy dynamics
+
+This becomes powerful in downturns.
+
+9. Labor Quality Migration Signal
+Use interaction:
+
+M
+i
+g
+r
+a
+t
+i
+o
+n
+S
+i
+g
+n
+a
+l
+=
+S
+e
+r
+v
+i
+c
+e
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
 G
 r
 o
@@ -3119,124 +2837,232 @@ w
 t
 h
 ×
-N
-e
+W
+a
 g
+e
+G
+r
+o
+w
+t
+h
+MigrationSignal=ServiceEmploymentGrowth×WageGrowth
+M
+i
+g
+r
+a
+t
+i
+o
+n
+S
+i
+g
+n
+a
+l
+=
+S
+e
+r
+v
+i
+c
+e
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+G
+r
+o
+w
+t
+h
+×
+W
+a
+g
+e
+G
+r
+o
+w
+t
+h
+MigrationSignal=ServiceEmploymentGrowth×WageGrowth
+
+Why elite:
+
+job growth without wage growth may indicate weak labor quality
+
+high wage + service growth indicates affluent migration markets
+
+Very predictive for:
+
+Sunbelt multifamily
+
+mixed-use demand
+
+10. Spatial Competitive Advantage
+Institutional firms compare markets regionally.
+
+R
+e
+l
 a
 t
 i
 v
 e
-R
+S
+t
+r
 e
 n
+g
 t
+h
+=
+L
+o
+c
+a
+l
 G
 r
 o
 w
 t
 h
-FedAssetsGrowth×NegativeRentGrowth
-Interpretation:
-easy money despite weakening rents.
-
-Classic symptom of:
-
-speculative pricing
-
-unhealthy underwriting
-
-19. Monetary Cushion Indicator
-F
+−
+R
 e
-d
-A
-s
-s
-e
-t
-s
-D
+g
 i
-s
-t
-r
-e
-s
-s
-e
-d
-A
-s
-s
-e
-t
-s
-DistressedAssets
-FedAssets
-​
- 
-If distress data available:
-measures systemic ability to absorb CRE stress.
-
-Very institutional credit-style feature.
-
-20. Liquidity Exit Vulnerability
-F
-l
 o
+n
+a
+l
+A
+v
+e
+r
+a
+g
+e
+G
+r
+o
+w
+t
+h
+RelativeStrength=LocalGrowth−RegionalAverageGrowth
+R
+e
+l
 a
 t
 i
+v
+e
+S
+t
+r
+e
 n
 g
-R
-a
 t
-e
-D
-e
-b
-t
-S
 h
+=
+L
+o
+c
 a
+l
+G
 r
-e
-×
-F
-e
-d
-A
-s
-s
-e
+o
+w
 t
-s
-D
+h
+−
+R
 e
+g
+i
+o
+n
+a
+l
+A
+v
+e
+r
+a
+g
+e
+G
+r
+o
+w
+t
+h
+RelativeStrength=LocalGrowth−RegionalAverageGrowth
+
+Capital flows toward:
+
+relative winners
+not absolute winners.
+
+This matters enormously for:
+
+cap rates
+
+leasing momentum
+
+vacancy compression
+
+11. Service Employment Cycle Position
+Estimate cyclical percentile:
+
+C
+y
 c
 l
-i
-n
 e
-FloatingRateDebtShare×FedAssetsDecline
-Extremely realistic after 2022.
-
-Markets with:
-
-high floating debt
-
-falling liquidity
-
-become vulnerable quickly.
-
-Massively useful for office and multifamily.
-
-21. Monetary Pull-Forward Effect
-Measures whether QE pulled future demand forward.
-
+P
+o
+s
+i
+t
+i
+o
+n
+=
+P
+e
+r
+c
+e
+n
+t
+i
+l
+e
+R
+a
+n
+k
+(
 C
 u
 r
@@ -3244,52 +3070,531 @@ r
 e
 n
 t
-A
-b
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+,
+H
+i
 s
+t
 o
 r
-p
+y
+)
+CyclePosition=PercentileRank(CurrentEmployment,History)
+C
+y
+c
+l
+e
+P
+o
+s
+i
 t
 i
 o
 n
-−
+=
+P
+e
+r
+c
+e
+n
+t
+i
+l
+e
+R
+a
+n
+k
+(
+C
+u
+r
+r
+e
+n
+t
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+,
+H
+i
+s
+t
+o
+r
+y
+)
+CyclePosition=PercentileRank(CurrentEmployment,History)
+
+Why important:
+
+late-cycle markets behave differently
+
+vacancy mean reversion increases at extremes
+
+This is heavily used in tactical allocation.
+
+12. Tenant Formation Probability
+Small businesses create tenancy demand.
+
+Estimate:
+
 F
-u
-t
-u
-r
-e
-A
-b
-s
 o
 r
-p
+m
+a
 t
 i
 o
 n
-T
+P
 r
+o
+x
+y
+=
+Δ
+O
+t
+h
+e
+r
+S
+e
+r
+v
+i
+c
+e
+s
+E
+m
+p
+l
+o
+y
+m
 e
 n
-d
-CurrentAbsorption−FutureAbsorptionTrend
-conditioned on historical Fed expansion.
+t
+×
+S
+m
+a
+l
+l
+B
+u
+s
+i
+n
+e
+s
+s
+G
+r
+o
+w
+t
+h
+FormationProxy=ΔOtherServicesEmployment×SmallBusinessGrowth
+F
+o
+r
+m
+a
+t
+i
+o
+n
+P
+r
+o
+x
+y
+=
+Δ
+O
+t
+h
+e
+r
+S
+e
+r
+v
+i
+c
+e
+s
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+×
+S
+m
+a
+l
+l
+B
+u
+s
+i
+n
+e
+s
+s
+G
+r
+o
+w
+t
+h
+FormationProxy=ΔOtherServicesEmployment×SmallBusinessGrowth
 
-Interpretation:
-liquidity temporarily inflated demand.
+This predicts:
 
-Very advanced cyclical feature.
+strip retail absorption
 
-22. Fed Balance Sheet Elasticity of Pricing
+neighborhood leasing demand
+
+Very realistic.
+
+13. Service Employment Convexity
+Institutional models increasingly use nonlinear dynamics.
+
+C
+o
+n
+v
+e
+x
+i
+t
+y
+=
+G
+r
+o
+w
+t
+h
+t
+−
+2
+G
+r
+o
+w
+t
+h
+t
+−
+1
++
+G
+r
+o
+w
+t
+h
+t
+−
+2
+Convexity=Growth 
+t
+​
+ −2Growth 
+t−1
+​
+ +Growth 
+t−2
+​
+ 
+C
+o
+n
+v
+e
+x
+i
+t
+y
+=
+G
+r
+o
+w
+t
+h
+t
+−
+2
+G
+r
+o
+w
+t
+h
+t
+−
+1
++
+G
+r
+o
+w
+t
+h
+t
+−
+2
+Convexity=Growth 
+t
+​
+ −2Growth 
+t−1
+​
+ +Growth 
+t−2
+​
+ 
+
+This captures:
+
+acceleration curvature
+
+inflection points
+
+regime transitions
+
+Excellent for early turning-point detection.
+
+14. Vacancy Sensitivity Regime
+Create market-specific sensitivity score.
+
+S
+e
+n
+s
+i
+t
+i
+v
+i
+t
+y
+=
+C
+o
+r
+r
+(
+S
+e
+r
+v
+i
+c
+e
+G
+r
+o
+w
+t
+h
+,
+V
+a
+c
+a
+n
+c
+y
+C
+h
+a
+n
+g
+e
+)
+Sensitivity=Corr(ServiceGrowth,VacancyChange)
+S
+e
+n
+s
+i
+t
+i
+v
+i
+t
+y
+=
+C
+o
+r
+r
+(
+S
+e
+r
+v
+i
+c
+e
+G
+r
+o
+w
+t
+h
+,
+V
+a
+c
+a
+n
+c
+y
+C
+h
+a
+n
+g
+e
+)
+Sensitivity=Corr(ServiceGrowth,VacancyChange)
+
+Some markets:
+
+highly reactive to local services
+Others:
+
+driven by finance/tech/manufacturing
+
+This becomes a meta-feature across markets.
+
+15. Economic Recovery Synchronization
+Very advanced institutional feature.
+
+S
+y
+n
+c
+h
+r
+o
+n
+i
+z
+a
+t
+i
+o
+n
+=
+C
+o
+r
+r
+(
+L
+o
+c
+a
+l
+S
+e
+r
+v
+i
+c
+e
+G
+r
+o
+w
+t
+h
+,
+N
+a
+t
+i
+o
+n
+a
+l
 C
 R
 E
-P
+C
+y
+c
+l
+e
+)
+Synchronization=Corr(LocalServiceGrowth,NationalCRECycle)
+S
+y
+n
+c
+h
 r
+o
+n
+i
+z
+a
+t
+i
+o
+n
+=
+C
+o
+r
+r
+(
+L
+o
+c
+a
+l
+S
+e
+r
+v
 i
 c
 e
@@ -3299,151 +3604,534 @@ o
 w
 t
 h
-F
-e
-d
-A
-s
-s
-e
+,
+N
+a
 t
-s
-G
-r
+i
 o
-w
-t
-h
-FedAssetsGrowth
-CREPriceGrowth
-​
- 
-Measures how aggressively asset prices respond to liquidity.
-
-Can identify:
-
-speculative markets
-
-capital concentration
-
-irrational exuberance
-
-23. Liquidity-Induced Leasing Risk
-T
-e
 n
 a
+l
+C
+R
+E
+C
+y
+c
+l
+e
+)
+Synchronization=Corr(LocalServiceGrowth,NationalCRECycle)
+
+Markets highly synchronized with national CRE cycles:
+
+reprice faster
+
+vacancy deteriorates faster during downturns
+
+Low synchronization:
+
+diversification benefits
+
+The Features That Actually Create Alpha
+In real institutional forecasting, the biggest gains usually come from:
+
+Feature Class	Importance
+Relative market strength	Extremely high
+Regime/state features	Extremely high
+Recovery/resilience metrics	Extremely high
+Interaction terms	Very high
+Cross-market normalization	Very high
+Spatial features	Very high
+Simple lag growth	Low
+What I Would Personally Build First
+For your quarterly panel dataset:
+
+Tier 1
+RelativeStrength
+
+RecoveryGap
+
+Persistence
+
+CyclePosition
+
+VolatilityRegime
+
+Tier 2
+MigrationSignal
+
+VitalityFactor
+
+Resilience
+
+Imbalance
+
+DemandIntensity
+
+Tier 3
+Convexity
+
+BetaToNational
+
+Synchronization
+
+Fragility
+
+BreadthDiffusion
+
+These are much closer to what sophisticated CRE macro forecasting systems actually use internally.
+
+
+Show me some more features engineering with Other_Services_Employment_Extended which are realistic and don't try to keep the earlier feature.
+
+Absolutely — let’s move into a different class of feature engineering entirely and avoid repeating earlier concepts.
+
+For Other_Services_Employment_Extended, sophisticated CRE teams often think about:
+
+labor market structure
+
+hidden tenant demand
+
+elasticity of local spending
+
+service-sector saturation
+
+macro transmission mechanisms
+
+occupancy friction
+
+cyclical asymmetry
+
+Below are fresh, realistic, institutional-style feature ideas that are materially different from the previous ones.
+
+1. Service Employment Per Household
+S
+e
+r
+v
+i
+c
+e
+P
+e
+r
+H
+o
+u
+s
+e
+h
+o
+l
+d
+=
+O
+t
+h
+e
+r
+S
+e
+r
+v
+i
+c
+e
+s
+E
+m
+p
+l
+o
+y
+m
+e
 n
+t
+H
+o
+u
+s
+e
+h
+o
+l
+d
+s
+ServicePerHousehold= 
+Households
+OtherServicesEmployment
+​
+ 
+S
+e
+r
+v
+i
+c
+e
+P
+e
+r
+H
+o
+u
+s
+e
+h
+o
+l
+d
+=
+O
+t
+h
+e
+r
+S
+e
+r
+v
+i
+c
+e
+s
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+H
+o
+u
+s
+e
+h
+o
+l
+d
+s
+ServicePerHousehold= 
+Households
+OtherServicesEmployment
+​
+ 
+
+Why important:
+
+measures local service penetration
+
+stronger proxy for neighborhood commercial intensity than raw population
+
+Higher values often indicate:
+
+denser consumption ecosystems
+
+stronger strip retail utilization
+
+lower neighborhood retail vacancy
+
+2. Employment Utilization Gap
+Measure deviation from expected employment.
+
+First estimate trend:
+
+E
+x
+p
+e
+c
+t
+e
+d
+t
+=
+R
+o
+l
+l
+i
+n
+g
+T
+r
+e
+n
+d
+(
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+)
+Expected 
+t
+​
+ =RollingTrend(Employment)
+Then:
+
+G
+a
+p
+t
+=
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+t
+−
+E
+x
+p
+e
+c
+t
+e
+d
 t
 E
 x
 p
-a
-n
-s
-i
-o
-n
-R
-a
-t
-e
-×
-F
-e
-d
-A
-s
-s
-e
-t
-s
-G
-r
-o
-w
-t
-h
-TenantExpansionRate×FedAssetsGrowth
-High tenant expansion during QE can later reverse sharply.
-
-Useful for:
-
-office
-
-startup-heavy markets
-
-tech corridors
-
-24. Delayed Tightening Stress Surface
-Create cumulative QT effect:
-
-∑
-i
-=
-1
-8
-F
-e
-d
-A
-s
-s
-e
-t
-s
-D
 e
 c
-l
-i
-n
-e
 t
-−
-i
-i=1
-∑
-8
-​
- FedAssetsDecline 
-t−i
-​
- 
-CRE pain accumulates slowly.
-
-This captures:
-
-refinancing drag
-
-declining transaction liquidity
-
-tenant caution
-
-Very realistic quarterly feature.
-
-25. Policy Distortion Index
-F
 e
 d
-A
-s
-s
-e
 t
+Gap 
+t
+​
+ = 
+Expected 
+t
+​
+ 
+Employment 
+t
+​
+ −Expected 
+t
+​
+ 
+​
+ 
+G
+a
+p
+t
+=
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+t
+−
+E
+x
+p
+e
+c
+t
+e
+d
+t
+E
+x
+p
+e
+c
+t
+e
+d
+t
+Gap 
+t
+​
+ = 
+Expected 
+t
+​
+ 
+Employment 
+t
+​
+ −Expected 
+t
+​
+ 
+​
+ 
+
+Why useful:
+
+detects hidden overheating or underperformance
+
+vacancy often responds to deviations from equilibrium, not levels
+
+3. Service Employment Compression Indicator
+Measure whether growth is slowing despite still-positive levels.
+
+C
+o
+m
+p
+r
+e
 s
+s
+i
+o
+n
+=
 G
 r
 o
 w
 t
 h
-N
-a
 t
-u
+G
 r
+o
+w
+t
+h
+t
+−
+4
+Compression= 
+Growth 
+t−4
+​
+ 
+Growth 
+t
+​
+ 
+​
+ 
+C
+o
+m
+p
+r
+e
+s
+s
+i
+o
+n
+=
+G
+r
+o
+w
+t
+h
+t
+G
+r
+o
+w
+t
+h
+t
+−
+4
+Compression= 
+Growth 
+t−4
+​
+ 
+Growth 
+t
+​
+ 
+​
+ 
+
+Interpretation:
+
+below 1 → slowing expansion
+
+early warning before vacancy deterioration
+
+Very realistic for cyclical turning points.
+
+4. Local Consumption Support Ratio
+C
+o
+n
+s
+u
+m
+p
+t
+i
+o
+n
+S
+u
+p
+p
+o
+r
+t
+=
+O
+t
+h
+e
+r
+S
+e
+r
+v
+i
+c
+e
+s
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+R
+e
+t
 a
+i
 l
 V
 a
@@ -3452,35 +4140,1821 @@ a
 n
 c
 y
+ConsumptionSupport= 
+RetailVacancy
+OtherServicesEmployment
+​
+ 
+C
+o
+n
+s
+u
+m
+p
+t
+i
+o
+n
+S
+u
+p
+p
+o
+r
+t
+=
+O
+t
+h
+e
+r
+S
+e
+r
+v
+i
+c
+e
+s
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+R
+e
+t
+a
+i
+l
+V
+a
+c
+a
+n
+c
+y
+ConsumptionSupport= 
+RetailVacancy
+OtherServicesEmployment
+​
+ 
+
+Why strong:
+
+combines labor demand with retail stress
+
+higher ratio indicates healthier tenant ecosystem
+
+Especially useful in:
+
+neighborhood retail
+
+mixed-use corridors
+
+5. Employment-to-New-Supply Ratio
+S
+u
+p
+p
+l
+y
+A
+b
+s
+o
+r
+p
+t
+i
+o
+n
+C
+a
+p
+a
+c
+i
+t
+y
+=
+O
+t
+h
+e
+r
+S
+e
+r
+v
+i
+c
+e
+s
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+G
+r
+o
+w
+t
+h
+N
+e
+w
+S
+u
+p
+p
+l
+y
+G
+r
+o
+w
+t
+h
+SupplyAbsorptionCapacity= 
+NewSupplyGrowth
+OtherServicesEmploymentGrowth
+​
+ 
+S
+u
+p
+p
+l
+y
+A
+b
+s
+o
+r
+p
+t
+i
+o
+n
+C
+a
+p
+a
+c
+i
+t
+y
+=
+O
+t
+h
+e
+r
+S
+e
+r
+v
+i
+c
+e
+s
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+G
+r
+o
+w
+t
+h
+N
+e
+w
+S
+u
+p
+p
+l
+y
+G
+r
+o
+w
+t
+h
+SupplyAbsorptionCapacity= 
+NewSupplyGrowth
+OtherServicesEmploymentGrowth
+​
+ 
+
+Institutional relevance:
+
+determines whether local demand can absorb incoming inventory
+
+critical for forecasting vacancy spikes
+
+Very important in Sunbelt markets.
+
+6. Service Employment Duration Above Trend
+Instead of level, measure persistence.
+
+D
+u
+r
+a
+t
+i
+o
+n
+=
+C
+o
+n
+s
+e
+c
+u
+t
+i
+v
+e
+Q
+u
+a
+r
+t
+e
+r
+s
+(
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+>
+T
+r
+e
+n
+d
+)
+Duration=ConsecutiveQuarters(Employment>Trend)
+Why powerful:
+
+prolonged above-trend growth often precedes rent acceleration
+
+sustained economic strength matters more than temporary spikes
+
+CRE markets react to duration.
+
+7. Economic Friction Indicator
+F
+r
+i
+c
+t
+i
+o
+n
+=
+∣
+Q
+o
+Q
+G
+r
+o
+w
+t
+h
+−
+Y
+o
+Y
+G
+r
+o
+w
+t
+h
+∣
+∣
+Y
+o
+Y
+G
+r
+o
+w
+t
+h
+∣
+Friction= 
+∣YoYGrowth∣
+∣QoQGrowth−YoYGrowth∣
+​
+ 
+F
+r
+i
+c
+t
+i
+o
+n
+=
+∣
+Q
+o
+Q
+G
+r
+o
+w
+t
+h
+−
+Y
+o
+Y
+G
+r
+o
+w
+t
+h
+∣
+∣
+Y
+o
+Y
+G
+r
+o
+w
+t
+h
+∣
+Friction= 
+∣YoYGrowth∣
+∣QoQGrowth−YoYGrowth∣
+​
+ 
+
+Interpretation:
+
+high friction = unstable growth structure
+
+indicates transitional economic conditions
+
+Vacancy tends to rise when labor trends become inconsistent.
+
+8. Employment Concentration Drift
+Measure whether services are becoming disproportionately dominant.
+
+D
+r
+i
+f
+t
+=
+S
+h
+a
+r
+e
+t
+−
+S
+h
+a
+r
+e
+t
+−
+8
+Drift=Share 
+t
+​
+ −Share 
+t−8
+​
+ 
+Where:
+
+S
+h
+a
+r
+e
+=
+O
+t
+h
+e
+r
+S
+e
+r
+v
+i
+c
+e
+s
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+T
+o
+t
+a
+l
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+Share= 
+TotalEmployment
+OtherServicesEmployment
+​
+ 
+S
+h
+a
+r
+e
+=
+O
+t
+h
+e
+r
+S
+e
+r
+v
+i
+c
+e
+s
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+T
+o
+t
+a
+l
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+Share= 
+TotalEmployment
+OtherServicesEmployment
+​
+ 
+
+Why sophisticated:
+
+captures structural transformation of local economies
+
+excessive drift may imply lower-quality economic expansion
+
+9. Service Employment Mean-Reversion Pressure
+P
+r
+e
+s
+s
+u
+r
+e
+=
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+t
+−
+R
+o
+l
+l
+i
+n
+g
+M
+e
+a
+n
+20
+Q
+R
+o
+l
+l
+i
+n
+g
+S
+t
+d
+20
+Q
+Pressure= 
+RollingStd 
+20Q
+​
+ 
+Employment 
+t
+​
+ −RollingMean 
+20Q
+​
+ 
+​
+ 
+P
+r
+e
+s
+s
+u
+r
+e
+=
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+t
+−
+R
+o
+l
+l
+i
+n
+g
+M
+e
+a
+n
+20
+Q
+R
+o
+l
+l
+i
+n
+g
+S
+t
+d
+20
+Q
+Pressure= 
+RollingStd 
+20Q
+​
+ 
+Employment 
+t
+​
+ −RollingMean 
+20Q
+​
+ 
+​
+ 
+
+This is essentially a macro z-score.
+
+Why useful:
+
+extreme positive deviations often precede cooling
+
+extreme negative deviations often precede rebound
+
+Very common in institutional cycle models.
+
+10. Tenant Ecosystem Stability
+S
+t
+a
+b
+i
+l
+i
+t
+y
+=
+1
+−
+Q
+u
+a
+r
+t
+e
+r
+l
+y
+L
+a
+y
+o
+f
+f
+P
+r
+o
+x
+y
+O
+t
+h
+e
+r
+S
+e
+r
+v
+i
+c
+e
+s
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+Stability=1− 
+OtherServicesEmployment
+QuarterlyLayoffProxy
+​
+ 
+S
+t
+a
+b
+i
+l
+i
+t
+y
+=
+1
+−
+Q
+u
+a
+r
+t
+e
+r
+l
+y
+L
+a
+y
+o
+f
+f
+P
+r
+o
+x
+y
+O
+t
+h
+e
+r
+S
+e
+r
+v
+i
+c
+e
+s
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+Stability=1− 
+OtherServicesEmployment
+QuarterlyLayoffProxy
+​
+ 
+
+Even approximate layoff proxies help.
+
+Why useful:
+
+stable service labor base supports occupancy durability
+
+unstable labor → tenant churn risk
+
+11. Economic Spillover Multiplier
+Measure spillover into real estate demand.
+
+S
+p
+i
+l
+l
+o
+v
+e
+r
+=
+Δ
+O
+c
+c
+u
+p
+i
+e
+d
+S
+F
+Δ
+O
+t
+h
+e
+r
+S
+e
+r
+v
+i
+c
+e
+s
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+Spillover= 
+ΔOtherServicesEmployment
+ΔOccupiedSF
+​
+ 
+S
+p
+i
+l
+l
+o
+v
+e
+r
+=
+Δ
+O
+c
+c
+u
+p
+i
+e
+d
+S
+F
+Δ
+O
+t
+h
+e
+r
+S
+e
+r
+v
+i
+c
+e
+s
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+Spillover= 
+ΔOtherServicesEmployment
+ΔOccupiedSF
+​
+ 
+
+Interpretation:
+
+how efficiently employment growth converts into occupancy demand
+
+Some markets generate:
+
+high employment
+but weak real estate absorption.
+
+This feature captures that disconnect.
+
+12. Service Employment Exhaustion Signal
+E
+x
+h
+a
+u
+s
+t
+i
+o
+n
+=
+R
+o
+l
+l
+i
+n
+g
+M
+a
+x
+12
+Q
+(
+G
+r
+o
+w
+t
+h
+)
+−
+C
+u
+r
+r
+e
+n
+t
+G
+r
+o
+w
+t
+h
+Exhaustion=RollingMax 
+12Q
+​
+ (Growth)−CurrentGrowth
+E
+x
+h
+a
+u
+s
+t
+i
+o
+n
+=
+R
+o
+l
+l
+i
+n
+g
+M
+a
+x
+12
+Q
+(
+G
+r
+o
+w
+t
+h
+)
+−
+C
+u
+r
+r
+e
+n
+t
+G
+r
+o
+w
+t
+h
+Exhaustion=RollingMax 
+12Q
+​
+ (Growth)−CurrentGrowth
+
+Why elite:
+
+identifies late-cycle deceleration
+
+useful before vacancy inflection
+
+13. Employment-to-Transit Dependency
+T
+r
+a
+n
+s
+i
+t
+D
+e
+p
+e
+n
+d
+e
+n
+c
+y
+=
+O
+t
+h
+e
+r
+S
+e
+r
+v
+i
+c
+e
+s
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+T
+r
+a
+n
+s
+i
+t
+R
+i
+d
+e
+r
+s
+h
+i
+p
+TransitDependency= 
+TransitRidership
+OtherServicesEmployment
+​
+ 
+T
+r
+a
+n
+s
+i
+t
+D
+e
+p
+e
+n
+d
+e
+n
+c
+y
+=
+O
+t
+h
+e
+r
+S
+e
+r
+v
+i
+c
+e
+s
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+T
+r
+a
+n
+s
+i
+t
+R
+i
+d
+e
+r
+s
+h
+i
+p
+TransitDependency= 
+TransitRidership
+OtherServicesEmployment
+​
+ 
+
+Powerful in:
+
+urban office
+
+mixed-use districts
+
+CBD retail
+
+Captures whether local service ecosystem depends heavily on commuter flows.
+
+14. Local Service Labor Tightness
+T
+i
+g
+h
+t
+n
+e
+s
+s
+=
+J
+o
+b
+O
+p
+e
+n
+i
+n
+g
+s
+O
+t
+h
+e
+r
+S
+e
+r
+v
+i
+c
+e
+s
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+Tightness= 
+OtherServicesEmployment
+JobOpenings
+​
+ 
+T
+i
+g
+h
+t
+n
+e
+s
+s
+=
+J
+o
+b
+O
+p
+e
+n
+i
+n
+g
+s
+O
+t
+h
+e
+r
+S
+e
+r
+v
+i
+c
+e
+s
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+Tightness= 
+OtherServicesEmployment
+JobOpenings
+​
+ 
+
+Why realistic:
+
+labor shortages can constrain business expansion
+
+affects future leasing demand
+
+Especially relevant post-2021.
+
+15. Demand Conversion Efficiency
+C
+o
+n
+v
+e
+r
+s
+i
+o
+n
+E
+f
+f
+i
+c
+i
+e
+n
+c
+y
+=
+N
+e
+t
+A
+b
+s
+o
+r
+p
+t
+i
+o
+n
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+G
+r
+o
+w
+t
+h
+ConversionEfficiency= 
+EmploymentGrowth
+NetAbsorption
+​
+ 
+C
+o
+n
+v
+e
+r
+s
+i
+o
+n
+E
+f
+f
+i
+c
+i
+e
+n
+c
+y
+=
+N
+e
+t
+A
+b
+s
+o
+r
+p
+t
+i
+o
+n
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+G
+r
+o
+w
+t
+h
+ConversionEfficiency= 
+EmploymentGrowth
+NetAbsorption
+​
+ 
+
+This measures:
+
+how effectively local economic growth converts into occupancy
+
+Institutional investors care deeply about this.
+
+Some markets:
+
+generate jobs but little occupancy
+Others:
+
+efficiently translate growth into leasing demand
+
+16. Employment Regime Transition Velocity
+V
+e
+l
+o
+c
+i
+t
+y
+=
+R
+e
+g
+i
+m
+e
+S
+c
+o
+r
+e
+t
+−
+R
+e
+g
+i
+m
+e
+S
+c
+o
+r
+e
+t
+−
+1
+Velocity=RegimeScore 
+t
+​
+ −RegimeScore 
+t−1
+​
+ 
+Why advanced:
+
+markets shifting rapidly between regimes have unstable vacancy dynamics
+
+transition speed matters more than regime alone
+
+17. Service Labor Saturation Risk
+S
+a
+t
+u
+r
+a
+t
+i
+o
+n
+R
+i
+s
+k
+=
+O
+t
+h
+e
+r
+S
+e
+r
+v
+i
+c
+e
+s
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+G
+r
+o
+w
+t
+h
+P
+o
+p
+u
+l
+a
+t
+i
+o
+n
+G
+r
+o
+w
+t
+h
+SaturationRisk= 
+PopulationGrowth
+OtherServicesEmploymentGrowth
+​
+ 
+S
+a
+t
+u
+r
+a
+t
+i
+o
+n
+R
+i
+s
+k
+=
+O
+t
+h
+e
+r
+S
+e
+r
+v
+i
+c
+e
+s
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+G
+r
+o
+w
+t
+h
+P
+o
+p
+u
+l
+a
+t
+i
+o
+n
+G
+r
+o
+w
+t
+h
+SaturationRisk= 
+PopulationGrowth
+OtherServicesEmploymentGrowth
+​
+ 
+
+Interpretation:
+
+employment growing much faster than population
+→ possible oversaturation
+→ lower long-term sustainability
+
+18. Occupancy Buffer Capacity
+B
+u
+f
+f
+e
+r
+=
+O
+c
+c
+u
+p
+i
+e
+d
+I
+n
+v
+e
+n
+t
+o
+r
+y
+G
+r
+o
+w
+t
+h
+−
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+G
+r
+o
+w
+t
+h
+Buffer=OccupiedInventoryGrowth−EmploymentGrowth
+B
+u
+f
+f
+e
+r
+=
+O
+c
+c
+u
+p
+i
+e
+d
+I
+n
+v
+e
+n
+t
+o
+r
+y
+G
+r
+o
+w
+t
+h
+−
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+G
+r
+o
+w
+t
+h
+Buffer=OccupiedInventoryGrowth−EmploymentGrowth
+
+Useful because:
+
+markets with shrinking occupancy buffer are vulnerable to vacancy spikes
+
+19. Service Economy Inefficiency Signal
+I
+n
+e
+f
+f
+i
+c
+i
+e
+n
+c
+y
+=
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+G
+r
+o
+w
+t
+h
+I
+n
+c
+o
+m
+e
+G
+r
+o
+w
+t
+h
+Inefficiency= 
+IncomeGrowth
+EmploymentGrowth
+​
+ 
+I
+n
+e
+f
+f
+i
+c
+i
+e
+n
+c
+y
+=
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+G
+r
+o
+w
+t
+h
+I
+n
+c
+o
+m
+e
+G
+r
+o
+w
+t
+h
+Inefficiency= 
+IncomeGrowth
+EmploymentGrowth
+​
+ 
+
+Interpretation:
+
+job growth without income growth may imply weak-quality expansion
+
+Can predict:
+
+fragile tenant demand
+
+weaker rent growth
+
+20. Local Economic Stickiness
+S
+t
+i
+c
+k
+i
+n
+e
+s
+s
+=
+1
+−
+T
+u
+r
+n
+o
+v
+e
+r
 R
 a
 t
 e
-NaturalVacancyRate
-FedAssetsGrowth
-​
- 
-Measures:
-how much policy intervention exists relative to market equilibrium.
+Stickiness=1−TurnoverRate
+or approximate using employment stability.
 
-Interesting for:
+Why powerful:
 
-cross-market comparison
+sticky labor markets create sticky occupancy
 
-regime clustering
+transient labor markets increase vacancy volatility
 
-market overheating detection
+Very important for multifamily forecasting.
 
-Features I would personally test first
-For vacancy forecasting, these are especially strong candidates:
-
-Feature	Why Valuable
-Liquidity decoupling ratio	Detects asset bubble behavior
-Embedded supply risk	Captures delayed oversupply
-Liquidity exit vulnerability	Excellent post-2022
-Monetary whiplash	Captures regime instability
-Excess liquidity absorption gap	Separates real vs artificial demand
-Funding abundance mismatch	Identifies unhealthy expansion
-Delayed tightening stress surface	CRE reacts slowly
-Policy dependency drift	Structural market evolution
 
