@@ -8,1469 +8,3479 @@ Open
 This is a copy of a shared ChatGPT conversation
 
 Report conversation
-We are working on Moody's dataset with multiple features and responses for each market.It is quarterly data that means, that every quarter, new record come for each market .It is real estate dataset.
-I am currently working with feature name Corporate_Profits_After_Tax and response vacancy. Help me understand how it worked
-
-Corporate_Profits_After_Tax is actually a very meaningful macroeconomic driver for real estate vacancy, especially in office, industrial, and even retail CRE. Since your dataset is quarterly and multi-market, this variable can capture business cycle strength and tenant expansion behavior across markets.
-
-Here is how it generally works in real estate economics.
-
-1. What is Corporate_Profits_After_Tax?
-It measures:
-
-Total profits companies earn after paying taxes.
-
-Higher profits mean:
-
-companies are financially healthy
-
-firms expand operations
-
-businesses hire more employees
-
-firms lease more office/industrial space
-
-retailers open stores
-
-logistics firms expand warehouses
-
-Lower profits mean:
-
-cost cutting
-
-layoffs
-
-downsizing
-
-delayed expansion
-
-office consolidation
-
-warehouse reduction
-
-So this feature acts as a business expansion/contraction signal.
-
-2. Relationship with Vacancy
-Usually:
-
-Higher Corporate Profits → Lower Vacancy
-Because:
-
-companies lease more space
-
-absorption increases
-
-demand for CRE rises
-
-vacant space gets occupied
-
-And:
-
-Falling Corporate Profits → Higher Vacancy
-Because:
-
-firms shrink footprints
-
-layoffs reduce space demand
-
-businesses delay leasing decisions
-
-defaults and closures increase
-
-3. Property-Type Level Impact
-Different property types react differently.
-
-Office
-Strongest relationship.
-
-Why?
-
-profitable firms hire employees
-
-more employees need office space
-
-expansion creates leasing demand
-
-Example:
-
-Tech boom in Austin
-
-Finance expansion in NYC
-
-Result:
-
-office vacancy declines
-
-Industrial
-Very important.
-
-Profitable firms:
-
-increase production
-
-expand distribution
-
-increase inventory storage
-
-require logistics space
-
-Result:
-
-warehouse demand rises
-
-industrial vacancy declines
-
-Retail
-Moderate relationship.
-
-Higher corporate profits:
-
-improve business sentiment
-
-increase store openings
-
-franchise expansion happens
-
-But retail also depends heavily on consumers.
-
-Multifamily
-Indirect relationship.
-
-Corporate profits:
-
-drive employment
-
-employment drives household formation
-
-household formation drives apartment demand
-
-So effect exists but with lag.
-
-4. Why This Feature Becomes Powerful in Quarterly Data
-Because profits lead CRE activity.
-
-Typical sequence:
-
-Quarter 1
-Corporate profits rise
-
-↓
-
-Quarter 2–3
-Hiring increases
-
-↓
-
-Quarter 3–5
-Companies lease more space
-
-↓
-
-Quarter 4–6
-Vacancy declines
-
-So:
-
-lagged versions are often more predictive than current quarter values.
-
-5. Realistic Economic Mechanism
-This is the actual transmission path:
-
-Corporate Profits ↑
-        ↓
-Business Confidence ↑
-        ↓
-CapEx + Hiring ↑
-        ↓
-Office / Industrial Expansion ↑
-        ↓
-Net Absorption ↑
-        ↓
-Vacancy ↓
-During recession:
-
-Corporate Profits ↓
-        ↓
-Layoffs + Cost Cutting
-        ↓
-Space Givebacks
-        ↓
-Sublease Space ↑
-        ↓
-Vacancy ↑
-6. Why Global Models Love This Variable
-In your setup, where you built a global model across:
-
-markets
-
-property types
-
-this feature becomes valuable because it acts as a:
-
-national business-cycle anchor
-
-macro demand proxy
-
-systemic CRE demand indicator
-
-For example:
-
-profit slowdown affects almost all markets
-
-but intensity differs by market
-
-So the model learns:
-
-NYC office reacts strongly
-
-Dallas industrial moderately
-
-retail less strongly
-
-This is exactly where global models outperform silo models.
-
-7. Important Statistical Behavior
-This feature often shows:
-
-Leading Indicator Behavior
-Vacancy reacts later.
-
-So:
-
-Corporate_Profits_After_Tax_(t-2)
-Corporate_Profits_After_Tax_(t-4)
-can outperform:
-
-Corporate_Profits_After_Tax_(t)
-8. Nonlinear Effects
-Very important in CRE.
-
-Small profit increases:
-
-may not change vacancy much
-
-But very large declines:
-
-create sudden vacancy spikes
-
-Meaning:
-
-recession periods matter more
-
-asymmetric effects exist
-
-You may observe:
-
-threshold behavior
-
-regime switching
-
-Example:
-
-Profits drop >10%
-→ vacancy jumps sharply
-9. Market Sensitivity Differences
-Markets with high corporate exposure react more.
-
-Examples:
-
-San Francisco
-
-NYC
-
-Austin
-
-Seattle
-
-Less sensitive:
-
-tourism-heavy markets
-
-retirement markets
-
-government-dominated economies
-
-So interaction terms become important.
-
-Example:
-
-Corporate_Profits × Tech_Exposure
-Corporate_Profits × Office_Share
-Corporate_Profits × Market_Type
-10. What Top CRE Firms Usually Do
-Institutional CRE forecasting teams often transform this feature into:
-
-Growth Rates
-YoY profit growth
-QoQ annualized growth
-because levels may be non-stationary.
-
-Lag Structures
-t-1
-t-2
-t-4
-to capture delayed leasing response.
-
-Regime Indicators
-Profit recession dummy
-Example:
-
-1 if YoY profits < -5%
-Interaction Features
-Examples:
-
-Corporate_Profits × Interest_Rates
-Corporate_Profits × Employment_Growth
-Corporate_Profits × CREPI
-11. One Important Real-World Insight
-After COVID, this relationship weakened for office.
-
-Why?
-
-Because:
-
-profits recovered quickly
-
-but remote work reduced office demand
-
-So:
-
-High corporate profits
-≠ lower office vacancy
-This structural break matters a lot in modern CRE models.
-
-You may need:
-
-post-2020 interaction terms
-
-remote-work regime dummy
-
-structural break modeling
-
-12. What You Should Check in Your Data
-You should investigate:
-
-A. Cross-Correlation
-Check:
-
-which lag has strongest relationship with vacancy
-
-Example:
-
-profits(t-2) vs vacancy(t)
-B. Market-Specific Elasticity
-Maybe:
-
-Austin office highly sensitive
-
-Atlanta retail weakly sensitive
-
-C. Regime Dependence
-Relationship during:
-
-expansions
-
-recessions
-
-post-COVID
-
-may differ dramatically.
-
-13. Very Important Modeling Insight
-Corporate profits are often better at predicting:
-
-absorption
-
-rent growth
-
-occupancy demand
-
-than vacancy directly.
-
-Vacancy is:
-
-sticky
-
-slow-moving
-
-So profit changes may appear in:
-
-absorption first
-
-then rents
-
-finally vacancy
-
-That lag structure is crucial in quarterly CRE forecasting.
-
-
-Help with out of box features engineering for this column.
-
-For Corporate_Profits_After_Tax, simple lags and growth rates are only the starting point. In institutional CRE forecasting, the real alpha often comes from transforming macro variables into business cycle pressure, tenant expansion capacity, and stress regime indicators.
-
-Here are more advanced and realistic feature engineering ideas specifically for vacancy modeling.
-
-1. Profit Expansion Momentum
-Instead of raw growth:
-
-(Profit_t - Profit_t-1) - (Profit_t-1 - Profit_t-2)
+For Federal_Reserve_Total_Assets, simple lags and growth rates are only the beginning.
+Top CRE research teams usually transform this variable into liquidity regime, financial stress, and capital flow signals.
+
+Since your data is:
+
+quarterly
+
+multi-market
+
+multiple property types
+
+vacancy forecasting
+
+you can engineer features that capture:
+
+liquidity transmission
+
+delayed CRE response
+
+overbuilding cycles
+
+risk appetite
+
+monetary regime shifts
+
+Below are some high-value, institutional-style feature ideas.
+
+1. Liquidity Impulse Acceleration
+Instead of growth level, measure whether liquidity injection itself is accelerating.
+
+(
+F
+e
+d
+A
+s
+s
+e
+t
+s
+t
+−
+F
+e
+d
+A
+s
+s
+e
+t
+s
+t
+−
+1
+)
+−
+(
+F
+e
+d
+A
+s
+s
+e
+t
+s
+t
+−
+1
+−
+F
+e
+d
+A
+s
+s
+e
+t
+s
+t
+−
+2
+)
+(FedAssets 
+t
+​
+ −FedAssets 
+t−1
+​
+ )−(FedAssets 
+t−1
+​
+ −FedAssets 
+t−2
+​
+ )
 Interpretation:
 
-acceleration in corporate profitability
+Positive → Fed easing becoming stronger
 
-detects sudden business expansion
+Negative → liquidity support fading
 
 Why useful:
+CRE reacts strongly to second derivative of liquidity.
 
-leasing decisions respond more to acceleration than level
+Very useful during:
 
-Strong for:
+QE transitions
 
-office
+QT periods
 
-industrial
+crisis recovery
 
-2. Profit-to-Wage Divergence
-Corporate_Profits / Wage_Salary_Disbursement
-Interpretation:
+2. Liquidity-to-Economy Ratio
+Normalize Fed balance sheet relative to economy size.
 
-firms becoming more profitable without proportional hiring
+F
+e
+d
+A
+s
+s
+e
+t
+s
+G
+D
+P
+GDP
+FedAssets
+​
+ 
+or
 
-Very important post-COVID.
+F
+e
+d
+A
+s
+s
+e
+t
+s
+T
+o
+t
+a
+l
+P
+e
+r
+s
+o
+n
+a
+l
+I
+n
+c
+o
+m
+e
+TotalPersonalIncome
+FedAssets
+​
+ 
+This measures:
 
-Signal:
+excess monetary accommodation
 
-high profits but weak hiring
+systemic liquidity saturation
 
-weak office demand despite strong economy
-
-Can explain:
-
-High profits + rising office vacancy
-3. Profit Efficiency Shock
-YoY Profit Growth - YoY Employment Growth
-Interpretation:
-
-firms generating profits through productivity instead of expansion
-
-Why important:
-
-vacancy decreases only when profits translate into physical expansion
-
-This feature helps distinguish:
-
-“healthy expansion”
-vs
-
-“lean profitability”
-
-4. Profit Regime State
-Create discrete macro states.
-
-Example:
-
-0 = recession
-1 = slowdown
-2 = stable
-3 = expansion
-Using:
-
-rolling z-score
-
-percentile buckets
-
-Markov regimes
-
-Why useful:
-vacancy behavior becomes nonlinear across regimes.
-
-Example:
-
-vacancy reacts mildly during expansion
-
-reacts violently during recession
-
-5. Profit Shock Persistence
-Measure whether shocks are temporary or sustained.
-
-Example:
-
-Rolling count of negative profit quarters in last 6 quarters
-Interpretation:
-
-sustained weakness matters more than one bad quarter
-
-CRE reacts slowly:
-
-prolonged weakness drives downsizing
-
-6. Profit Volatility
-Rolling Std Dev of QoQ Profit Growth
-Interpretation:
-
-uncertainty in business environment
-
-Even high profits with high volatility may:
-
-reduce leasing appetite
-
-delay relocations
-
-freeze CapEx
-
-Very realistic institutional signal.
-
-7. Profit Cycle Turning Point Indicator
-Detect peaks/troughs.
-
-Example:
-
-1 if profits decline after 4 consecutive growth quarters
 Why powerful:
-CRE often reacts at turning points, not levels.
+Raw Fed assets trend upward structurally.
+Normalization removes long-term drift.
 
-Vacancy inflections often happen:
+3. Market Liquidity Exposure Score
+Create market-level sensitivity.
 
-just after profit peak
+Step 1:
+Estimate historical correlation:
 
-before recession officially starts
+C
+o
+r
+r
+(
+Δ
+V
+a
+c
+a
+n
+c
+y
+,
+Δ
+F
+e
+d
+A
+s
+s
+e
+t
+s
+)
+Corr(ΔVacancy,ΔFedAssets)
+for each market.
 
-8. Profit-to-CREPI Ratio
-Corporate_Profits / Commercial_Real_Estate_Price_Index
+Step 2:
+Use this as a market feature.
+
 Interpretation:
 
-economic fundamentals vs asset pricing
+Austin office may have high liquidity beta
 
-High CRE prices with weak profits:
+NYC retail may have lower beta
 
-overpriced markets
+This becomes a structural market characteristic.
 
-future vacancy risk
+Extremely sophisticated feature.
+
+4. Liquidity Shock Regime
+Measure deviation from long-term trend.
+
+F
+e
+d
+A
+s
+s
+e
+t
+s
+t
+−
+M
+A
+12
+Q
+S
+T
+D
+12
+Q
+STD 
+12Q
+​
+ 
+FedAssets 
+t
+​
+ −MA 
+12Q
+​
+ 
+​
+ 
+Interpretation:
+
+large positive → abnormal liquidity regime
+
+negative → tightening regime
+
+This behaves like a monetary z-score.
+
+Very effective in tree models.
+
+5. Liquidity Persistence
+Measure how long easing/tightening has continued.
+
+Example:
+
+Quarter	QE Indicator
+t-5	1
+t-4	1
+t-3	1
+t-2	1
+t-1	1
+Feature:
+
+R
+o
+l
+l
+i
+n
+g
+S
+u
+m
+(
+Q
+E
+I
+n
+d
+i
+c
+a
+t
+o
+r
+,
+8
+Q
+)
+RollingSum(QEIndicator,8Q)
+Why useful:
+CRE responds more to sustained liquidity than temporary injections.
+
+6. Liquidity Elasticity of Vacancy
+Very advanced feature.
+
+Δ
+V
+a
+c
+a
+n
+c
+y
+Δ
+F
+e
+d
+A
+s
+s
+e
+t
+s
+ΔFedAssets
+ΔVacancy
+​
+ 
+rolling over 8–12 quarters.
+
+Measures:
+“How responsive is this market currently to liquidity?”
+
+Markets change sensitivity over time.
 
 Useful for:
 
-cyclical overheating detection
+regime adaptation
 
-9. Profit-to-Office Inventory Pressure
-If inventory data exists:
+dynamic relationships
 
-Profit Growth / New Supply Growth
-Interpretation:
+7. Liquidity × Supply Pipeline
+One of the strongest real estate interactions.
 
-can business demand absorb new supply?
-
-Extremely realistic.
-
-Example:
-
-profits +2%
-
-office inventory +10%
-
-→ vacancy likely rises.
-
-10. Profit Absorption Capacity
-Proxy for tenant demand power.
-
-Example:
-
-Corporate_Profits × Employment_Growth
-Why:
-profits alone do not create occupancy.
-
-Need:
-
-profits
-
-hiring
-
-expansion
-
-This interaction is much stronger than profits alone.
-
-11. Profit Stress Diffusion Index
-Create broad stress indicator:
-
-1 if:
-profits down
-AND unemployment up
-AND credit spreads widening
-Interpretation:
-
-synchronized economic deterioration
-
-Vacancy spikes happen during synchronized stress.
-
-12. Profit Elasticity by Market
-Very sophisticated global-model feature.
-
-Compute:
-
-Historical sensitivity of market vacancy to profit changes
-Then use:
-
-Current Profit Growth × Historical Elasticity
-Why amazing:
-same macro shock affects markets differently.
-
-Example:
-
-NYC office highly elastic
-
-Phoenix apartments less elastic
-
-This becomes a market-adaptive macro feature.
-
-13. Excess Profit Feature
-Remove trend from profits.
-
-Example:
-
-Actual Profit - Long-Term Trend Profit
-Interpretation:
-
-cyclical overheating
-
-temporary boom
-
-Vacancy often responds to cyclical deviations, not trend.
-
-14. Profit Mean-Reversion Pressure
-(Current Profit Z-score) × (-1)
-Interpretation:
-
-extremely high profits may normalize later
-
-useful for long-horizon vacancy forecasts
-
-Institutional macro models use this frequently.
-
-15. Profit Breadth Indicator
-If sector-level data exists:
-
-% of sectors with rising profits
-Why useful:
-broad expansion creates stronger CRE demand than concentrated growth.
-
-Example:
-
-only tech profits rising
-vs
-
-all sectors rising
-
-Huge difference for vacancy.
-
-16. Profit Decoupling Feature (Post-COVID)
-Very modern feature.
-
-Corporate_Profits - Office_Utilization
+F
+e
+d
+A
+s
+s
+e
+t
+s
+G
+r
+o
+w
+t
+h
+×
+C
+o
+n
+s
+t
+r
+u
+c
+t
+i
+o
+n
+P
+e
+r
+m
+i
+t
+s
+FedAssetsGrowth×ConstructionPermits
 or
 
-Corporate_Profits / Mobility_Index
+F
+e
+d
+A
+s
+s
+e
+t
+s
+G
+r
+o
+w
+t
+h
+×
+U
+n
+d
+e
+r
+C
+o
+n
+s
+t
+r
+u
+c
+t
+i
+o
+n
+I
+n
+v
+e
+n
+t
+o
+r
+y
+FedAssetsGrowth×UnderConstructionInventory
+Interpretation:
+
+abundant liquidity + aggressive construction
+= future oversupply risk
+
+This predicts future vacancy spikes surprisingly well.
+
+8. Liquidity × Cap Rate Compression
+F
+e
+d
+A
+s
+s
+e
+t
+s
+G
+r
+o
+w
+t
+h
+×
+C
+a
+p
+R
+a
+t
+e
+S
+p
+r
+e
+a
+d
+FedAssetsGrowth×CapRateSpread
+Why useful:
+Liquidity affects markets differently depending on valuation tightness.
+
+Example:
+
+if spreads already compressed → liquidity creates bubbles
+
+if spreads wide → liquidity stimulates healthy growth
+
+9. Liquidity Cycle Turning Point
+Detect policy inflection.
+
+Feature:
+
+S
+i
+g
+n
+(
+Δ
+F
+e
+d
+A
+s
+s
+e
+t
+s
+t
+)
+≠
+S
+i
+g
+n
+(
+Δ
+F
+e
+d
+A
+s
+s
+e
+t
+s
+t
+−
+1
+)
+Sign(ΔFedAssets 
+t
+​
+ )
+
+=Sign(ΔFedAssets 
+t−1
+​
+ )
+Binary variable:
+
+1 when Fed shifts from easing to tightening
+
+0 otherwise
+
+Turning points often matter more than levels.
+
+10. Liquidity Momentum Exhaustion
+Measure weakening QE effect.
+
+Δ
+F
+e
+d
+A
+s
+s
+e
+t
+s
+t
+R
+o
+l
+l
+i
+n
+g
+M
+e
+a
+n
+(
+Δ
+F
+e
+d
+A
+s
+s
+e
+t
+s
+,
+4
+Q
+)
+RollingMean(ΔFedAssets,4Q)
+ΔFedAssets 
+t
+​
+ 
+​
+ 
+Interpretation:
+
+high values → fresh stimulus
+
+falling values → policy losing momentum
+
+Useful around late-cycle expansions.
+
+11. Distance from Crisis Liquidity Peak
+F
+e
+d
+A
+s
+s
+e
+t
+s
+t
+−
+M
+a
+x
+(
+F
+e
+d
+A
+s
+s
+e
+t
+s
+p
+a
+s
+t
+ 
+c
+r
+i
+s
+i
+s
+)
+FedAssets 
+t
+​
+ −Max(FedAssets 
+past crisis
+​
+ )
+or percentile distance.
+
+Why useful:
+Post-crisis CRE behavior differs dramatically.
+
 Captures:
 
-remote work distortion
+recovery stage
 
-profits no longer translating into office occupancy
+normalization phase
 
-Very powerful after 2020.
+12. Liquidity Volatility
+S
+T
+D
+(
+Δ
+F
+e
+d
+A
+s
+s
+e
+t
+s
+,
+8
+Q
+)
+STD(ΔFedAssets,8Q)
+Measures policy instability.
 
-17. Corporate Animal Spirits Indicator
-Proxy for expansion confidence.
+High volatility periods usually imply:
+
+macro uncertainty
+
+unstable tenant demand
+
+cautious leasing
+
+Can improve vacancy forecasting.
+
+13. Liquidity Breadth Indicator
+If you have:
+
+corporate spreads
+
+M2
+
+bank lending
+
+mortgage spreads
+
+Create composite liquidity index.
 
 Example:
 
-Profit Growth × Business Confidence Index
+0.4
+(
+F
+e
+d
+A
+s
+s
+e
+t
+s
+G
+r
+o
+w
+t
+h
+)
++
+0.3
+(
+M
+2
+G
+r
+o
+w
+t
+h
+)
+−
+0.3
+(
+C
+r
+e
+d
+i
+t
+S
+p
+r
+e
+a
+d
+)
+0.4(FedAssetsGrowth)+0.3(M2Growth)−0.3(CreditSpread)
+This is how institutional macro models work.
+
+14. Time Since Last QE Expansion
+Feature:
+
+C
+u
+r
+r
+e
+n
+t
+Q
+u
+a
+r
+t
+e
+r
+−
+L
+a
+s
+t
+Q
+E
+Q
+u
+a
+r
+t
+e
+r
+CurrentQuarter−LastQEQuarter
+Why useful:
+Liquidity effects decay over time.
+
+CRE demand often weakens several quarters after stimulus stops.
+
+15. Liquidity Saturation Threshold
+Nonlinear feature.
+
+Example:
+
+1
+(
+F
+e
+d
+A
+s
+s
+e
+t
+s
+/
+G
+D
+P
+>
+95
+t
+h
+P
+e
+r
+c
+e
+n
+t
+i
+l
+e
+)
+1(FedAssets/GDP>95thPercentile)
+Interpretation:
+“Extreme liquidity regime.”
+
+Tree models LOVE this.
+
 Because:
-high profits without confidence may not create leasing.
 
-18. Profit Compression Early Warning
-Rolling decline from local peak
-Example:
+normal QE behaves differently from extreme QE.
 
-(Current Profit - Rolling Max Profit_8Q) / Rolling Max
-Detects:
+16. Fed Assets Relative to CRE Prices
+F
+e
+d
+A
+s
+s
+e
+t
+s
+C
+o
+m
+m
+e
+r
+c
+i
+a
+l
+R
+e
+a
+l
+E
+s
+t
+a
+t
+e
+P
+r
+i
+c
+e
+I
+n
+d
+e
+x
+CommercialRealEstatePriceIndex
+FedAssets
+​
+ 
+Captures:
 
-deteriorating corporate environment early
+whether liquidity is outrunning asset fundamentals.
 
-Very strong recession predictor.
+Potentially predictive of:
 
-19. Profit-to-Debt Service Ratio
-Corporate_Profits / Interest_Expense
-Especially useful during high-rate environments.
+bubbles
 
-Why:
-profits may remain high,
-but debt burden can suppress expansion.
+future vacancy reversals
 
-20. Macro Demand Composite
-Institutional-style engineered feature:
+17. Liquidity Transmission Delay Surface
+Instead of one lag:
+create distributed lag structure.
 
-0.4 * Profit Growth
-+ 0.3 * Employment Growth
-+ 0.2 * Retail Sales Growth
-+ 0.1 * CapEx Growth
-This often outperforms raw profits.
+Feature
+Lag 1Q
+Lag 2Q
+Lag 4Q
+Lag 6Q
+Lag 8Q
+Lag 12Q
+Then:
 
-Because vacancy responds to:
+PCA compress
+OR
 
-broad demand ecosystem
-not one variable alone.
+allow boosting model to select
 
-Most Powerful Ones for Vacancy Models
-If I were building a production CRE model, I would prioritize:
+Very common in macro forecasting.
 
-Feature	Why Powerful
-Profit-to-Wage Divergence	Captures remote-work distortion
-Profit Shock Persistence	CRE reacts slowly
-Profit Volatility	Measures uncertainty
-Profit × Employment	Converts profits into real demand
-Profit vs Supply Growth	Demand-supply balance
-Regime States	Vacancy is nonlinear
-Turning Point Indicator	Captures cycle inflections
-Market Elasticity Interaction	Ideal for global models
-One Very Advanced Institutional Insight
-Raw macro variables usually underperform because CRE is driven by:
+18. Cross-Market Liquidity Divergence
+Compute:
 
-CHANGE + PERSISTENCE + INTERACTION + REGIME
-not levels.
+M
+a
+r
+k
+e
+t
+V
+a
+c
+a
+n
+c
+y
+G
+r
+o
+w
+t
+h
+−
+N
+a
+t
+i
+o
+n
+a
+l
+V
+a
+c
+a
+n
+c
+y
+G
+r
+o
+w
+t
+h
+MarketVacancyGrowth−NationalVacancyGrowth
+during high liquidity periods.
 
-That is why sophisticated CRE forecasting pipelines rarely feed:
+Measures:
+Which markets outperform when liquidity is abundant?
 
-Corporate_Profits_After_Tax
-directly into the model.
+Excellent for global models.
 
-They instead feed:
+19. Liquidity Driven Demand Proxy
+Interaction:
 
-stress
+F
+e
+d
+A
+s
+s
+e
+t
+s
+G
+r
+o
+w
+t
+h
+×
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+G
+r
+o
+w
+t
+h
+FedAssetsGrowth×EmploymentGrowth
+Why powerful:
+Liquidity only matters if economic demand transmits.
 
-acceleration
+This separates:
 
-imbalance
+“liquidity trap” markets
+from
 
-persistence
+“growth transmission” markets.
 
-interaction
+20. Regime Embedding Feature
+Create categorical regimes:
 
-cycle state
-features.
+Regime	Condition
+Crisis QE	FedAssets growth > 20%
+Expansion QE	5–20%
+Neutral	-5% to 5%
+QT	< -5%
+Then:
 
+one-hot encode
+
+interact with property type
+
+Institutional models use this extensively.
+
+Most underrated idea
+This one is extremely realistic:
+
+Liquidity-induced oversupply score
+F
+e
+d
+A
+s
+s
+e
+t
+s
+G
+r
+o
+w
+t
+h
+t
+−
+4
+×
+C
+o
+n
+s
+t
+r
+u
+c
+t
+i
+o
+n
+G
+r
+o
+w
+t
+h
+t
+×
+L
+o
+w
+C
+a
+p
+R
+a
+t
+e
+E
+n
+v
+i
+r
+o
+n
+m
+e
+n
+t
+FedAssetsGrowth 
+t−4
+​
+ ×ConstructionGrowth 
+t
+​
+ ×LowCapRateEnvironment
+This captures:
+
+cheap capital
+
+aggressive building
+
+speculative pricing
+
+which is EXACTLY how future vacancy spikes emerge in CRE cycles.
+
+Very powerful for:
+
+industrial
+
+multifamily
+
+Sunbelt markets.
 
 
 Sorry I was asking can you look for some more top notch features engineering which top real estate industry use
 
-For Corporate_Profits_After_Tax, top CRE research teams usually engineer features that mimic:
+Yes — if you want the kind of feature engineering that top CRE shops, REIT research teams, institutional investors, and macro hedge funds actually use, then you need to move beyond:
 
-tenant demand formation
+simple lags
 
-corporate leasing behavior
+rolling averages
 
-recession transmission
+YoY growth
 
-supply absorption capability
+The real edge comes from building:
 
-capital market stress
+regime-aware features
 
-business-cycle turning points
+capital flow proxies
 
-Below are more institutional-grade feature ideas that are actually close to what sophisticated real estate funds, REITs, CMBS desks, and macro research teams use.
+disequilibrium indicators
 
-1. Corporate Space Demand Capacity
-This estimates how much physical space profits can support.
+reflexivity measures
 
-Corporate_Profits_Growth
-×
-Office_Using_Employment_Growth
-Why elite:
-profits only matter if office-using sectors are hiring.
+liquidity transmission signals
 
-Very powerful for:
+For Federal_Reserve_Total_Assets, here are much more advanced and realistic CRE-style engineered features.
 
-office vacancy
+1. Liquidity Mispricing Indicator
+This is extremely institutional.
 
-CBD demand
+Idea:
+Compare liquidity expansion vs actual economic absorption.
 
-2. Leasing Power Index
-Measure whether firms can afford expansion.
-
-Corporate_Profits / Corporate_Debt
+Liquidity Mispricing
+=
+F
+e
+d
+A
+s
+s
+e
+t
+s
+G
+r
+o
+w
+t
+h
+−
+N
+o
+m
+i
+n
+a
+l
+G
+D
+P
+G
+r
+o
+w
+t
+h
+Liquidity Mispricing=FedAssetsGrowth−NominalGDPGrowth
 Interpretation:
 
-strong balance sheets
+liquidity growing much faster than economy
+→ speculative asset inflation likely
 
-ability to lease new space
+In CRE:
 
-When this deteriorates:
+prices rise faster than fundamentals
 
-expansions slow
+future vacancy risk increases later
 
-renewals shrink
+Very useful for:
 
-vacancy rises later
+office bubbles
 
-3. Profit Quality Indicator
-Distinguish:
+multifamily oversupply
 
-operational expansion
-vs
+industrial euphoria periods
 
-financial engineering
+2. Monetary Excess per Available Space
+Highly CRE-specific.
 
-Example:
+F
+e
+d
+A
+s
+s
+e
+t
+s
+A
+v
+a
+i
+l
+a
+b
+l
+e
+I
+n
+v
+e
+n
+t
+o
+r
+y
+AvailableInventory
+FedAssets
+​
+ 
+or
 
-Corporate_Profits / Business_Investment
-High profits with weak investment:
-
-firms are defensive
-
-not expanding footprint
-
-This became extremely important post-2020.
-
-4. Expansion-to-Efficiency Shift
-One of the best modern office features.
-
-Profit_Growth - Productivity_Growth
+F
+e
+d
+A
+s
+s
+e
+t
+s
+V
+a
+c
+a
+n
+t
+S
+F
+VacantSF
+FedAssets
+​
+ 
 Interpretation:
+“How much liquidity exists per unit of empty space?”
 
-if profits come from productivity gains,
-office demand may not increase.
+This captures:
 
-Captures:
+capital abundance relative to space supply
 
-AI adoption
+Very advanced institutional-style feature.
 
-automation
+3. Liquidity-Induced Development Pressure
+Top developers monitor this indirectly.
 
-remote work efficiency
-
-5. Corporate Expansion Stress Ratio
-Corporate_Profits_Growth
-/
-Interest_Rate_Level
-Why useful:
-high rates suppress expansion even with strong profits.
-
-Institutional investors heavily monitor this now.
-
-6. Tenant Expansion Confidence Signal
-Corporate_Profits_Growth
+F
+e
+d
+A
+s
+s
+e
+t
+s
+G
+r
+o
+w
+t
+h
 ×
-CEO_Confidence_Index
-Why realistic:
-companies lease space based on confidence, not just profitability.
+C
+o
+n
+s
+t
+r
+u
+c
+t
+i
+o
+n
+L
+o
+a
+n
+G
+r
+o
+w
+t
+h
+FedAssetsGrowth×ConstructionLoanGrowth
+or
 
-Leasing freezes often happen:
-
-before profits collapse.
-
-7. Profit Absorption Efficiency
-Very CRE-specific.
-
-Net_Absorption
-/
-Corporate_Profits_Growth
-Interpretation:
-how efficiently macro growth converts into occupancy demand.
-
-Markets with poor efficiency may indicate:
-
-oversupply
-
-remote work
-
-weak business formation
-
-8. Corporate Profit Saturation
-Detect overheating.
-
-Current_Profit_Level
-/
-10Y_Rolling_Average_Profit
-Why useful:
-extreme corporate profitability often precedes:
-
-slowing growth
-
-demand normalization
-
-vacancy reversal
-
-Very macro-cycle aware feature.
-
-9. Space Demand Fragility Indicator
-Institutional-quality recession feature.
-
-Rolling_Std(Profit_Growth)
+F
+e
+d
+A
+s
+s
+e
+t
+s
+G
+r
+o
+w
+t
+h
 ×
-Credit_Spreads
-Captures:
-
-unstable earnings
-
-tightening credit
-
-Very predictive before vacancy spikes.
-
-10. Profit Breadth Momentum
-If sector data available:
-
-% of industries with rising profits
+B
+u
+i
+l
+d
+i
+n
+g
+P
+e
+r
+m
+i
+t
+s
+G
+r
+o
+w
+t
+h
+FedAssetsGrowth×BuildingPermitsGrowth
 Why powerful:
-broad-based growth creates durable occupancy demand.
+Cheap liquidity alone does not create oversupply.
 
-Concentrated profit growth does not.
+Cheap liquidity + financing appetite does.
 
-11. Profit-to-New-Supply Cushion
-Top-tier supply-demand balancing feature.
+This predicts:
 
-Corporate_Profits_Growth
--
-Inventory_Growth
-Interpretation:
-Can economic demand absorb new buildings?
+future construction waves
 
-Very important for:
+future vacancy surges
 
-Sunbelt markets
-
-industrial
-
-multifamily
-
-12. Corporate Retrenchment Probability
-Early warning signal.
-
-1 if:
-Profit_Growth < 0
-AND Employment_Growth < 0
-AND Layoffs increasing
-Institutional models love these composite recession triggers.
-
-13. Profit-to-CapRate Divergence
-Extremely advanced.
-
-Corporate_Profits_Growth
--
-Cap_Rate_Compression
-Why useful:
-when asset prices rise faster than economic fundamentals:
-
-future vacancy stress often follows.
-
-Detects:
-
-late-cycle overheating
-
-14. Corporate Footprint Efficiency
-Modern office-era feature.
-
-Corporate_Profits
-/
-Occupied_Office_Space
-Tracks:
-how much profit firms generate per square foot.
-
-If rising sharply:
-
-companies are using less space efficiently
-
-future office vacancy risk rises
-
-This became huge after hybrid work.
-
-15. Economic Demand Exhaustion
-2Y cumulative profit growth
--
-2Y cumulative vacancy decline
-Why useful:
-detects when occupancy already fully priced in macro growth.
-
-Very advanced cycle feature.
-
-16. Corporate Expansion Lag Curve
-Instead of single lag:
-
-0.5*Profit_t-1
-+
-0.3*Profit_t-2
-+
-0.2*Profit_t-3
-This mimics real leasing behavior:
-
-expansion decisions happen gradually.
-
-This is much more realistic than simple lagging.
-
-17. Profit Persistence Score
-Measure sustainability.
-
-Rolling_Autocorrelation(Profit_Growth)
-High persistence:
-
-durable expansion cycle
-
-stronger leasing confidence
-
-Low persistence:
-
-temporary boom
-
-weaker occupancy response
-
-18. Corporate Demand Transmission Score
+4. Cap Rate Artificial Compression Score
 Very sophisticated.
 
-Profit_Growth
-×
-Small_Business_Formation
-Why:
-large corporate profits alone don't guarantee broad leasing demand.
-
-New business formation matters enormously.
-
-19. Corporate Stress-to-Space Release Signal
-Excellent for vacancy spikes.
-
-Negative_Profit_Shock
-×
-Sublease_Availability
-Captures:
-
-distressed space release
-
-sudden vacancy jumps
-
-Especially strong for office.
-
-20. Profit-to-Labor Cost Compression
-Corporate_Profits
-/
-Employment_Cost_Index
-Why useful:
-if labor costs surge faster than profits:
-
-firms reduce expansion
-
-occupancy demand weakens
-
-Very relevant in inflationary periods.
-
-21. Expansion Optionality Index
-Institutional-level behavioral feature.
-
-Cash_Flow_Margin
-×
-Corporate_Profits_Growth
-×
-Credit_Availability
-Measures:
-whether firms have flexibility to expand footprint.
-
-22. Corporate Cycle Heatmap Score
-Composite macro pressure indicator.
-
-Example:
-
-0.25*Profit_Growth_Zscore
-+0.25*Employment_Growth_Zscore
-+0.25*PMI_Zscore
-+0.25*Credit_Conditions_Zscore
-This is extremely common in macro CRE forecasting.
-
-23. Structural Break Adjustment Feature
-Very important post-COVID.
-
-Corporate_Profits_Growth
-×
-Remote_Work_Adoption
-Because:
-profits no longer translate equally into office demand.
-
-Without this feature:
-models often overpredict office recovery.
-
-24. Corporate Demand Convexity
-Capture asymmetric vacancy reaction.
-
-(negative profit growth)^2
-Why:
-vacancy reacts much more violently to downside shocks than upside growth.
-
-Extremely realistic behavior.
-
-25. Market Profit Sensitivity Embedding
-Advanced global-model feature.
-
-For each market estimate:
-
-Historical beta of vacancy to profits
-Then create:
-
-Current_Profit_Growth × Market_Beta
-This is exactly the kind of feature global models exploit better than local models.
-
-What Elite CRE Teams Usually Prioritize
-The highest-value engineered signals are usually:
-
-Feature Type	Why Important
-Supply vs Demand imbalance	Core vacancy driver
-Stress persistence	CRE reacts slowly
-Turning points	Vacancy changes at inflections
-Interaction effects	Macros never work alone
-Regime features	Recession behavior nonlinear
-Post-COVID structural features	Office dynamics changed permanently
-Credit-sensitive features	Expansion depends on financing
-Occupancy efficiency	Hybrid work altered demand
-One Important Institutional Truth
-Top CRE models rarely ask:
-
-"Are profits high?"
-They ask:
-
-"Will profits translate into physical space demand,
-under current financing, labor,
-remote-work, and supply conditions?"
-That distinction is where advanced feature engineering creates major forecasting edge.
-
-
-Show me some more features engineering with Corporate_Profits_After_Tax which are realistic and don't try to keep the earlier feature.
-
-Additional Realistic Feature Engineering Ideas Using Corporate_Profits_After_Tax
-I’ll avoid repeating earlier concepts and focus on fresh, realistic CRE-oriented transformations that sophisticated forecasting pipelines may use.
-
-1. Profit Recovery Velocity
-Measures how quickly profits recover after downturns.
-
-(Current_Profit - Recent_Trough_Profit)
-/
-Quarters_Since_Trough
-Why useful:
-Fast recoveries often lead to:
-
-aggressive leasing rebounds
-
-lower sublease inventory
-
-stronger absorption
-
-Slow recoveries usually imply cautious occupiers.
-
-2. Profit Drawdown Depth
-Institutional macro risk feature.
-
-(Current_Profit - Rolling_8Q_Max_Profit)
-/
-Rolling_8Q_Max_Profit
+F
+e
+d
+A
+s
+s
+e
+t
+s
+G
+r
+o
+w
+t
+h
+C
+a
+p
+R
+a
+t
+e
+CapRate
+FedAssetsGrowth
+​
+ 
 Interpretation:
-Measures how far the economy is from prior peak profitability.
+“How aggressively liquidity is suppressing yields.”
 
-Deep drawdowns often precede:
+When this becomes extreme:
 
-corporate downsizing
+asset valuations disconnect from occupancy fundamentals.
 
-office consolidation
+Very predictive before corrections.
 
-vacancy spikes
+5. Liquidity Crowding Signal
+Measures whether too much institutional capital is chasing CRE.
 
-3. Profit Stability Score
-Instead of volatility alone, measure directional consistency.
-
-Positive_Profit_Quarters_Last_8Q
-/
-8
-Why powerful:
-CRE responds better to sustained confidence than temporary spikes.
-
-4. Profit Expansion Breadth Momentum
-Tracks acceleration in breadth.
-
-(% Sectors with Rising Profits)_t
--
-(% Sectors with Rising Profits)_t-2
-Why important:
-broadening expansion creates stronger occupancy demand than isolated sector growth.
-
-5. Profit-to-Construction Pipeline Ratio
-Extremely realistic vacancy pressure signal.
-
-Corporate_Profits
-/
-Under_Construction_SF
-Interpretation:
-Can economic activity absorb incoming supply?
-
-Very useful in:
-
-industrial
-
-multifamily
-
-office oversupply cycles
-
-6. Profit Compression Duration
-Measures how long profits remain under pressure.
-
-Consecutive_Quarters_Profit_Growth_Below_0
-Why important:
-vacancy reacts more to prolonged weakness than one-time shocks.
-
-7. Corporate Expansion Fatigue
-Detect mature-cycle slowdown.
-
-Rolling_4Q_Avg_Profit_Growth
--
-Rolling_12Q_Avg_Profit_Growth
-Interpretation:
-short-term slowdown relative to long-term trend.
-
-Often useful before:
-
-leasing slowdowns
-
-weaker renewals
-
-declining tenant demand
-
-8. Profit-to-Sublease Pressure Ratio
-Modern office feature.
-
-Corporate_Profits
-/
-Sublease_Availability
-Why useful:
-high profits with rising sublease space can indicate:
-
-efficiency gains
-
-remote work optimization
-
-shrinking footprint demand
-
-Very post-2020 relevant.
-
-9. Corporate Profit Utilization Gap
-Measures disconnect between profits and occupancy.
-
-Profit_Growth
--
-Occupied_Space_Growth
-Interpretation:
-companies earning more without expanding physical space usage.
-
-Strong signal for:
-
-hybrid work
-
-automation
-
-operational efficiency
-
-10. Profit Sensitivity to Financing Conditions
-Corporate_Profits_Growth
+F
+e
+d
+A
+s
+s
+e
+t
+s
+G
+r
+o
+w
+t
+h
 ×
-Bank_Lending_Standards
-Why elite:
-corporate expansion depends heavily on credit conditions.
-
-Even strong profits may not convert to leasing if lending tightens.
-
-11. Profit Cycle Age
-Measures how late the expansion cycle is.
-
-Quarters_Since_Last_Negative_Profit_Growth
-Why useful:
-late-cycle expansions often:
-
-slow organically
-
-become vulnerable to shocks
-
-show weaker marginal leasing demand
-
-12. Corporate Leasing Capacity Buffer
-Corporate_Cash_Flow
--
-Fixed_Corporate_Obligations
-Or proxy:
-
-Corporate_Profits
--
-Interest_Expense
--
-Labor_Costs
+C
+R
+E
+T
+r
+a
+n
+s
+a
+c
+t
+i
+o
+n
+V
+o
+l
+u
+m
+e
+G
+r
+o
+w
+t
+h
+FedAssetsGrowth×CRETransactionVolumeGrowth
 Interpretation:
-remaining expansion capacity after mandatory expenses.
 
-Very realistic operational feature.
+rising liquidity + exploding transaction activity
+→ crowded investment regime
 
-13. Profit Dispersion Index
-If sector-level profit data available:
+Usually followed later by:
 
-StdDev(Sector_Profit_Growth)
-Why useful:
-high dispersion implies uneven economic strength.
-
-Broad synchronized growth supports healthier occupancy demand.
-
-14. Profit Exhaustion Indicator
-Detect overextended cycles.
-
-Rolling_Profit_Zscore
-×
-Declining_Growth_Momentum
-Interpretation:
-profits still high,
-but momentum fading.
-
-Often precedes:
-
-weaker leasing activity
+slower leasing
 
 rising concessions
 
-occupancy softening
+vacancy normalization
 
-15. Profit-to-Inventory Saturation
-Corporate_Profits
-/
-Existing_Inventory_SF
-Useful for comparing:
+6. Vacancy Reflexivity Feature
+This is hedge-fund-level thinking.
 
-demand generation
-vs
-
-market size
-
-Markets with weak profit support relative to inventory often struggle with vacancy.
-
-16. Profit Shock Absorption Feature
-Measures resilience after negative shocks.
-
-Recovery_Profit_Growth
-/
-Previous_Profit_Decline
-Why useful:
-strong recoveries reduce long-term vacancy damage.
-
-Weak recoveries imply persistent softness.
-
-17. Profit-to-Business Formation Conversion
-New_Business_Applications
-/
-Corporate_Profit_Growth
+F
+e
+d
+A
+s
+s
+e
+t
+s
+G
+r
+o
+w
+t
+h
+t
+−
+4
+×
+V
+a
+c
+a
+n
+c
+y
+C
+o
+m
+p
+r
+e
+s
+s
+i
+o
+n
+t
+−
+2
+FedAssetsGrowth 
+t−4
+​
+ ×VacancyCompression 
+t−2
+​
+ 
 Interpretation:
-whether profits are stimulating broader economic activity.
+Liquidity causes vacancy improvement,
+which attracts more capital,
+which causes overbuilding later.
 
-Very strong for:
+Captures reflexive CRE cycles.
 
-flex office
+Very advanced.
 
-small industrial
+7. Liquidity-to-New-Supply Efficiency
+Institutional research loves efficiency ratios.
 
-suburban retail
+N
+e
+t
+A
+b
+s
+o
+r
+p
+t
+i
+o
+n
+F
+e
+d
+A
+s
+s
+e
+t
+s
+G
+r
+o
+w
+t
+h
+×
+N
+e
+w
+S
+u
+p
+p
+l
+y
+FedAssetsGrowth×NewSupply
+NetAbsorption
+​
+ 
+Interpretation:
+“How efficiently is liquidity translating into real demand?”
 
-18. Profit Momentum Divergence
-Detect hidden slowdown.
+Low values:
 
-Short_Term_Profit_Growth
--
-Long_Term_Profit_Growth
+speculative supply boom
+
+weak tenant absorption
+
+Huge predictor of future vacancy problems.
+
+8. Monetary Transmission Friction
+Very underrated feature.
+
+F
+e
+d
+A
+s
+s
+e
+t
+s
+G
+r
+o
+w
+t
+h
+−
+L
+o
+a
+n
+G
+r
+o
+w
+t
+h
+FedAssetsGrowth−LoanGrowth
+Interpretation:
+Fed injects liquidity,
+but banks may not lend.
+
+This measures broken monetary transmission.
+
+Especially useful post-2008 and post-2022.
+
+Markets with high friction behave differently.
+
+9. Liquidity Dependency Ratio
+Measures how dependent a market is on easy money.
+
+Step:
+Train local rolling regression:
+
+V
+a
+c
+a
+n
+c
+y
+t
+=
+β
+⋅
+F
+e
+d
+A
+s
+s
+e
+t
+s
+G
+r
+o
+w
+t
+h
+t
+Vacancy 
+t
+​
+ =β⋅FedAssetsGrowth 
+t
+​
+ 
+Feature:
+rolling beta itself.
+
+Interpretation:
+
+high beta markets collapse harder during QT.
+
+Very powerful for:
+
+Sunbelt
+
+tech-heavy markets
+
+speculative industrial markets
+
+10. QE Sensitivity by Property Type
+This is extremely realistic.
+
+Create interaction:
+
+F
+e
+d
+A
+s
+s
+e
+t
+s
+G
+r
+o
+w
+t
+h
+×
+P
+r
+o
+p
+e
+r
+t
+y
+T
+y
+p
+e
+FedAssetsGrowth×PropertyType
+because liquidity affects:
+
+industrial
+
+office
+
+retail
+differently.
+
 Example:
 
-1Q growth - 8Q growth
-Good at detecting:
+industrial reacts immediately
 
-inflection points
+office reacts slowly
 
-late-cycle rollover
+retail weaker transmission
 
-19. Corporate Profit Density
-Normalize profitability by population or workforce.
+Tree models capture this well.
 
-Corporate_Profits
-/
-Total_Employment
-Or:
+11. Monetary Divergence Stress
+Compare Fed expansion vs local economic weakness.
 
-Corporate_Profits
-/
-Office_Using_Employment
-Useful for comparing markets structurally.
-
-20. Profit-to-Utilization Efficiency
-Excellent post-pandemic feature.
-
-Corporate_Profits
-/
-Office_Utilization_Rate
-Why important:
-many firms maintain profits with lower office usage.
-
-This helps identify:
-
-structural occupancy decline
-
-footprint optimization
-
-21. Profit Expansion Confidence Decay
-Measures weakening expansion appetite.
-
-Profit_Growth
--
-Business_Confidence_Change
+F
+e
+d
+A
+s
+s
+e
+t
+s
+G
+r
+o
+w
+t
+h
+−
+L
+o
+c
+a
+l
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+G
+r
+o
+w
+t
+h
+FedAssetsGrowth−LocalEmploymentGrowth
 Interpretation:
-profits remain strong,
-but confidence deteriorates.
+Liquidity is rising,
+but local fundamentals weak.
 
-Leasing usually slows before profits collapse.
+This often signals:
 
-22. Corporate Demand Overhang
-Expected_Demand_From_Profits
--
-Actual_Absorption
-Interpretation:
-macro conditions imply stronger demand than actually materializing.
+artificial pricing
 
-Can signal:
+weak occupier market
 
-structural weakness
+hidden vacancy risk
 
-remote work
+Very institutional feature.
 
-excess supply
+12. Asset Inflation Without Occupancy
+Extremely important.
 
-23. Profit Mean-Reversion Pressure Curve
-More advanced than simple z-score.
+C
+R
+E
+P
+r
+i
+c
+e
+G
+r
+o
+w
+t
+h
+−
+O
+c
+c
+u
+p
+a
+n
+c
+y
+G
+r
+o
+w
+t
+h
+CREPriceGrowth−OccupancyGrowth
+then interact with liquidity:
 
-Distance_From_Trend
+(
+F
+e
+d
+A
+s
+s
+e
+t
+s
+G
+r
+o
+w
+t
+h
+)
 ×
-Cycle_Duration
-Why useful:
-extreme profit expansions become less sustainable over long cycles.
+(
+C
+R
+E
+P
+r
+i
+c
+e
+G
+r
+o
+w
+t
+h
+−
+O
+c
+c
+u
+p
+a
+n
+c
+y
+G
+r
+o
+w
+t
+h
+)
+(FedAssetsGrowth)×(CREPriceGrowth−OccupancyGrowth)
+Interpretation:
+Prices rising without tenant support.
 
-24. Profit Fragility Composite
-Institutional recession-warning style feature.
+Classic bubble indicator.
 
-Negative_Profit_Momentum
-+
-Credit_Stress
-+
-Layoff_Announcements
-+
-Declining_CapEx
-Excellent for forecasting vacancy spikes.
+13. Liquidity Duration Exposure
+CRE behaves differently depending on how long easy money lasts.
 
-25. Corporate Occupancy Conversion Ratio
-Very advanced CRE-specific feature.
+Feature:
 
-Occupied_SF_Change
+R
+o
+l
+l
+i
+n
+g
+Q
+E
+Q
+u
+a
+r
+t
+e
+r
+s
+RollingQEQuarters
+Example:
+number of consecutive quarters where:
+
+F
+e
+d
+A
+s
+s
+e
+t
+s
+G
+r
+o
+w
+t
+h
+>
+0
+FedAssetsGrowth>0
+Long-duration QE usually creates:
+
+aggressive underwriting
+
+supply booms
+
+later vacancy spikes
+
+14. Monetary Shock Absorption Capacity
+Very advanced.
+
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+G
+r
+o
+w
+t
+h
+F
+e
+d
+A
+s
+s
+e
+t
+s
+G
+r
+o
+w
+t
+h
+FedAssetsGrowth
+EmploymentGrowth
+​
+ 
+Interpretation:
+How much real economic demand is generated per unit liquidity?
+
+Low ratio:
+
+liquidity trapped in asset inflation
+
+High ratio:
+
+healthy economic expansion
+
+Useful distinction.
+
+15. Liquidity-Adjusted Vacancy Momentum
+V
+a
+c
+a
+n
+c
+y
+C
+h
+a
+n
+g
+e
+−
+F
+e
+d
+A
+s
+s
+e
+t
+s
+G
+r
+o
+w
+t
+h
+E
+f
+f
+e
+c
+t
+VacancyChange−FedAssetsGrowthEffect
+This isolates:
+“organic vacancy behavior”
+
+Markets where vacancy rises despite QE are structurally weak.
+
+Institutional investors care deeply about this.
+
+16. Financial Conditions Spillover Feature
+If you have:
+
+CMBS spreads
+
+BBB spreads
+
+mortgage spreads
+
+Create:
+
+F
+e
+d
+A
+s
+s
+e
+t
+s
+G
+r
+o
+w
+t
+h
+×
+C
+r
+e
+d
+i
+t
+S
+p
+r
+e
+a
+d
+C
+o
+m
+p
+r
+e
+s
+s
+i
+o
+n
+FedAssetsGrowth×CreditSpreadCompression
+This directly captures:
+
+refinancing ease
+
+acquisition financing conditions
+
+investor risk appetite
+
+This is VERY realistic.
+
+17. Cross-Market Liquidity Winner Score
+During QE periods:
+
+Compute:
+market absorption relative to national average.
+
+M
+a
+r
+k
+e
+t
+A
+b
+s
+o
+r
+p
+t
+i
+o
+n
+−
+N
+a
+t
+i
+o
+n
+a
+l
+A
+b
+s
+o
+r
+p
+t
+i
+o
+n
+MarketAbsorption−NationalAbsorption
+conditioned on:
+high Fed liquidity regime.
+
+This identifies:
+which markets absorb liquidity best.
+
+Very useful in global models.
+
+18. Liquidity Exhaustion Threshold
+At some point QE stops helping occupancy.
+
+Feature:
+
+F
+e
+d
+A
+s
+s
+e
+t
+s
+P
+e
+r
+c
+e
+n
+t
+i
+l
+e
+FedAssetsPercentile
+Then nonlinear interaction:
+
+very high percentile liquidity
+may indicate late-cycle overheating.
+
+Tree boosting models exploit this beautifully.
+
+19. Liquidity-to-Labor Imbalance
+F
+e
+d
+A
+s
+s
+e
+t
+s
+G
+r
+o
+w
+t
+h
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+G
+r
+o
+w
+t
+h
+EmploymentGrowth
+FedAssetsGrowth
+​
+ 
+Interpretation:
+too much liquidity chasing too little real labor demand.
+
+Often precedes:
+
+overpricing
+
+weak tenant quality
+
+future vacancy issues
+
+20. Monetary Policy Convexity
+This is elite-level feature engineering.
+
+Measure whether vacancy reacts asymmetrically.
+
+Example:
+
+Δ
+V
+a
+c
+a
+n
+c
+y
 /
-Corporate_Profit_Growth
+(
+Δ
+F
+e
+d
+A
+s
+s
+e
+t
+s
+)
+2
+ΔVacancy/(ΔFedAssets) 
+2
+ 
+Why?
+Huge QE shocks have nonlinear effects.
+
+CRE markets rarely react linearly to monetary policy.
+
+Very useful in:
+
+XGBoost
+
+LightGBM
+
+CatBoost
+
+The features most likely to produce alpha
+If I were building a production CRE forecasting system, I would prioritize:
+
+Priority	Feature
+High	Liquidity-induced development pressure
+High	Asset inflation without occupancy
+High	Monetary divergence stress
+High	Liquidity dependency ratio
+High	Liquidity-to-new-supply efficiency
+Medium	QE duration exposure
+Medium	Cap rate artificial compression
+Medium	Liquidity crowding signal
+Medium	Monetary transmission friction
+These are genuinely close to what sophisticated CRE macro models try to capture.
+
+
+Show me some more features engineering with Federal_Reserve_Total_Assets which are realistic and don't try to keep the earlier feature.
+
+Absolutely. Let’s go even deeper into realistic CRE/macroeconomic feature engineering specifically for Federal_Reserve_Total_Assets, while avoiding the earlier ideas.
+
+These are the kinds of engineered signals that resemble what:
+
+institutional CRE research teams,
+
+macro strategists,
+
+REIT quant groups,
+
+CMBS analytics teams,
+
+and private equity real estate funds
+
+actually experiment with.
+
+The goal is to transform Fed assets into:
+
+capital availability signals,
+
+refinancing stress signals,
+
+speculative behavior indicators,
+
+leasing-cycle predictors,
+
+and market fragility measures.
+
+1. Liquidity Half-Life Feature
+Measure how quickly the effect of liquidity fades.
+
+Feature:
+
+F
+e
+d
+A
+s
+s
+e
+t
+s
+t
+−
+4
+F
+e
+d
+A
+s
+s
+e
+t
+s
+t
+FedAssets 
+t
+​
+ 
+FedAssets 
+t−4
+​
+ 
+​
+ 
+Interpretation:
+
+near 1 → liquidity staying elevated
+
+low → rapid tightening
+
+This captures:
+“how persistent previous stimulus still is.”
+
+CRE responds heavily to lingering liquidity.
+
+2. Monetary Whiplash Indicator
+Measures sudden policy reversal severity.
+
+∣
+Δ
+F
+e
+d
+A
+s
+s
+e
+t
+s
+t
+−
+Δ
+F
+e
+d
+A
+s
+s
+e
+t
+s
+t
+−
+1
+∣
+∣ΔFedAssets 
+t
+​
+ −ΔFedAssets 
+t−1
+​
+ ∣
+Large values indicate:
+
+abrupt QE/QT transition
+
+unstable financing environment
+
+Highly predictive for:
+
+transaction slowdown
+
+leasing hesitation
+
+refinancing stress
+
+3. Capital Repricing Pressure
+F
+e
+d
+A
+s
+s
+e
+t
+s
+D
+e
+c
+l
+i
+n
+e
+×
+D
+e
+b
+t
+M
+a
+t
+u
+r
+i
+t
+y
+W
+a
+l
+l
+FedAssetsDecline×DebtMaturityWall
+If you have debt maturity data:
+
+markets with large refinancing needs suffer more during QT.
+
+This is extremely realistic in office markets.
+
+4. Fed Support per Occupied Space
+F
+e
+d
+A
+s
+s
+e
+t
+s
+O
+c
+c
+u
+p
+i
+e
+d
+I
+n
+v
+e
+n
+t
+o
+r
+y
+OccupiedInventory
+FedAssets
+​
+ 
+Different from vacant-space metrics.
+
+Captures:
+“How much monetary support exists relative to actually utilized space.”
+
+Can identify:
+
+inflated occupancy environments.
+
+5. Liquidity Decoupling Ratio
+Measures whether capital markets and occupier markets diverge.
+
+C
+R
+E
+T
+r
+a
+n
+s
+a
+c
+t
+i
+o
+n
+V
+o
+l
+u
+m
+e
+G
+r
+o
+w
+t
+h
+−
+N
+e
+t
+A
+b
+s
+o
+r
+p
+t
+i
+o
+n
+G
+r
+o
+w
+t
+h
+CRETransactionVolumeGrowth−NetAbsorptionGrowth
+then condition with Fed liquidity:
+
+(
+F
+e
+d
+A
+s
+s
+e
+t
+s
+G
+r
+o
+w
+t
+h
+)
+×
+(
+T
+r
+a
+n
+s
+a
+c
+t
+i
+o
+n
+G
+r
+o
+w
+t
+h
+−
+A
+b
+s
+o
+r
+p
+t
+i
+o
+n
+G
+r
+o
+w
+t
+h
+)
+(FedAssetsGrowth)×(TransactionGrowth−AbsorptionGrowth)
+Interpretation:
+capital flowing into assets faster than tenants use space.
+
+Massively important in bubble periods.
+
+6. Policy Dependency Drift
+Rolling trend in market sensitivity to Fed assets.
+
+Step:
+Estimate rolling regression beta every 8 quarters.
+
+Then:
+
+B
+e
+t
+a
+t
+−
+B
+e
+t
+a
+t
+−
+8
+Beta 
+t
+​
+ −Beta 
+t−8
+​
+ 
+Interpretation:
+market becoming increasingly dependent on monetary easing.
+
+Very sophisticated structural feature.
+
+7. Liquidity Efficiency Collapse
+L
+e
+a
+s
+i
+n
+g
+V
+e
+l
+o
+c
+i
+t
+y
+F
+e
+d
+A
+s
+s
+e
+t
+s
+G
+r
+o
+w
+t
+h
+FedAssetsGrowth
+LeasingVelocity
+​
+ 
+If liquidity rises but leasing velocity slows:
+
+monetary policy losing effectiveness.
+
+Useful during late-cycle conditions.
+
+8. Shadow Tightening Feature
+Sometimes Fed assets expand while financing still tightens.
+
+Feature:
+
+F
+e
+d
+A
+s
+s
+e
+t
+s
+G
+r
+o
+w
+t
+h
+−
+C
+M
+B
+S
+I
+s
+s
+u
+a
+n
+c
+e
+G
+r
+o
+w
+t
+h
+FedAssetsGrowth−CMBSIssuanceGrowth
+Interpretation:
+official liquidity ≠ actual CRE liquidity.
+
+Very realistic.
+
+9. Liquidity Rotation Indicator
+Captures where liquidity is flowing.
+
+I
+n
+d
+u
+s
+t
+r
+i
+a
+l
+P
+r
+i
+c
+e
+G
+r
+o
+w
+t
+h
+−
+O
+f
+f
+i
+c
+e
+P
+r
+i
+c
+e
+G
+r
+o
+w
+t
+h
+IndustrialPriceGrowth−OfficePriceGrowth
+conditioned on QE regime.
+
+Why useful:
+Fed liquidity rotates unevenly across sectors.
+
+Great for multi-property models.
+
+10. Monetary Saturation Burden
+F
+e
+d
+A
+s
+s
+e
+t
+s
+P
+o
+p
+u
+l
+a
+t
+i
+o
+n
+G
+r
+o
+w
+t
+h
+PopulationGrowth
+FedAssets
+​
+ 
+Interpretation:
+liquidity expansion unsupported by demographic demand.
+
+Can indicate:
+
+speculative development
+
+future vacancy imbalance
+
+Very useful in Sunbelt overbuilding studies.
+
+11. QE-Induced Yield Chasing Signal
+F
+e
+d
+A
+s
+s
+e
+t
+s
+G
+r
+o
+w
+t
+h
+×
+M
+u
+l
+t
+i
+f
+a
+m
+i
+l
+y
+C
+a
+p
+R
+a
+t
+e
+C
+o
+m
+p
+r
+e
+s
+s
+i
+o
+n
+FedAssetsGrowth×MultifamilyCapRateCompression
+Captures:
+investors reaching for yield because liquidity suppresses bond yields.
+
+Common institutional framework.
+
+12. Monetary Fragility Score
+V
+a
+c
+a
+n
+c
+y
+R
+a
+t
+e
+×
+F
+e
+d
+A
+s
+s
+e
+t
+s
+D
+e
+c
+l
+i
+n
+e
+VacancyRate×FedAssetsDecline
+Interpretation:
+high vacancy markets become fragile during QT.
+
+This creates:
+
+refinancing risk
+
+distress probability
+
+value impairment
+
+Very practical for office distress models.
+
+13. Liquidity Embedded Supply Risk
+U
+n
+d
+e
+r
+C
+o
+n
+s
+t
+r
+u
+c
+t
+i
+o
+n
+S
+h
+a
+r
+e
+×
+H
+i
+s
+t
+o
+r
+i
+c
+a
+l
+F
+e
+d
+E
+x
+p
+a
+n
+s
+i
+o
+n
+UnderConstructionShare×HistoricalFedExpansion
+Idea:
+current projects were financed under prior QE conditions.
+
+Captures delayed oversupply risk.
+
+Extremely realistic.
+
+14. Policy Conviction Feature
+Measure consistency of Fed direction.
+
+Example:
+
+R
+o
+l
+l
+i
+n
+g
+M
+e
+a
+n
+(
+S
+i
+g
+n
+(
+Δ
+F
+e
+d
+A
+s
+s
+e
+t
+s
+)
+,
+6
+Q
+)
+RollingMean(Sign(ΔFedAssets),6Q)
+Interpretation:
+
+strong positive → persistent easing
+
+unstable values → uncertain policy environment
+
+Markets dislike policy inconsistency.
+
+15. Excess Liquidity Absorption Gap
+F
+e
+d
+A
+s
+s
+e
+t
+s
+G
+r
+o
+w
+t
+h
+−
+S
+p
+a
+c
+e
+D
+e
+m
+a
+n
+d
+G
+r
+o
+w
+t
+h
+FedAssetsGrowth−SpaceDemandGrowth
+Where:
+
+demand growth = absorption, employment, or occupied SF growth.
+
 Measures:
-how effectively economic growth converts into actual space demand.
+whether liquidity exceeds real occupier demand.
 
-This relationship structurally changed after COVID and is now heavily monitored.
+Critical in identifying unsustainable CRE rallies.
 
+16. Monetary Regime Transition Age
+How long since current regime started?
+
+Example:
+
+Regime	Condition
+QE	growth > 0
+QT	growth < 0
+Feature:
+quarters elapsed since regime began.
+
+Why useful:
+early QE behaves differently from late QE.
+
+17. Liquidity Shock Recovery Speed
+After large liquidity expansion:
+
+V
+a
+c
+a
+n
+c
+y
+t
++
+4
+−
+V
+a
+c
+a
+n
+c
+y
+t
+F
+e
+d
+A
+s
+s
+e
+t
+s
+S
+h
+o
+c
+k
+t
+FedAssetsShock 
+t
+​
+ 
+Vacancy 
+t+4
+​
+ −Vacancy 
+t
+​
+ 
+​
+ 
+Measures:
+how efficiently a market recovers after intervention.
+
+Can become a market quality factor.
+
+18. Funding Abundance Mismatch
+F
+e
+d
+A
+s
+s
+e
+t
+s
+G
+r
+o
+w
+t
+h
+×
+N
+e
+g
+a
+t
+i
+v
+e
+R
+e
+n
+t
+G
+r
+o
+w
+t
+h
+FedAssetsGrowth×NegativeRentGrowth
+Interpretation:
+easy money despite weakening rents.
+
+Classic symptom of:
+
+speculative pricing
+
+unhealthy underwriting
+
+19. Monetary Cushion Indicator
+F
+e
+d
+A
+s
+s
+e
+t
+s
+D
+i
+s
+t
+r
+e
+s
+s
+e
+d
+A
+s
+s
+e
+t
+s
+DistressedAssets
+FedAssets
+​
+ 
+If distress data available:
+measures systemic ability to absorb CRE stress.
+
+Very institutional credit-style feature.
+
+20. Liquidity Exit Vulnerability
+F
+l
+o
+a
+t
+i
+n
+g
+R
+a
+t
+e
+D
+e
+b
+t
+S
+h
+a
+r
+e
+×
+F
+e
+d
+A
+s
+s
+e
+t
+s
+D
+e
+c
+l
+i
+n
+e
+FloatingRateDebtShare×FedAssetsDecline
+Extremely realistic after 2022.
+
+Markets with:
+
+high floating debt
+
+falling liquidity
+
+become vulnerable quickly.
+
+Massively useful for office and multifamily.
+
+21. Monetary Pull-Forward Effect
+Measures whether QE pulled future demand forward.
+
+C
+u
+r
+r
+e
+n
+t
+A
+b
+s
+o
+r
+p
+t
+i
+o
+n
+−
+F
+u
+t
+u
+r
+e
+A
+b
+s
+o
+r
+p
+t
+i
+o
+n
+T
+r
+e
+n
+d
+CurrentAbsorption−FutureAbsorptionTrend
+conditioned on historical Fed expansion.
+
+Interpretation:
+liquidity temporarily inflated demand.
+
+Very advanced cyclical feature.
+
+22. Fed Balance Sheet Elasticity of Pricing
+C
+R
+E
+P
+r
+i
+c
+e
+G
+r
+o
+w
+t
+h
+F
+e
+d
+A
+s
+s
+e
+t
+s
+G
+r
+o
+w
+t
+h
+FedAssetsGrowth
+CREPriceGrowth
+​
+ 
+Measures how aggressively asset prices respond to liquidity.
+
+Can identify:
+
+speculative markets
+
+capital concentration
+
+irrational exuberance
+
+23. Liquidity-Induced Leasing Risk
+T
+e
+n
+a
+n
+t
+E
+x
+p
+a
+n
+s
+i
+o
+n
+R
+a
+t
+e
+×
+F
+e
+d
+A
+s
+s
+e
+t
+s
+G
+r
+o
+w
+t
+h
+TenantExpansionRate×FedAssetsGrowth
+High tenant expansion during QE can later reverse sharply.
+
+Useful for:
+
+office
+
+startup-heavy markets
+
+tech corridors
+
+24. Delayed Tightening Stress Surface
+Create cumulative QT effect:
+
+∑
+i
+=
+1
+8
+F
+e
+d
+A
+s
+s
+e
+t
+s
+D
+e
+c
+l
+i
+n
+e
+t
+−
+i
+i=1
+∑
+8
+​
+ FedAssetsDecline 
+t−i
+​
+ 
+CRE pain accumulates slowly.
+
+This captures:
+
+refinancing drag
+
+declining transaction liquidity
+
+tenant caution
+
+Very realistic quarterly feature.
+
+25. Policy Distortion Index
+F
+e
+d
+A
+s
+s
+e
+t
+s
+G
+r
+o
+w
+t
+h
+N
+a
+t
+u
+r
+a
+l
+V
+a
+c
+a
+n
+c
+y
+R
+a
+t
+e
+NaturalVacancyRate
+FedAssetsGrowth
+​
+ 
+Measures:
+how much policy intervention exists relative to market equilibrium.
+
+Interesting for:
+
+cross-market comparison
+
+regime clustering
+
+market overheating detection
+
+Features I would personally test first
+For vacancy forecasting, these are especially strong candidates:
+
+Feature	Why Valuable
+Liquidity decoupling ratio	Detects asset bubble behavior
+Embedded supply risk	Captures delayed oversupply
+Liquidity exit vulnerability	Excellent post-2022
+Monetary whiplash	Captures regime instability
+Excess liquidity absorption gap	Separates real vs artificial demand
+Funding abundance mismatch	Identifies unhealthy expansion
+Delayed tightening stress surface	CRE reacts slowly
+Policy dependency drift	Structural market evolution
 
