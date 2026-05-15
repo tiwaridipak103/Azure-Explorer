@@ -3,638 +3,279 @@ This is a copy of a shared ChatGPT conversation
 
 Report conversation
 We are working on Moody's dataset with multiple features and responses for each market.It is quarterly data that means, that every quarter, new record come for each market .It is real estate dataset.
-I am currently working with feature name Retail_Ecommerce_Sales and response vacancy. Help me understand how it worked 
+I am currently working with feature name Other_Services_Employment_Extended and response vacancy. Help me understand how it worked 
 
-Retail_Ecommerce_Sales can have a very strong — but sometimes non-linear — relationship with real estate vacancy, especially for retail, industrial/logistics, and even indirectly for office properties.
+Other_Services_Employment_Extended is actually a very interesting macro feature for real estate vacancy modeling because it captures the health of the local service economy outside the major sectors like manufacturing, finance, tech, retail, or government.
 
-The key idea is:
+In Moody’s and similar macro datasets, this variable usually includes employment in categories such as:
 
-As ecommerce sales increase, the way consumers use physical space changes.
+repair & maintenance services
 
-But the impact depends heavily on property type, market maturity, and time horizon.
+salons/personal care
 
-1. Economic Meaning of Retail_Ecommerce_Sales
-This feature usually represents:
+religious organizations
 
-Total online retail spending
+laundry services
 
-Ecommerce penetration growth
+parking services
 
-Digital share of consumer purchases
+civic organizations
 
-Examples:
+private household services
 
-Amazon growth
+small local service businesses
 
-Online grocery adoption
+miscellaneous neighborhood services
 
-DTC (direct-to-consumer) brands
+It represents the “local economic activity density” of a market.
 
-Mobile commerce expansion
+Why this matters for vacancy
+The relationship depends heavily on property type.
 
-It acts as a proxy for:
+1. Apartment Vacancy
+This feature often has a negative relationship with apartment vacancy.
 
-Consumer behavioral change
+Meaning:
 
-Retail channel disruption
+Higher Other_Services_Employment_Extended
+→ more local workers
+→ stronger neighborhood economy
+→ more renters
+→ lower apartment vacancy
 
-Logistics demand shift
-
-Supply chain modernization
-
-2. How It Impacts Vacancy by Property Type
-A) Retail Vacancy (Most Direct Relationship)
-Traditional Relationship
-Higher ecommerce sales often lead to:
-
-Lower foot traffic in malls
-
-Store closures
-
-Reduced physical retail demand
-
-Retail downsizing
-
-Result:
-
-Retail vacancy ↑
-
-Example:
-
-Department stores close
-
-Big box retailers shrink footprint
-
-Secondary malls become obsolete
-
-But Prime Retail Can Behave Differently
-High-end experiential retail may survive or improve.
-
-Example:
-
-Luxury retail
-
-Food & beverage
-
-Entertainment-driven retail
-
-Mixed-use retail
-
-So relationship can become:
-
-Market Type	Effect
-Weak suburban retail	Vacancy rises sharply
-Urban experiential retail	Small impact
-Grocery-anchored retail	Stable
-This is why global models sometimes struggle unless interaction features are added.
-
-3. Industrial Vacancy (Opposite Direction)
-This is extremely important in modern CRE models.
-
-As ecommerce sales rise:
-
-Warehousing demand rises
-
-Last-mile logistics expands
-
-Fulfillment centers increase
-
-Distribution networks densify
-
-Result:
-
-Industrial vacancy ↓
-
-This is one of the strongest structural trends in commercial real estate over the last decade.
-
-Example:
-
-More ecommerce → more warehouse absorption
-
-Faster delivery expectations → more logistics nodes
-
-4. Office Vacancy (Indirect Relationship)
-Ecommerce growth affects offices indirectly through:
-
-Positive channels
-Tech hiring
-
-Digital operations expansion
-
-Ecommerce corporate headquarters
-
-Negative channels
-Retail corporate downsizing
-
-Automation
-
-Reduced in-store staffing
-
-Net effect:
-
-Usually weaker and lagged.
-
-5. Why Relationship Changes Over Time
-This feature is highly structural.
-
-Early Ecommerce Stage
-Small increases may not affect retail vacancy much.
-
-Mid Adoption Stage
-Suddenly:
-
-bankruptcies rise
-
-malls fail
-
-retail supply becomes obsolete
-
-Mature Stage
-Market stabilizes:
-
-surviving retail adapts
-
-omnichannel retail emerges
-
-This creates:
-
-threshold effects
-
-nonlinearities
-
-regime changes
-
-6. Important Real Estate Mechanism
-The critical concept is:
-
-Ecommerce redistributes demand across property types
-It does NOT simply destroy demand.
-
-It shifts:
-
-Retail → Industrial
-
-Large stores → Last-mile warehouses
-
-Physical inventory → Fulfillment centers
-
-This is why institutional CRE firms monitor ecommerce penetration very carefully.
-
-7. Typical Lag Structure
-The effect is usually NOT immediate.
-
-Retail
-Store leases expire slowly
-
-Retailers delay closures
-
-Vacancy reacts with lag
-
-Typical lag:
-
-2–8 quarters
-
-Industrial
-Can react faster:
-
-warehouse leasing responds quickly
-
-Typical lag:
-
-1–4 quarters
-
-8. What Sophisticated CRE Models Usually Capture
-Top institutional models often avoid using raw ecommerce sales directly.
-
-Instead they model:
-
-A) Ecommerce Penetration Shock
-Ecommerce Sales Growth
--
-Total Retail Sales Growth
 Why?
-Because absolute ecommerce growth alone can be misleading during strong economies.
 
-B) Retail Displacement Pressure
-Ecommerce Growth / Retail Employment Growth
-Measures how fast digital demand replaces physical retail labor.
+These jobs are usually:
 
-C) Omnichannel Transition
-Markets with:
+local
 
-strong income
+labor intensive
 
-dense population
+less remote-work friendly
 
-modern logistics
+geographically sticky
 
-may absorb ecommerce better.
+A city with strong miscellaneous service employment means:
 
-So effect depends on:
+restaurants operate
 
-market quality
+local commerce survives
 
-demographics
+neighborhood demand remains healthy
 
-infrastructure
+That supports apartment occupancy.
 
-9. Why Global Models Benefit From This Feature
-Since you are working with:
-
-multiple markets
-
-multiple property types
-
-quarterly panel data
-
-this feature becomes valuable because it introduces:
-
-Cross-market structural dynamics
-Example:
-
-NYC retail behaves differently from Austin retail
-
-Atlanta industrial may benefit more than San Francisco industrial
-
-A global model can learn:
-
-heterogeneous responses
-
-shared macro behavior
-
-property-type transitions
-
-10. Very Important Modeling Insight
-The feature often works better as:
-
-growth rate
-
-acceleration
-
-penetration change
-
-deviation from trend
-
-rather than raw level.
-
-Because vacancy reacts more to:
-
-changes in consumer behavior speed
-
-than to the absolute level itself.
-
-11. Realistic Interpretation Example
+Example
 Suppose:
 
-Quarter	Ecommerce Sales Growth	Retail Vacancy
-Q1	5%	6%
-Q2	8%	6.2%
-Q3	15%	7.1%
-Q4	20%	8.4%
-Interpretation:
+Market	Other Services Employment	Apartment Vacancy
+Austin	High	Low
+Detroit	Weak	High
+Austin may have:
 
-Rapid ecommerce acceleration causes retailer stress
+active urban consumption
 
-Closures rise after lag
+lifestyle economy
 
-Vacancy increases nonlinearly
+local services growth
 
-Meanwhile industrial:
+This creates housing demand.
 
-warehouse demand surges
+2. Office Vacancy
+This feature may have:
 
-vacancy compresses
+weak relationship
+OR
 
-12. Key Modeling Challenges
-This feature commonly creates:
+lagged indirect relationship
 
-A) Spurious macro correlation
-Because ecommerce also rises during:
+Because office demand is more driven by:
 
-strong consumer economies
+finance
 
-Need controls:
+tech
 
-income
+professional services
 
-employment
+corporate hiring
 
-rates
+However, if “other services employment” collapses badly, it may indicate:
 
-retail sales
+weak downtown ecosystem
 
-B) COVID Regime Distortion
-COVID massively accelerated ecommerce.
+declining foot traffic
 
-Without regime handling:
+reduced urban vitality
 
-model may overestimate long-term effects
+That can indirectly increase office vacancy later.
 
-Useful approaches:
+3. Retail Vacancy
+This is where the feature becomes VERY useful.
 
-post-2020 interaction terms
+Retail properties depend heavily on:
 
-structural break indicators
+neighborhood activity
 
-rolling models
+consumer movement
 
-13. Practical CRE Interpretation
-Institutional real estate investors often interpret rising ecommerce sales as:
+local employment ecosystem
 
-Property Type	Signal
-Retail	Structural risk
-Industrial	Structural opportunity
-Office	Mixed/indirect
-Multifamily	Mild positive via logistics employment
-14. Most Important Takeaway
-Retail_Ecommerce_Sales is not merely a retail variable.
+If other service employment rises:
 
-It is actually:
+salons rent retail space
 
-a structural transformation variable for the entire real estate ecosystem.
+repair shops occupy strip centers
 
-It changes:
+local businesses survive longer
 
-tenant demand
+So:
 
-supply chain design
+retail occupancy improves
 
-store footprints
+vacancy declines
 
-warehouse geography
+This feature can be a hidden proxy for:
 
-labor distribution
+small business formation
 
-consumer mobility
+neighborhood commercial health
 
-That is why sophisticated CRE forecasting systems treat it as a major macro-structural driver rather than a simple retail metric.
+4. Industrial Vacancy
+Usually weaker relationship.
 
+Industrial depends more on:
 
-Help with out of box features engineering for this column.
+logistics
 
-For Retail_Ecommerce_Sales, simple lag or YoY growth features are usually not enough in institutional CRE forecasting.
-Top real estate models try to capture:
+manufacturing
 
-retail disruption intensity
+imports/exports
 
-channel shift speed
+warehousing demand
 
-warehouse demand transfer
+But in some local economies:
 
-consumer transition regimes
+service growth indirectly boosts local distribution demand.
 
-market adaptation capacity
+Important Statistical Behavior
+This variable often behaves like a:
 
-structural retail stress
+“Late-cycle local economy indicator”
+Why?
 
-Below are more advanced and realistic feature engineering ideas specifically designed for quarterly multi-market real estate panel data.
+Other services employment is:
 
-1. Ecommerce Shock Acceleration
-This captures sudden adoption jumps.
+cyclical
 
-Δ
-2
-E
-c
+discretionary
+
+sensitive to local spending
+
+During recession:
+
+consumers cut discretionary services
+
+small businesses close
+
+employment falls quickly
+
+So the variable can act as an early warning signal for:
+
+weakening occupancy
+
+rising future vacancy
+
+Very Important Real Estate Interpretation
+Institutional CRE firms often use variables like this to measure:
+
+neighborhood economic resilience
+
+urban vibrancy
+
+consumer activity depth
+
+local labor stickiness
+
+This is especially valuable in:
+
+multifamily
+
+neighborhood retail
+
+mixed-use assets
+
+How It Usually Appears in Models
+A. Growth Rate Features
+Instead of raw level:
+
+Y
 o
-m
-m
-e
+Y
+ 
+G
 r
-c
-e
-t
-Δ 
-2
- Ecommerce 
-t
-​
- 
-Δ
-2
-E
-c
 o
-m
-m
-e
-r
-c
-e
+w
 t
-=
-(
-E
-t
-−
-E
-t
-−
-1
-)
-−
-(
-E
-t
-−
-1
-−
-E
-t
-−
-2
-)
-Δ 
-2
- Ecommerce 
-t
-​
- =(E 
-t
-​
- −E 
-t−1
-​
- )−(E 
-t−1
-​
- −E 
-t−2
-​
- )
-
-Why it matters
-Vacancy often reacts more to:
-
-sudden ecommerce acceleration
-than steady growth.
-
-Useful for:
-
-retail vacancy spikes
-
-store closure waves
-
-2. Ecommerce Penetration Momentum
-Instead of raw ecommerce:
-
-E
-c
-o
-m
-m
-e
-r
-c
-e
- 
-S
-a
-l
-e
-s
-T
-o
-t
-a
-l
- 
-R
-e
-t
-a
-i
-l
- 
-S
-a
-l
-e
-s
-Total Retail Sales
-Ecommerce Sales
-​
- 
-Then calculate momentum.
-
-P
-e
-n
-e
-t
-r
-a
-t
-i
-o
-n
-t
+h
 =
 E
-c
-o
 m
-m
-e
-r
-c
-e
-S
-a
+p
 l
-e
-s
-t
-T
 o
-t
-a
-l
-R
-e
-t
-a
-i
-l
-S
-a
-l
-e
-s
-t
-Penetration 
-t
-​
- = 
-TotalRetailSales 
-t
-​
- 
-EcommerceSales 
-t
-​
- 
-​
- 
-
-Then:
-
-P
+y
+m
 e
 n
-e
 t
-r
-a
-t
-i
-o
-n
 t
 −
-P
-e
-n
-e
-t
-r
-a
-t
-i
+E
+m
+p
+l
 o
+y
+m
+e
 n
+t
 t
 −
 4
-Penetration 
+E
+m
+p
+l
+o
+y
+m
+e
+n
 t
-​
- −Penetration 
+t
+−
+4
+YoY Growth= 
+Employment 
 t−4
 ​
  
-Why powerful
-Separates:
+Employment 
+t
+​
+ −Employment 
+t−4
+​
+ 
+​
+ 
+This captures economic momentum better.
 
-strong consumer economy
-from
-
-true digital substitution.
-
-Very realistic CRE feature.
-
-3. Retail Displacement Pressure Index
-One of the best institutional-style features.
-
-E
-c
+Y
 o
-m
-m
-e
-r
-c
-e
+Y
  
 G
 r
@@ -642,13 +283,7 @@ o
 w
 t
 h
-R
-e
-t
-a
-i
-l
- 
+=
 E
 m
 p
@@ -659,43 +294,151 @@ m
 e
 n
 t
- 
-G
-r
-o
-w
 t
-h
-Retail Employment Growth
-Ecommerce Growth
+−
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+t
+−
+4
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+t
+−
+4
+YoY Growth= 
+Employment 
+t−4
 ​
  
-R
-D
-P
+Employment 
+t
+​
+ −Employment 
+t−4
+​
+ 
+​
+ 
+
+B. Employment Shock Features
+Real estate reacts strongly to sudden declines.
+
+Example:
+
+S
+h
+o
+c
+k
 t
 =
 E
-c
-o
 m
+p
+l
+o
+y
 m
 e
-r
-c
-e
-G
-r
+n
+t
+t
+−
+R
 o
-w
+l
+l
+i
+n
+g
+M
+e
+a
+n
+8
+Q
+Shock 
+t
+​
+ =Employment 
+t
+​
+ −RollingMean 
+8Q
+​
+ 
+Negative shock:
+
+signals local stress
+
+vacancy may rise 2–4 quarters later
+
+C. Share of Total Employment
+Very powerful feature:
+
+O
 t
 h
-t
-R
 e
+r
+S
+e
+r
+v
+i
+c
+e
+s
+S
+h
+a
+r
+e
+=
+O
+t
+h
+e
+r
+S
+e
+r
+v
+i
+c
+e
+s
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+T
+o
 t
 a
-i
 l
 E
 m
@@ -707,86 +450,325 @@ m
 e
 n
 t
-G
-r
-o
-w
+OtherServicesShare= 
+TotalEmployment
+OtherServicesEmployment
+​
+ 
+O
 t
 h
-t
-RDP 
-t
-​
- = 
-RetailEmploymentGrowth 
-t
-​
- 
-EcommerceGrowth 
-t
-​
- 
-​
- 
-
-Interpretation
-High values mean:
-
-online sales growing
-
-physical retail labor shrinking
-
-This strongly predicts:
-
-secondary retail stress
-
-mall weakness
-
-future vacancy pressure
-
-4. Logistics Demand Transfer Signal
-Excellent for industrial vacancy models.
-
-E
-c
-o
-m
-m
 e
 r
-c
+S
 e
-G
 r
-o
-w
-t
-h
-×
-P
-o
-r
-t
-A
-c
-t
-i
 v
 i
-t
-y
-EcommerceGrowth×PortActivity
-or
-
-E
 c
-o
-m
-m
+e
+s
+S
+h
+a
+r
+e
+=
+O
+t
+h
 e
 r
+S
+e
+r
+v
+i
 c
 e
+s
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+T
+o
+t
+a
+l
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+OtherServicesShare= 
+TotalEmployment
+OtherServicesEmployment
+​
+ 
+
+This measures:
+
+economic composition
+
+service economy dependence
+
+Markets overly dependent on low-margin local services may become fragile during downturns.
+
+Why Extended Version Matters
+The word “Extended” usually means:
+
+broader NAICS coverage
+
+revised historical continuity
+
+smoother benchmark adjustments
+
+Moody’s often creates extended series to:
+
+backfill history
+
+reduce discontinuities
+
+improve forecasting stability
+
+This is important for quarterly forecasting models because:
+
+standard employment series may have revisions/breaks
+
+extended versions improve time-series consistency
+
+What Top CRE Firms Usually Do With It
+Top institutional real estate firms rarely use this feature alone.
+
+Instead they combine it with:
+
+Combine With	Why
+Retail sales	consumer strength
+Personal income	spending power
+Population growth	demand base
+Small business formation	leasing demand
+Transit mobility	urban activity
+Wage growth	affordability
+Most Important Practical Insight
+This variable is usually NOT a direct driver of vacancy.
+
+It is more of a:
+
+“local economic ecosystem health indicator”
+
+That’s why it becomes powerful in:
+
+lagged features
+
+interaction features
+
+regime models
+
+downturn prediction
+
+Realistic Relationship by Property Type
+Property Type	Expected Impact on Vacancy
+Apartment	Strong negative
+Retail	Strong negative
+Office	Mild negative
+Industrial	Weak/indirect
+Very Strong Advanced Feature Ideas
+1. Service Employment Stress
+S
+t
+r
+e
+s
+s
+=
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+t
+R
+o
+l
+l
+i
+n
+g
+M
+a
+x
+12
+Q
+Stress= 
+RollingMax 
+12Q
+​
+ 
+Employment 
+t
+​
+ 
+​
+ 
+Low value indicates local economy deterioration.
+
+S
+t
+r
+e
+s
+s
+=
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+t
+R
+o
+l
+l
+i
+n
+g
+M
+a
+x
+12
+Q
+Stress= 
+RollingMax 
+12Q
+​
+ 
+Employment 
+t
+​
+ 
+​
+ 
+
+2. Local Service Recovery Speed
+After recession:
+
+R
+e
+c
+o
+v
+e
+r
+y
+=
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+t
+−
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+r
+e
+c
+e
+s
+s
+i
+o
+n
+ 
+l
+o
+w
+Recovery=Employment 
+t
+​
+ −Employment 
+recession low
+​
+ 
+Markets recovering faster usually see:
+
+faster leasing recovery
+
+lower vacancy persistence
+
+3. Interaction With Consumer Income
+Very realistic institutional feature:
+
+I
+n
+t
+e
+r
+a
+c
+t
+i
+o
+n
+=
+O
+t
+h
+e
+r
+S
+e
+r
+v
+i
+c
+e
+s
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
 G
 r
 o
@@ -796,41 +778,907 @@ h
 ×
 I
 n
-d
-u
-s
-t
-r
-i
-a
-l
-A
-b
-s
+c
 o
+m
+e
+G
 r
-p
+o
+w
+t
+h
+Interaction=OtherServicesEmploymentGrowth×IncomeGrowth
+I
+n
+t
+e
+r
+a
+c
 t
 i
 o
 n
-EcommerceGrowth×IndustrialAbsorption
-Why it works
-Ecommerce alone does not create warehouse demand equally.
+=
+O
+t
+h
+e
+r
+S
+e
+r
+v
+i
+c
+e
+s
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+G
+r
+o
+w
+t
+h
+×
+I
+n
+c
+o
+m
+e
+G
+r
+o
+w
+t
+h
+Interaction=OtherServicesEmploymentGrowth×IncomeGrowth
 
-Markets with:
+Because:
 
-ports
+employment without income growth may be low-quality growth
 
-highways
+income + services growth together indicate strong local demand
 
-logistics hubs
+Final Intuition
+Think of Other_Services_Employment_Extended as:
 
-benefit disproportionately.
+“How alive and economically active the local neighborhood ecosystem is.”
 
-5. Omnichannel Adaptation Score
-Very sophisticated and realistic.
+If this ecosystem strengthens:
 
+people stay employed locally
+
+neighborhoods remain active
+
+small businesses survive
+
+retail traffic improves
+
+apartment demand stabilizes
+
+And eventually:
+
+vacancy tends to decline.
+
+
+For Other_Services_Employment_Extended, the best feature engineering is usually not simple lags or growth rates.
+Top CRE and macro forecasting teams try to transform it into signals about:
+
+local economic resilience
+
+neighborhood commercial intensity
+
+labor fragility
+
+recovery persistence
+
+service-sector dependency
+
+urban vibrancy cycles
+
+Below are more advanced and realistic feature ideas specifically designed for quarterly real estate vacancy modeling.
+
+1. Service Employment Momentum Acceleration
+Not just growth — growth acceleration.
+
+A
+c
+c
+e
+l
+e
+r
+a
+t
+i
+o
+n
+t
+=
+Y
+o
+Y
+G
+r
+o
+w
+t
+h
+t
+−
+Y
+o
+Y
+G
+r
+o
+w
+t
+h
+t
+−
+1
+Acceleration 
+t
+​
+ =YoYGrowth 
+t
+​
+ −YoYGrowth 
+t−1
+​
+ 
+A
+c
+c
+e
+l
+e
+r
+a
+t
+i
+o
+n
+t
+=
+Y
+o
+Y
+G
+r
+o
+w
+t
+h
+t
+−
+Y
+o
+Y
+G
+r
+o
+w
+t
+h
+t
+−
+1
+Acceleration 
+t
+​
+ =YoYGrowth 
+t
+​
+ −YoYGrowth 
+t−1
+​
+ 
+
+Why useful:
+
+detects turning points early
+
+vacancy often reacts to second derivative changes
+
+leasing markets care about momentum shifts
+
+Interpretation:
+
+positive acceleration → improving local ecosystem
+
+negative acceleration → hidden slowdown before vacancy rises
+
+2. Local Service Economy Regime Score
+Create market states.
+
+Example:
+
+Regime	Condition
+Expansion	growth > 4%
+Stable	1–4%
+Weakening	-2% to 1%
+Stress	< -2%
+Then encode regime.
+
+Why powerful:
+
+vacancy behaves nonlinearly
+
+recessionary service collapse impacts vacancy disproportionately
+
+This works very well with:
+
+XGBoost
+
+LightGBM
+
+CatBoost
+
+3. Service Employment Relative to Population
+S
+e
+r
+v
+i
+c
+e
+D
+e
+n
+s
+i
+t
+y
+=
+O
+t
+h
+e
+r
+S
+e
+r
+v
+i
+c
+e
+s
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+P
+o
+p
+u
+l
+a
+t
+i
+o
+n
+ServiceDensity= 
+Population
+OtherServicesEmployment
+​
+ 
+S
+e
+r
+v
+i
+c
+e
+D
+e
+n
+s
+i
+t
+y
+=
+O
+t
+h
+e
+r
+S
+e
+r
+v
+i
+c
+e
+s
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+P
+o
+p
+u
+l
+a
+t
+i
+o
+n
+ServiceDensity= 
+Population
+OtherServicesEmployment
+​
+ 
+
+This measures:
+
+local service intensity
+
+urban commercial depth
+
+neighborhood consumption infrastructure
+
+Very important for:
+
+retail
+
+multifamily
+
+mixed-use assets
+
+Markets with high service density often have:
+
+lower structural vacancy
+
+stronger tenant retention
+
+4. Employment Efficiency Feature
+E
+f
+f
+i
+c
+i
+e
+n
+c
+y
+=
+O
+t
+h
+e
+r
+S
+e
+r
+v
+i
+c
+e
+s
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+R
+e
+t
+a
+i
+l
+S
+q
+u
+a
+r
+e
+F
+e
+e
+t
+Efficiency= 
+RetailSquareFeet
+OtherServicesEmployment
+​
+ 
+E
+f
+f
+i
+c
+i
+e
+n
+c
+y
+=
+O
+t
+h
+e
+r
+S
+e
+r
+v
+i
+c
+e
+s
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+R
+e
+t
+a
+i
+l
+S
+q
+u
+a
+r
+e
+F
+e
+e
+t
+Efficiency= 
+RetailSquareFeet
+OtherServicesEmployment
+​
+ 
+
+This estimates:
+
+how much service employment exists per retail inventory
+
+Why interesting:
+
+oversupplied retail markets show low efficiency
+
+dense productive markets show high efficiency
+
+Institutional retail models love inventory-normalized features.
+
+5. Service Employment Volatility
+Rolling instability matters more than average growth.
+
+V
+o
+l
+a
+t
+i
+l
+i
+t
+y
+t
+=
+S
+t
+d
+D
+e
+v
+(
+Y
+o
+Y
+G
+r
+o
+w
+t
+h
+l
+a
+s
+t
+ 
+8
+Q
+)
+Volatility 
+t
+​
+ =StdDev(YoYGrowth 
+last 8Q
+​
+ )
+V
+o
+l
+a
+t
+i
+l
+i
+t
+y
+t
+=
+S
+t
+d
+D
+e
+v
+(
+Y
+o
+Y
+G
+r
+o
+w
+t
+h
+l
+a
+s
+t
+ 
+8
+Q
+)
+Volatility 
+t
+​
+ =StdDev(YoYGrowth 
+last 8Q
+​
+ )
+
+Why powerful:
+
+unstable service employment → unstable tenant demand
+
+vacancy persistence rises in volatile economies
+
+Especially useful during:
+
+post-COVID normalization
+
+recession periods
+
+6. Employment Recovery Gap
+Measure distance from prior peak.
+
+R
+e
+c
+o
+v
+e
+r
+y
+G
+a
+p
+=
+C
+u
+r
+r
+e
+n
+t
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+H
+i
+s
+t
+o
+r
+i
+c
+a
+l
+P
+e
+a
+k
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+RecoveryGap= 
+HistoricalPeakEmployment
+CurrentEmployment
+​
+ 
+R
+e
+c
+o
+v
+e
+r
+y
+G
+a
+p
+=
+C
+u
+r
+r
+e
+n
+t
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+H
+i
+s
+t
+o
+r
+i
+c
+a
+l
+P
+e
+a
+k
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+RecoveryGap= 
+HistoricalPeakEmployment
+CurrentEmployment
+​
+ 
+
+Why strong:
+
+many markets never fully recover after shocks
+
+vacancy behaves differently in partially recovered cities
+
+Example:
+
+NYC office recovery
+
+SF retail recovery post-pandemic
+
+7. Service Employment Pressure Index
+Create labor pressure on local commercial space.
+
+P
+r
+e
+s
+s
+u
+r
+e
+=
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+G
+r
+o
+w
+t
+h
+V
+a
+c
+a
+n
+c
+y
+R
+a
+t
+e
+Pressure= 
+VacancyRate
+EmploymentGrowth
+​
+ 
+P
+r
+e
+s
+s
+u
+r
+e
+=
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+G
+r
+o
+w
+t
+h
+V
+a
+c
+a
+n
+c
+y
+R
+a
+t
+e
+Pressure= 
+VacancyRate
+EmploymentGrowth
+​
+ 
+
+Interpretation:
+
+strong employment growth + low vacancy
+→ leasing pressure building
+
+This often predicts:
+
+rent growth
+
+future occupancy tightening
+
+8. Local Consumer Activity Composite
+Combine:
+
+C
+o
+m
+p
+o
+s
+i
+t
+e
+=
+0.4
+(
+S
+e
+r
+v
+i
+c
+e
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+G
+r
+o
+w
+t
+h
+)
++
+0.3
+(
+P
+e
+r
+s
+o
+n
+a
+l
+I
+n
+c
+o
+m
+e
+G
+r
+o
+w
+t
+h
+)
++
+0.3
+(
 R
 e
 t
@@ -848,14 +1696,60 @@ o
 w
 t
 h
+)
+Composite=0.4(ServiceEmploymentGrowth)+0.3(PersonalIncomeGrowth)+0.3(RetailSalesGrowth)
+C
+o
+m
+p
+o
+s
+i
+t
+e
+=
+0.4
+(
+S
+e
+r
+v
+i
+c
+e
 E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+G
+r
+o
+w
+t
+h
+)
++
+0.3
+(
+P
+e
+r
+s
+o
+n
+a
+l
+I
+n
 c
 o
 m
-m
-e
-r
-c
 e
 G
 r
@@ -863,66 +1757,203 @@ o
 w
 t
 h
-EcommerceGrowth
-RetailSalesGrowth
-​
- 
-Interpretation
-Low ratio:
-
-ecommerce replacing stores
-
-Stable/high ratio:
-
-physical retail adapting successfully
-
-Useful for:
-
-separating healthy retail markets
-from collapsing ones.
-
-6. Ecommerce Saturation Regime
-Nonlinear threshold feature.
-
-Example:
-
-if ecommerce_penetration > 25%:
-    regime = "mature"
-elif > 15%:
-    regime = "transition"
-else:
-    regime = "early"
-Why useful
-Vacancy response changes dramatically across adoption stages.
-
-Retail disruption is usually:
-
-weak initially
-
-explosive in middle stage
-
-stabilizing later
-
-Tree models love this feature.
-
-7. Market Relative Ecommerce Pressure
-Very important in panel datasets.
-
-M
-a
-r
-k
+)
++
+0.3
+(
+R
 e
 t
-E
-c
+a
+i
+l
+S
+a
+l
+e
+s
+G
+r
 o
-m
-m
+w
+t
+h
+)
+Composite=0.4(ServiceEmploymentGrowth)+0.3(PersonalIncomeGrowth)+0.3(RetailSalesGrowth)
+
+This creates:
+
+local demand pulse
+
+urban vitality score
+
+Very realistic institutional-style feature.
+
+9. Structural Dependency Ratio
+D
+e
+p
+e
+n
+d
+e
+n
+c
+y
+R
+a
+t
+i
+o
+=
+O
+t
+h
 e
 r
+S
+e
+r
+v
+i
 c
 e
+s
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+T
+o
+t
+a
+l
+P
+r
+i
+v
+a
+t
+e
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+DependencyRatio= 
+TotalPrivateEmployment
+OtherServicesEmployment
+​
+ 
+D
+e
+p
+e
+n
+d
+e
+n
+c
+y
+R
+a
+t
+i
+o
+=
+O
+t
+h
+e
+r
+S
+e
+r
+v
+i
+c
+e
+s
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+T
+o
+t
+a
+l
+P
+r
+i
+v
+a
+t
+e
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+DependencyRatio= 
+TotalPrivateEmployment
+OtherServicesEmployment
+​
+ 
+
+This tells you:
+
+whether a market is overly dependent on small service jobs
+
+High dependency markets:
+
+recover fast in expansions
+
+crash harder during downturns
+
+This introduces cyclical sensitivity into vacancy forecasts.
+
+10. Market Divergence Feature
+Compare local market to national trend.
+
+D
+i
+v
+e
+r
+g
+e
+n
+c
+e
+=
+L
+o
+c
+a
+l
 G
 r
 o
@@ -938,202 +1969,1739 @@ o
 n
 a
 l
-E
-c
-o
-m
-m
-e
-r
-c
-e
 G
 r
 o
 w
 t
 h
-MarketEcommerceGrowth−NationalEcommerceGrowth
-R
+Divergence=LocalGrowth−NationalGrowth
+D
+i
+v
 e
+r
+g
+e
+n
+c
+e
+=
+L
+o
+c
+a
+l
+G
+r
+o
+w
+t
+h
+−
+N
+a
+t
+i
+o
+n
+a
+l
+G
+r
+o
+w
+t
+h
+Divergence=LocalGrowth−NationalGrowth
+
+Very important.
+
+Because investors care about:
+
+relative market strength
+not just absolute growth.
+
+A market outperforming national service employment trends often sees:
+
+stronger leasing
+
+cap rate compression
+
+lower vacancy
+
+11. Service Employment Saturation
+Detect mature markets.
+
+S
+a
+t
+u
+r
+a
+t
+i
+o
+n
+=
+C
+u
+r
+r
+e
+n
+t
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+R
+o
+l
+l
+i
+n
+g
+T
+r
+e
+n
+d
+20
+Q
+Saturation= 
+RollingTrend 
+20Q
+​
+ 
+CurrentEmployment
+​
+ 
+S
+a
+t
+u
+r
+a
+t
+i
+o
+n
+=
+C
+u
+r
+r
+e
+n
+t
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+R
+o
+l
+l
+i
+n
+g
+T
+r
+e
+n
+d
+20
+Q
+Saturation= 
+RollingTrend 
+20Q
+​
+ 
+CurrentEmployment
+​
+ 
+
+Interpretation:
+
+far above trend → overheating
+
+below trend → underutilized economy
+
+Can help predict:
+
+vacancy reversals
+
+mean reversion
+
+12. Service-to-Office Interaction
+For office vacancy models:
+
+I
+n
+t
+e
+r
+a
+c
+t
+i
+o
+n
+=
+O
+t
+h
+e
+r
+S
+e
+r
+v
+i
+c
+e
+s
+G
+r
+o
+w
+t
+h
+×
+O
+f
+f
+i
+c
+e
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+G
+r
+o
+w
+t
+h
+Interaction=OtherServicesGrowth×OfficeEmploymentGrowth
+I
+n
+t
+e
+r
+a
+c
+t
+i
+o
+n
+=
+O
+t
+h
+e
+r
+S
+e
+r
+v
+i
+c
+e
+s
+G
+r
+o
+w
+t
+h
+×
+O
+f
+f
+i
+c
+e
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+G
+r
+o
+w
+t
+h
+Interaction=OtherServicesGrowth×OfficeEmploymentGrowth
+
+Reason:
+
+downtown ecosystems require both
+
+office alone is insufficient now post-COVID
+
+This is extremely realistic.
+
+13. Neighborhood Economic Fragility
+F
+r
+a
+g
+i
+l
+i
+t
+y
+=
+V
+o
 l
 a
+t
+i
+l
+i
+t
+y
+T
+r
+e
+n
+d
+G
+r
+o
+w
+t
+h
+Fragility= 
+TrendGrowth
+Volatility
+​
+ 
+F
+r
+a
+g
+i
+l
+i
+t
+y
+=
+V
+o
+l
+a
+t
+i
+l
+i
+t
+y
+T
+r
+e
+n
+d
+G
+r
+o
+w
+t
+h
+Fragility= 
+TrendGrowth
+Volatility
+​
+ 
+
+High fragility markets:
+
+unstable leasing demand
+
+higher vacancy persistence
+
+weaker tenant quality
+
+14. Employment Elasticity to Vacancy
+Advanced panel feature:
+
+Estimate:
+
+E
+l
+a
+s
+t
+i
+c
+i
+t
+y
+=
+Δ
+V
+a
+c
+a
+n
+c
+y
+Δ
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+Elasticity= 
+ΔEmployment
+ΔVacancy
+​
+ 
+E
+l
+a
+s
+t
+i
+c
+i
+t
+y
+=
+Δ
+V
+a
+c
+a
+n
+c
+y
+Δ
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+Elasticity= 
+ΔEmployment
+ΔVacancy
+​
+ 
+
+Per market over rolling windows.
+
+This captures:
+
+sensitivity of occupancy to service economy
+
+Some markets are:
+
+highly employment-sensitive
+
+others structurally resilient
+
+Huge alpha feature for institutional forecasting.
+
+15. Hidden Recession Detector
+R
+e
+c
+e
+s
+s
+i
+o
+n
+S
+i
+g
+n
+a
+l
+=
+1
+(
+Y
+o
+Y
+G
+r
+o
+w
+t
+h
+<
+0
+∧
+R
+o
+l
+l
+i
+n
+g
+M
+e
+a
+n
+4
+Q
+<
+R
+o
+l
+l
+i
+n
+g
+M
+e
+a
+n
+12
+Q
+)
+RecessionSignal=1(YoYGrowth<0∧RollingMean 
+4Q
+​
+ <RollingMean 
+12Q
+​
+ )
+R
+e
+c
+e
+s
+s
+i
+o
+n
+S
+i
+g
+n
+a
+l
+=
+1
+(
+Y
+o
+Y
+G
+r
+o
+w
+t
+h
+<
+0
+∧
+R
+o
+l
+l
+i
+n
+g
+M
+e
+a
+n
+4
+Q
+<
+R
+o
+l
+l
+i
+n
+g
+M
+e
+a
+n
+12
+Q
+)
+RecessionSignal=1(YoYGrowth<0∧RollingMean 
+4Q
+​
+ <RollingMean 
+12Q
+​
+ )
+
+This acts like:
+
+local economic deterioration detector
+
+Very useful for:
+
+early vacancy stress prediction
+
+regime-switching models
+
+What Top CRE Teams Usually Prefer
+The most valuable features are usually:
+
+Feature Type	Practical Power
+Relative-to-national	Very high
+Recovery gap	Very high
+Regime states	Very high
+Volatility	High
+Interaction features	High
+Density features	High
+Simple lagged growth	Moderate
+My Suggestion for Your Dataset
+For quarterly panel real estate data across markets, I would prioritize:
+
+Relative market divergence
+
+Recovery gap
+
+Volatility regime
+
+Population-normalized density
+
+Interaction with income growth
+
+Service pressure index
+
+Local fragility score
+
+Market regime encoding
+
+Those are much closer to what sophisticated CRE forecasting systems actually use.
+
+
+Sorry I was asking can you look for some more top notch features engineering which top real estate industry use
+
+Yes — if we think like top institutional CRE shops (Blackstone, Brookfield, Green Street, CBRE Econometric Advisors, Moody’s Analytics CRE, Clarion, PGIM, etc.), they usually do cross-market structural features, cycle-state signals, and spatial relative features, not just basic time-series transformations.
+
+For Other_Services_Employment_Extended, here are much more institutional-grade feature engineering ideas specifically for quarterly market-level vacancy forecasting.
+
+1. Service Employment Beta to National Economy
+Instead of raw growth, estimate:
+
+β
+=
+C
+o
+v
+(
+L
+o
+c
+a
+l
+G
+r
+o
+w
+t
+h
+,
+N
+a
+t
+i
+o
+n
+a
+l
+G
+r
+o
+w
+t
+h
+)
+V
+a
+r
+(
+N
+a
+t
+i
+o
+n
+a
+l
+G
+r
+o
+w
+t
+h
+)
+β= 
+Var(NationalGrowth)
+Cov(LocalGrowth,NationalGrowth)
+​
+ 
+β
+=
+C
+o
+v
+(
+L
+o
+c
+a
+l
+G
+r
+o
+w
+t
+h
+,
+N
+a
+t
+i
+o
+n
+a
+l
+G
+r
+o
+w
+t
+h
+)
+V
+a
+r
+(
+N
+a
+t
+i
+o
+n
+a
+l
+G
+r
+o
+w
+t
+h
+)
+β= 
+Var(NationalGrowth)
+Cov(LocalGrowth,NationalGrowth)
+​
+ 
+
+This measures:
+
+“How cyclically sensitive is this market’s service economy?”
+
+Interpretation:
+
+high beta markets:
+
+boom harder
+
+crash harder
+
+vacancy volatility higher
+
+low beta markets:
+
+defensive markets
+
+stable occupancy
+
+This is heavily used in institutional portfolio allocation.
+
+2. Employment Breadth Diffusion Signal
+Instead of looking only at level growth:
+
+Create:
+
+B
+r
+e
+a
+d
+t
+h
+=
+#
+P
+o
+s
+i
 t
 i
 v
 e
-P
+S
+u
+b
+S
+e
+c
+t
+o
+r
+s
+#
+T
+o
+t
+a
+l
+S
+u
+b
+S
+e
+c
+t
+o
+r
+s
+Breadth= 
+#TotalSubSectors
+#PositiveSubSectors
+​
+ 
+B
 r
 e
+a
+d
+t
+h
+=
+#
+P
+o
 s
+i
+t
+i
+v
+e
+S
+u
+b
+S
+e
+c
+t
+o
+r
 s
+#
+T
+o
+t
+a
+l
+S
+u
+b
+S
+e
+c
+t
+o
+r
+s
+Breadth= 
+#TotalSubSectors
+#PositiveSubSectors
+​
+ 
+
+Why elite:
+
+broad-based service growth is healthier
+
+narrow growth is fragile
+
+Example:
+
+only salons growing = weak
+
+all service subsectors growing = strong ecosystem
+
+This predicts:
+
+sustainability of occupancy recovery
+
+3. Local Urban Vitality Factor
+One of the most powerful modern CRE concepts post-COVID.
+
+Build latent factor:
+
+V
+i
+t
+a
+l
+i
+t
+y
+=
+f
+(
+S
+e
+r
+v
+i
+c
+e
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+G
+r
+o
+w
+t
+h
+,
+T
+r
+a
+n
+s
+i
+t
+M
+o
+b
+i
+l
+i
+t
+y
+,
+R
+e
+s
+t
+a
 u
 r
-e
-m
-,
+a
+n
 t
-=
-E
+T
+r
+a
+f
+f
+i
 c
-o
-m
-m
+,
+R
+e
+t
+a
+i
+l
+S
+a
+l
+e
+s
+)
+Vitality=f(ServiceEmploymentGrowth,TransitMobility,RestaurantTraffic,RetailSales)
+V
+i
+t
+a
+l
+i
+t
+y
+=
+f
+(
+S
 e
 r
+v
+i
 c
 e
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
 G
 r
 o
 w
 t
 h
-m
 ,
+T
+r
+a
+n
+s
+i
+t
+M
+o
+b
+i
+l
+i
+t
+y
+,
+R
+e
+s
+t
+a
+u
+r
+a
+n
+t
+T
+r
+a
+f
+f
+i
+c
+,
+R
+e
+t
+a
+i
+l
+S
+a
+l
+e
+s
+)
+Vitality=f(ServiceEmploymentGrowth,TransitMobility,RestaurantTraffic,RetailSales)
+
+This captures:
+
+downtown activation
+
+mixed-use vibrancy
+
+neighborhood attractiveness
+
+Especially predictive for:
+
+retail
+
+multifamily
+
+CBD office recovery
+
+4. Service Employment Persistence Score
+CRE investors care more about persistence than one-quarter spikes.
+
+Estimate rolling autocorrelation:
+
+P
+e
+r
+s
+i
+s
+t
+e
+n
+c
+e
+=
+C
+o
+r
+r
+(
+G
+r
+o
+w
+t
+h
+t
+,
+G
+r
+o
+w
+t
+h
 t
 −
-E
-c
-o
-m
-m
+1
+)
+Persistence=Corr(Growth 
+t
+​
+ ,Growth 
+t−1
+​
+ )
+P
 e
 r
+s
+i
+s
+t
+e
+n
 c
 e
+=
+C
+o
+r
+r
+(
 G
 r
 o
 w
 t
 h
+t
+,
+G
+r
+o
+w
+t
+h
+t
+−
+1
+)
+Persistence=Corr(Growth 
+t
+​
+ ,Growth 
+t−1
+​
+ )
+
+Why useful:
+
+persistent employment trends drive leasing confidence
+
+unstable trends hurt tenant decision-making
+
+5. Employment-to-Housing Imbalance
+Very institutional.
+
+I
+m
+b
+a
+l
+a
 n
+c
+e
+=
+S
+e
+r
+v
+i
+c
+e
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+G
+r
+o
+w
+t
+h
+−
+H
+o
+u
+s
+i
+n
+g
+S
+u
+p
+p
+l
+y
+G
+r
+o
+w
+t
+h
+Imbalance=ServiceEmploymentGrowth−HousingSupplyGrowth
+I
+m
+b
+a
+l
+a
+n
+c
+e
+=
+S
+e
+r
+v
+i
+c
+e
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+G
+r
+o
+w
+t
+h
+−
+H
+o
+u
+s
+i
+n
+g
+S
+u
+p
+p
+l
+y
+G
+r
+o
+w
+t
+h
+Imbalance=ServiceEmploymentGrowth−HousingSupplyGrowth
+
+Interpretation:
+
+employment growing faster than housing
+→ tighter apartment markets
+→ lower vacancy
+
+Huge multifamily alpha feature.
+
+6. Real Estate Demand Intensity Signal
+Normalize employment by occupied space instead of total space.
+
+D
+e
+m
+a
+n
+d
+I
+n
+t
+e
+n
+s
+i
+t
+y
+=
+O
+t
+h
+e
+r
+S
+e
+r
+v
+i
+c
+e
+s
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+O
+c
+c
+u
+p
+i
+e
+d
+R
+e
+t
+a
+i
+l
+S
+F
+DemandIntensity= 
+OccupiedRetailSF
+OtherServicesEmployment
+​
+ 
+D
+e
+m
+a
+n
+d
+I
+n
+t
+e
+n
+s
+i
+t
+y
+=
+O
+t
+h
+e
+r
+S
+e
+r
+v
+i
+c
+e
+s
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+O
+c
+c
+u
+p
+i
+e
+d
+R
+e
+t
+a
+i
+l
+S
+F
+DemandIntensity= 
+OccupiedRetailSF
+OtherServicesEmployment
+​
+ 
+
+This detects:
+
+tenant saturation
+
+leasing pressure
+
+underutilized retail ecosystems
+
+Very sophisticated retail feature.
+
+7. Service Employment Shock Absorption Capacity
+Top firms model resilience.
+
+R
+e
+s
+i
+l
+i
+e
+n
+c
+e
+=
+P
+o
+s
+t
+S
+h
+o
+c
+k
+R
+e
+c
+o
+v
+e
+r
+y
+S
+p
+e
+e
+d
+S
+h
+o
+c
+k
+M
+a
+g
+n
+i
+t
+u
+d
+e
+Resilience= 
+ShockMagnitude
+PostShockRecoverySpeed
+​
+ 
+R
+e
+s
+i
+l
+i
+e
+n
+c
+e
+=
+P
+o
+s
+t
+S
+h
+o
+c
+k
+R
+e
+c
+o
+v
+e
+r
+y
+S
+p
+e
+e
+d
+S
+h
+o
+c
+k
+M
+a
+g
+n
+i
+t
+u
+d
+e
+Resilience= 
+ShockMagnitude
+PostShockRecoverySpeed
+​
+ 
+
+Markets recovering rapidly after shocks:
+
+sustain occupancy better
+
+attract capital faster
+
+experience lower distress
+
+8. Economic Complexity Proxy
+Not obvious — but extremely powerful.
+
+C
+o
+m
+p
+l
+e
+x
+i
+t
+y
+=
+1
+−
+(
+O
+t
+h
+e
+r
+S
+e
+r
+v
+i
+c
+e
+s
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+T
+o
+t
+a
+l
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+)
+Complexity=1−( 
+TotalEmployment
+OtherServicesEmployment
+​
+ )
+C
+o
+m
+p
+l
+e
+x
+i
+t
+y
+=
+1
+−
+(
+O
+t
+h
+e
+r
+S
+e
+r
+v
+i
+c
+e
+s
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+T
+o
+t
+a
+l
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+)
+Complexity=1−( 
+TotalEmployment
+OtherServicesEmployment
+​
+ )
+
+Idea:
+
+overly service-dependent markets may lack diversified economic engines
+
+diversified markets have more resilient vacancy dynamics
+
+This becomes powerful in downturns.
+
+9. Labor Quality Migration Signal
+Use interaction:
+
+M
+i
+g
+r
 a
 t
 i
 o
 n
+S
+i
+g
+n
 a
 l
-,
-t
-RelativePressure 
-m,t
-​
- =EcommerceGrowth 
-m,t
-​
- −EcommerceGrowth 
-national,t
-​
- 
-
-Why powerful
-Captures:
-
-local disruption intensity
-
-market-specific adoption behavior
-
-Extremely useful for:
-
-global models
-
-cross-market learning
-
-8. Ecommerce Volatility
-Rolling standard deviation.
-
-σ
-(
-E
-c
-o
-m
-m
+=
+S
 e
 r
+v
+i
 c
 e
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
 G
 r
 o
 w
 t
 h
-t
-−
-4
-:
-t
-)
-σ(EcommerceGrowth 
-t−4:t
-​
- )
-σ
-(
-E
-c
-o
-m
-m
-e
-r
-c
-e
-G
-r
-o
-w
-t
-h
-t
-−
-4
-:
-t
-)
-σ(EcommerceGrowth 
-t−4:t
-​
- )
-
-Interpretation
-High volatility often signals:
-
-unstable consumer demand
-
-retailer uncertainty
-
-inventory adjustment periods
-
-Can predict:
-
-leasing hesitation
-
-delayed expansion
-
-9. Store Closure Risk Proxy
-One of the most realistic retail CRE signals.
-
-E
-c
-o
-m
-m
-e
-r
-c
-e
-G
-r
-o
-w
-t
-h
-−
+×
 W
 a
 g
@@ -1144,262 +3712,30 @@ o
 w
 t
 h
-EcommerceGrowth−WageGrowth
-Why
-When ecommerce grows faster than consumer purchasing power:
-
-physical retailers suffer margin compression
-
-closures accelerate
-
-This often precedes vacancy increases.
-
-10. Ecommerce × Interest Rate Interaction
-Very realistic post-2020 feature.
-
-E
-c
-o
-m
-m
-e
-r
-c
-e
-G
-r
-o
-w
-t
-h
-×
-I
-n
-t
-e
-r
-e
-s
-t
-R
-a
-t
-e
-s
-EcommerceGrowth×InterestRates
-Logic
-High rates:
-
-hurt weaker retailers
-
-increase refinancing pressure
-
-amplify ecommerce disruption
-
-Retail vacancy sensitivity rises sharply.
-
-11. Consumer Convenience Transition Index
-Behavioral transformation feature.
-
-E
-c
-o
-m
-m
-e
-r
-c
-e
-G
-r
-o
-w
-t
-h
-G
-a
-s
-P
-r
-i
-c
-e
-s
-GasPrices
-EcommerceGrowth
-​
- 
-Why interesting
-Higher transportation friction:
-
-boosts online ordering behavior
-
-reduces shopping trips
-
-Can influence:
-
-suburban retail traffic
-
-local shopping centers
-
-12. Last-Mile Density Pressure
-Excellent industrial feature.
-
-E
-c
-o
-m
-m
-e
-r
-c
-e
-G
-r
-o
-w
-t
-h
-×
-P
-o
-p
-u
-l
-a
-t
-i
-o
-n
-D
-e
-n
-s
-i
-t
-y
-EcommerceGrowth×PopulationDensity
-Interpretation
-Dense cities require:
-
-more micro-fulfillment centers
-
-urban logistics nodes
-
-Predicts:
-
-industrial rent growth
-
-low warehouse vacancy
-
-13. Ecommerce Mean Reversion Signal
-Very useful after abnormal surges.
-
-E
-c
-o
-m
-m
-e
-r
-c
-e
-G
-r
-o
-w
-t
-h
-t
-−
-R
-o
-l
-l
-i
-n
-g
+MigrationSignal=ServiceEmploymentGrowth×WageGrowth
 M
-e
-a
-n
-(
-E
-c
-o
-m
-m
-e
+i
+g
 r
-c
-e
-G
-r
-o
-w
-t
-h
-)
-EcommerceGrowth 
-t
-​
- −RollingMean(EcommerceGrowth)
-Why
-Extreme spikes often normalize later.
-
-Useful after:
-
-COVID-like shocks
-
-temporary online spending booms
-
-14. Retail Fragility Composite
-Advanced institutional feature.
-
-Example:
-
-E
-c
-o
-m
-m
-e
-r
-c
-e
-G
-r
-o
-w
-t
-h
-×
-I
-n
-t
-e
-r
-e
-s
-t
-R
 a
 t
-e
-s
-I
+i
+o
 n
-c
-o
-m
+S
+i
+g
+n
+a
+l
+=
+S
 e
-G
 r
-o
-w
-t
-h
-+
+v
+i
+c
+e
 E
 m
 p
@@ -1416,231 +3752,77 @@ o
 w
 t
 h
-IncomeGrowth+EmploymentGrowth
-EcommerceGrowth×InterestRates
-​
- 
-Interpretation
-Retail becomes fragile when:
+×
+W
+a
+g
+e
+G
+r
+o
+w
+t
+h
+MigrationSignal=ServiceEmploymentGrowth×WageGrowth
 
-ecommerce disruption rises
+Why elite:
 
-financing costs rise
+job growth without wage growth may indicate weak labor quality
 
-local economy weakens
+high wage + service growth indicates affluent migration markets
 
-Very predictive during downturns.
+Very predictive for:
 
-15. Digital Consumption Regime Shift
-Hidden structural transformation feature.
+Sunbelt multifamily
 
-Calculate:
+mixed-use demand
+
+10. Spatial Competitive Advantage
+Institutional firms compare markets regionally.
 
 R
-o
-l
-l
-i
-n
-g
-C
-o
-r
-r
 e
 l
 a
 t
 i
-o
-n
-(
-E
-c
-o
-m
-m
-e
-r
-c
+v
 e
 S
-a
-l
-e
-s
-,
- 
-R
-e
-t
-a
-i
-l
-V
-a
-c
-a
-n
-c
-y
-)
-RollingCorrelation(EcommerceSales, RetailVacancy)
-Why advanced
-Relationship itself changes over decades.
-
-This captures:
-
-structural regime transitions
-
-changing sensitivity of CRE to ecommerce
-
-Very sophisticated feature.
-
-16. Cross-Property Demand Rotation
-Excellent for global CRE systems.
-
-I
-n
-d
-u
-s
 t
 r
-i
+e
+n
+g
+t
+h
+=
+L
+o
+c
 a
 l
-A
-b
-s
-o
+G
 r
-p
-t
-i
 o
-n
+w
+t
+h
 −
 R
 e
-t
-a
+g
 i
+o
+n
+a
 l
 A
-b
-s
-o
-r
-p
-t
-i
-o
-n
-IndustrialAbsorption−RetailAbsorption
-conditioned on ecommerce growth.
-
-Logic
-Ecommerce reallocates demand:
-
-away from stores
-
-toward logistics
-
-This captures the transfer directly.
-
-17. Ecommerce Elasticity of Vacancy
-One of the most advanced features.
-
-Estimate rolling sensitivity:
-
-β
-t
-=
-Δ
-V
-a
-c
-a
-n
-c
-y
-Δ
-E
-c
-o
-m
-m
+v
 e
 r
-c
-e
-β 
-t
-​
- = 
-ΔEcommerce
-ΔVacancy
-​
- 
-β
-t
-=
-Δ
-V
 a
-c
-a
-n
-c
-y
-t
-Δ
-E
-c
-o
-m
-m
-e
-r
-c
-e
-t
-β 
-t
-​
- = 
-ΔEcommerce 
-t
-​
- 
-ΔVacancy 
-t
-​
- 
-​
- 
-
-Why elite-level
-Different markets have:
-
-different resilience
-
-different retail adaptability
-
-This creates market-specific behavioral intelligence.
-
-18. Retail Obsolescence Pressure
-Very realistic for malls.
-
-E
-c
-o
-m
-m
-e
-r
-c
+g
 e
 G
 r
@@ -1648,208 +3830,556 @@ o
 w
 t
 h
-×
-A
-g
-i
-n
-g
+RelativeStrength=LocalGrowth−RegionalAverageGrowth
 R
 e
-t
+l
 a
+t
+i
+v
+e
+S
+t
+r
+e
+n
+g
+t
+h
+=
+L
+o
+c
+a
+l
+G
+r
+o
+w
+t
+h
+−
+R
+e
+g
+i
+o
+n
+a
+l
+A
+v
+e
+r
+a
+g
+e
+G
+r
+o
+w
+t
+h
+RelativeStrength=LocalGrowth−RegionalAverageGrowth
+
+Capital flows toward:
+
+relative winners
+not absolute winners.
+
+This matters enormously for:
+
+cap rates
+
+leasing momentum
+
+vacancy compression
+
+11. Service Employment Cycle Position
+Estimate cyclical percentile:
+
+C
+y
+c
+l
+e
+P
+o
+s
+i
+t
+i
+o
+n
+=
+P
+e
+r
+c
+e
+n
+t
 i
 l
-I
+e
+R
+a
+n
+k
+(
+C
+u
+r
+r
+e
+n
+t
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+,
+H
+i
+s
+t
+o
+r
+y
+)
+CyclePosition=PercentileRank(CurrentEmployment,History)
+C
+y
+c
+l
+e
+P
+o
+s
+i
+t
+i
+o
+n
+=
+P
+e
+r
+c
+e
+n
+t
+i
+l
+e
+R
+a
+n
+k
+(
+C
+u
+r
+r
+e
+n
+t
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+,
+H
+i
+s
+t
+o
+r
+y
+)
+CyclePosition=PercentileRank(CurrentEmployment,History)
+
+Why important:
+
+late-cycle markets behave differently
+
+vacancy mean reversion increases at extremes
+
+This is heavily used in tactical allocation.
+
+12. Tenant Formation Probability
+Small businesses create tenancy demand.
+
+Estimate:
+
+F
+o
+r
+m
+a
+t
+i
+o
+n
+P
+r
+o
+x
+y
+=
+Δ
+O
+t
+h
+e
+r
+S
+e
+r
+v
+i
+c
+e
+s
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+×
+S
+m
+a
+l
+l
+B
+u
+s
+i
+n
+e
+s
+s
+G
+r
+o
+w
+t
+h
+FormationProxy=ΔOtherServicesEmployment×SmallBusinessGrowth
+F
+o
+r
+m
+a
+t
+i
+o
+n
+P
+r
+o
+x
+y
+=
+Δ
+O
+t
+h
+e
+r
+S
+e
+r
+v
+i
+c
+e
+s
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+×
+S
+m
+a
+l
+l
+B
+u
+s
+i
+n
+e
+s
+s
+G
+r
+o
+w
+t
+h
+FormationProxy=ΔOtherServicesEmployment×SmallBusinessGrowth
+
+This predicts:
+
+strip retail absorption
+
+neighborhood leasing demand
+
+Very realistic.
+
+13. Service Employment Convexity
+Institutional models increasingly use nonlinear dynamics.
+
+C
+o
 n
 v
 e
-n
+x
+i
 t
-o
-r
 y
-EcommerceGrowth×AgingRetailInventory
-Why
-Old retail stock suffers disproportionately.
-
-This becomes extremely predictive for:
-
-secondary malls
-
-suburban power centers
-
-19. Structural vs Cyclical Separation
-Extremely important.
-
-Decompose ecommerce into:
-
-trend
-
-cyclical deviation
-
-Using:
-
-HP filter
-
-STL decomposition
-
-rolling trend
-
-Why
-Vacancy reacts differently to:
-
-permanent adoption shifts
-vs
-
-temporary demand spikes
-
-20. Spatial Spillover Feature
-Very advanced panel-data feature.
-
-N
-e
-i
-g
-h
-b
-o
-r
-i
-n
-g
-M
-a
-r
-k
-e
-t
-E
-c
-o
-m
-m
-e
-r
-c
-e
+=
 G
 r
 o
 w
 t
 h
-NeighboringMarketEcommerceGrowth
-Logic
-Consumer behavior diffuses regionally.
-
-Examples:
-
-NYC trends spill into New Jersey
-
-Bay Area affects Sacramento
-
-Great for:
-
-graph models
-
-spatial econometrics
-
-advanced ML systems
-
-Most Valuable Features for Real Estate in Practice
-If I had to prioritize institutional-grade features:
-
-Priority	Feature
-1	Ecommerce penetration momentum
-2	Retail displacement pressure
-3	Ecommerce × rates interaction
-4	Logistics demand transfer
-5	Market-relative ecommerce growth
-6	Saturation regime
-7	Retail fragility composite
-8	Vacancy elasticity to ecommerce
-9	Obsolescence interaction
-10	Structural trend decomposition
-These are much closer to how sophisticated CRE forecasting teams think about ecommerce-driven real estate transformation.
-
-
-Sorry I was asking can you look for some more top notch features engineering which top real estate industry use
-
-For institutional-grade CRE models, especially in firms working with Moody’s, RCA, CoStar, Green Street, CBRE, Blackstone-style research pipelines, the best feature engineering is usually not simple transformations.
-
-The strongest features typically try to model:
-
-structural demand migration
-
-tenant profitability stress
-
-supply chain reconfiguration
-
-retail space productivity
-
-spatial consumption behavior
-
-capital allocation shifts
-
-adaptive resilience of markets
-
-For Retail_Ecommerce_Sales, here are more advanced and realistic “industry-style” engineered features that go beyond standard DS ideas.
-
-1. Ecommerce Cannibalization Pressure
-One of the most realistic retail distress signals.
-
-E
-c
-o
-m
-m
-e
-r
-c
-e
+t
+−
+2
 G
 r
 o
 w
 t
 h
-B
-r
-i
-c
-k
-M
-o
-r
 t
-a
-r
-S
-a
-l
-e
-s
-G
-r
-o
-w
-t
-h
+−
+1
 +
-ϵ
-BrickMortarSalesGrowth+ϵ
-EcommerceGrowth
+G
+r
+o
+w
+t
+h
+t
+−
+2
+Convexity=Growth 
+t
+​
+ −2Growth 
+t−1
+​
+ +Growth 
+t−2
 ​
  
 C
-a
+o
 n
-n
+v
+e
+x
 i
-b
+t
+y
+=
+G
+r
+o
+w
+t
+h
+t
+−
+2
+G
+r
+o
+w
+t
+h
+t
+−
+1
++
+G
+r
+o
+w
+t
+h
+t
+−
+2
+Convexity=Growth 
+t
+​
+ −2Growth 
+t−1
+​
+ +Growth 
+t−2
+​
+ 
+
+This captures:
+
+acceleration curvature
+
+inflection points
+
+regime transitions
+
+Excellent for early turning-point detection.
+
+14. Vacancy Sensitivity Regime
+Create market-specific sensitivity score.
+
+S
+e
+n
+s
+i
+t
+i
+v
+i
+t
+y
+=
+C
+o
+r
+r
+(
+S
+e
+r
+v
+i
+c
+e
+G
+r
+o
+w
+t
+h
+,
+V
 a
-l
+c
+a
+n
+c
+y
+C
+h
+a
+n
+g
+e
+)
+Sensitivity=Corr(ServiceGrowth,VacancyChange)
+S
+e
+n
+s
+i
+t
+i
+v
+i
+t
+y
+=
+C
+o
+r
+r
+(
+S
+e
+r
+v
+i
+c
+e
+G
+r
+o
+w
+t
+h
+,
+V
+a
+c
+a
+n
+c
+y
+C
+h
+a
+n
+g
+e
+)
+Sensitivity=Corr(ServiceGrowth,VacancyChange)
+
+Some markets:
+
+highly reactive to local services
+Others:
+
+driven by finance/tech/manufacturing
+
+This becomes a meta-feature across markets.
+
+15. Economic Recovery Synchronization
+Very advanced institutional feature.
+
+S
+y
+n
+c
+h
+r
+o
+n
 i
 z
 a
@@ -1857,1091 +4387,611 @@ t
 i
 o
 n
+=
+C
+o
+r
+r
+(
+L
+o
+c
+a
+l
+S
+e
+r
+v
+i
+c
+e
+G
+r
+o
+w
+t
+h
+,
+N
+a
+t
+i
+o
+n
+a
+l
+C
+R
+E
+C
+y
+c
+l
+e
+)
+Synchronization=Corr(LocalServiceGrowth,NationalCRECycle)
+S
+y
+n
+c
+h
+r
+o
+n
+i
+z
+a
+t
+i
+o
+n
+=
+C
+o
+r
+r
+(
+L
+o
+c
+a
+l
+S
+e
+r
+v
+i
+c
+e
+G
+r
+o
+w
+t
+h
+,
+N
+a
+t
+i
+o
+n
+a
+l
+C
+R
+E
+C
+y
+c
+l
+e
+)
+Synchronization=Corr(LocalServiceGrowth,NationalCRECycle)
+
+Markets highly synchronized with national CRE cycles:
+
+reprice faster
+
+vacancy deteriorates faster during downturns
+
+Low synchronization:
+
+diversification benefits
+
+The Features That Actually Create Alpha
+In real institutional forecasting, the biggest gains usually come from:
+
+Feature Class	Importance
+Relative market strength	Extremely high
+Regime/state features	Extremely high
+Recovery/resilience metrics	Extremely high
+Interaction terms	Very high
+Cross-market normalization	Very high
+Spatial features	Very high
+Simple lag growth	Low
+What I Would Personally Build First
+For your quarterly panel dataset:
+
+Tier 1
+RelativeStrength
+
+RecoveryGap
+
+Persistence
+
+CyclePosition
+
+VolatilityRegime
+
+Tier 2
+MigrationSignal
+
+VitalityFactor
+
+Resilience
+
+Imbalance
+
+DemandIntensity
+
+Tier 3
+Convexity
+
+BetaToNational
+
+Synchronization
+
+Fragility
+
+BreadthDiffusion
+
+These are much closer to what sophisticated CRE macro forecasting systems actually use internally.
+
+
+Show me some more features engineering with Other_Services_Employment_Extended which are realistic and don't try to keep the earlier feature.
+
+Absolutely — let’s move into a different class of feature engineering entirely and avoid repeating earlier concepts.
+
+For Other_Services_Employment_Extended, sophisticated CRE teams often think about:
+
+labor market structure
+
+hidden tenant demand
+
+elasticity of local spending
+
+service-sector saturation
+
+macro transmission mechanisms
+
+occupancy friction
+
+cyclical asymmetry
+
+Below are fresh, realistic, institutional-style feature ideas that are materially different from the previous ones.
+
+1. Service Employment Per Household
+S
+e
+r
+v
+i
+c
+e
+P
+e
+r
+H
+o
+u
+s
+e
+h
+o
+l
+d
+=
+O
+t
+h
+e
+r
+S
+e
+r
+v
+i
+c
+e
+s
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+H
+o
+u
+s
+e
+h
+o
+l
+d
+s
+ServicePerHousehold= 
+Households
+OtherServicesEmployment
+​
+ 
+S
+e
+r
+v
+i
+c
+e
+P
+e
+r
+H
+o
+u
+s
+e
+h
+o
+l
+d
+=
+O
+t
+h
+e
+r
+S
+e
+r
+v
+i
+c
+e
+s
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+H
+o
+u
+s
+e
+h
+o
+l
+d
+s
+ServicePerHousehold= 
+Households
+OtherServicesEmployment
+​
+ 
+
+Why important:
+
+measures local service penetration
+
+stronger proxy for neighborhood commercial intensity than raw population
+
+Higher values often indicate:
+
+denser consumption ecosystems
+
+stronger strip retail utilization
+
+lower neighborhood retail vacancy
+
+2. Employment Utilization Gap
+Measure deviation from expected employment.
+
+First estimate trend:
+
+E
+x
+p
+e
+c
+t
+e
+d
+t
+=
+R
+o
+l
+l
+i
+n
+g
+T
+r
+e
+n
+d
+(
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+)
+Expected 
+t
+​
+ =RollingTrend(Employment)
+Then:
+
+G
+a
+p
 t
 =
 E
-c
-o
 m
-m
-e
-r
-c
-e
-G
-r
-o
-w
-t
-h
-t
-B
-r
-i
-c
-k
-M
-o
-r
-t
-a
-r
-S
-a
+p
 l
-e
-s
-G
-r
 o
-w
+y
+m
+e
+n
 t
-h
 t
-+
-ϵ
-Cannibalization 
+−
+E
+x
+p
+e
+c
+t
+e
+d
+t
+E
+x
+p
+e
+c
+t
+e
+d
+t
+Gap 
 t
 ​
  = 
-BrickMortarSalesGrowth 
+Expected 
 t
 ​
- +ϵ
-EcommerceGrowth 
+ 
+Employment 
+t
+​
+ −Expected 
 t
 ​
  
 ​
  
-
-Why institutional teams like it
-Measures whether:
-
-ecommerce is additive
-OR
-
-replacing physical retail demand.
-
-Very predictive for:
-
-mall deterioration
-
-anchor tenant stress
-
-secondary retail vacancy.
-
-2. Retail Productivity Compression
-Top CRE investors monitor store productivity heavily.
-
-R
-e
-t
-a
-i
-l
-S
-a
-l
-e
-s
-P
-e
-r
-S
-F
 G
-r
-o
-w
-t
-h
-−
-E
-c
-o
-m
-m
-e
-r
-c
-e
-G
-r
-o
-w
-t
-h
-RetailSalesPerSFGrowth−EcommerceGrowth
-Interpretation
-If ecommerce grows while sales per square foot falls:
-
-physical retail productivity collapses
-
-tenants reduce footprint
-
-vacancy risk rises
-
-Very realistic retail underwriting signal.
-
-3. Fulfillment Network Expansion Proxy
-Excellent industrial-market feature.
-
-E
-c
-o
-m
-m
-e
-r
-c
-e
-G
-r
-o
-w
-t
-h
-×
-H
-i
-g
-h
-w
-a
-y
-D
-e
-n
-s
-i
-t
-y
-EcommerceGrowth×HighwayDensity
-or
-
-E
-c
-o
-m
-m
-e
-r
-c
-e
-G
-r
-o
-w
-t
-h
-×
-P
-o
-r
-t
-T
-h
-r
-o
-u
-g
-h
-p
-u
-t
-EcommerceGrowth×PortThroughput
-Why important
-Industrial demand only explodes where logistics infrastructure exists.
-
-This identifies:
-
-future warehouse corridors
-
-last-mile expansion zones
-
-logistics supernodes
-
-Used heavily in industrial CRE analytics.
-
-4. Retail-to-Industrial Demand Rotation
-Elite CRE macro feature.
-
-I
-n
-d
-u
-s
-t
-r
-i
-a
-l
-N
-O
-I
-g
-r
-o
-w
-t
-h
-−
-R
-e
-t
-a
-i
-l
-N
-O
-I
-g
-r
-o
-w
-t
-h
-IndustrialNOIgrowth−RetailNOIgrowth
-conditioned on ecommerce acceleration.
-
-Why powerful
-Captures capital rotation:
-
-away from retail
-
-into logistics/industrial
-
-This mirrors real institutional capital allocation behavior.
-
-5. Tenant Fragility Score
-Very advanced underwriting-style feature.
-
-E
-c
-o
-m
-m
-e
-r
-c
-e
-G
-r
-o
-w
-t
-h
-×
-W
-a
-g
-e
-I
-n
-f
-l
-a
-t
-i
-o
-n
-R
-e
-t
-a
-i
-l
-M
-a
-r
-g
-i
-n
-s
-RetailMargins
-EcommerceGrowth×WageInflation
-​
- 
-Logic
-Retailers fail when:
-
-online competition rises
-
-labor costs rise
-
-margins compress
-
-This often predicts vacancy BEFORE closures appear.
-
-6. Physical Retail Relevance Index
-A sophisticated resilience feature.
-
-E
-x
-p
-e
-r
-i
-e
-n
-t
-i
-a
-l
-R
-e
-t
-a
-i
-l
-S
-h
-a
-r
-e
-×
-(
-1
-−
-E
-c
-o
-m
-m
-e
-r
-c
-e
-P
-e
-n
-e
-t
-r
-a
-t
-i
-o
-n
-)
-ExperientialRetailShare×(1−EcommercePenetration)
-Why useful
-Experiential retail:
-
-restaurants
-
-gyms
-
-entertainment
-
-luxury experiences
-
-is more resilient to ecommerce disruption.
-
-Helps distinguish:
-
-dead malls
-vs
-
-adaptive mixed-use retail.
-
-7. Last-Mile Scarcity Premium
-Very common institutional industrial theme.
-
-E
-c
-o
-m
-m
-e
-r
-c
-e
-G
-r
-o
-w
-t
-h
-×
-P
-o
-p
-u
-l
-a
-t
-i
-o
-n
-D
-e
-n
-s
-i
-t
-y
-I
-n
-d
-u
-s
-t
-r
-i
-a
-l
-L
-a
-n
-d
-A
-v
-a
-i
-l
-a
-b
-i
-l
-i
-t
-y
-IndustrialLandAvailability
-EcommerceGrowth×PopulationDensity
-​
- 
-Why valuable
-Captures urban logistics scarcity.
-
-Strong predictor of:
-
-industrial rent spikes
-
-ultra-low warehouse vacancy
-
-logistics pricing power
-
-Huge in NYC, LA, Bay Area, Seattle models.
-
-8. Omnichannel Retail Adaptation Capability
-A very modern CRE concept.
-
-R
-e
-t
-a
-i
-l
-e
-r
-T
-e
-c
-h
-I
-n
-v
-e
-s
-t
-m
-e
-n
-t
-E
-c
-o
-m
-m
-e
-r
-c
-e
-G
-r
-o
-w
-t
-h
-EcommerceGrowth
-RetailerTechInvestment
-​
- 
-Proxy alternatives:
-
-tech employment
-
-broadband penetration
-
-digital payment adoption
-
-Why
-Markets with strong omnichannel adaptation:
-
-maintain lower retail vacancy
-despite high ecommerce penetration.
-
-9. Store Network Rationalization Pressure
-Excellent leading vacancy feature.
-
-E
-c
-o
-m
-m
-e
-r
-c
-e
-G
-r
-o
-w
-t
-h
-×
-R
-e
-t
-a
-i
-l
-I
-n
-v
-e
-n
-t
-o
-r
-y
-P
-e
-r
-C
 a
 p
-i
-t
-a
-EcommerceGrowth×RetailInventoryPerCapita
-Interpretation
-Markets with:
-
-too much retail space
-AND
-
-fast ecommerce growth
-
-usually experience:
-
-aggressive store closures
-
-rising shadow vacancy
-
-lease non-renewals
-
-Very institutional-quality feature.
-
-10. Retail Lease Renewal Stress
-A highly realistic leasing feature.
-
-E
-c
-o
-m
-m
-e
-r
-c
-e
-A
-c
-c
-e
-l
-e
-r
-a
-t
-i
-o
-n
-×
-L
-e
-a
-s
-e
-E
-x
-p
-i
-r
-y
-W
-a
-l
-l
-EcommerceAcceleration×LeaseExpiryWall
-Why sophisticated
-Vacancy spikes happen when:
-
-ecommerce disruption rises
-AND
-
-many leases expire simultaneously.
-
-This is exactly how REIT asset managers think.
-
-11. Digital Consumption Migration Speed
-Structural transition velocity feature.
-
-E
-c
-o
-m
-m
-e
-r
-c
-e
-G
-r
-o
-w
-t
-h
-P
-o
-p
-u
-l
-a
-t
-i
-o
-n
-G
-r
-o
-w
-t
-h
-PopulationGrowth
-EcommerceGrowth
-​
- 
-Why useful
-Separates:
-
-population-driven retail growth
-from
-
-behavioral migration online.
-
-Very important in Sunbelt market analysis.
-
-12. Retail Asset Obsolescence Risk
-Top-tier mall analytics feature.
-
-E
-c
-o
-m
-m
-e
-r
-c
-e
-G
-r
-o
-w
-t
-h
-×
-A
-v
-e
-r
-a
-g
-e
-R
-e
-t
-a
-i
-l
-A
-s
-s
-e
-t
-A
-g
-e
-EcommerceGrowth×AverageRetailAssetAge
-Why
-Older retail inventory:
-
-weaker layouts
-
-poor parking
-
-obsolete anchors
-
-poor logistics integration
-
-gets disrupted first.
-
-Very predictive in secondary markets.
-
-13. Consumer Convenience Elasticity
-Behavioral economics feature.
-
-E
-c
-o
-m
-m
-e
-r
-c
-e
-G
-r
-o
-w
-t
-h
-T
-r
-a
-v
-e
-l
-T
-i
-m
-e
-T
-o
-R
-e
-t
-a
-i
-l
-C
-e
-n
-t
-e
-r
-s
-TravelTimeToRetailCenters
-EcommerceGrowth
-​
- 
-Logic
-Long commute / congestion markets:
-
-favor ecommerce adoption faster.
-
-Useful in:
-
-LA
-
-NYC
-
-Bay Area
-
-14. Logistics Labor Tightness Interaction
-Institutional industrial feature.
-
-E
-c
-o
-m
-m
-e
-r
-c
-e
-G
-r
-o
-w
-t
-h
-×
-W
-a
-r
-e
-h
-o
-u
-s
-e
-W
-a
-g
-e
-G
-r
-o
-w
-t
-h
-EcommerceGrowth×WarehouseWageGrowth
-Why advanced
-Warehouse demand can become constrained by labor shortages.
-
-This affects:
-
-industrial expansion pace
-
-absorption
-
-occupancy dynamics
-
-Used in supply chain-sensitive markets.
-
-15. Retail Market Bifurcation Signal
-One of the strongest modern CRE concepts.
-
-P
-r
-i
-m
-e
-R
-e
-t
-a
-i
-l
-R
-e
-n
-t
-G
-r
-o
-w
-t
-h
-−
-S
-e
-c
-o
-n
-d
-a
-r
-y
-R
-e
-t
-a
-i
-l
-R
-e
-n
-t
-G
-r
-o
-w
-t
-h
-PrimeRetailRentGrowth−SecondaryRetailRentGrowth
-conditioned on ecommerce growth.
-
-Interpretation
-Ecommerce creates:
-
-survival of elite retail
-
-collapse of weak retail
-
-This widening divergence is extremely important.
-
-16. Digital Substitution Risk Surface
-Advanced nonlinear feature.
-
-E
-c
-o
-m
-m
-e
-r
-c
-e
-P
-e
-n
-e
-t
-r
-a
-t
-i
-o
-n
-2
-EcommercePenetration 
-2
- 
-D
-i
-g
-i
-t
-a
-l
-S
-u
-b
-s
-t
-i
-t
-u
-t
-i
-o
-n
-R
-i
-s
-k
 t
 =
 E
-c
+m
+p
+l
 o
+y
 m
-m
-e
-r
-c
-e
-P
 e
 n
+t
+t
+−
+E
+x
+p
 e
+c
 t
-r
-a
+e
+d
 t
-i
-o
-n
+E
+x
+p
+e
+c
 t
-2
-DigitalSubstitutionRisk 
+e
+d
+t
+Gap 
 t
 ​
- =EcommercePenetration 
+ = 
+Expected 
 t
-2
+​
+ 
+Employment 
+t
+​
+ −Expected 
+t
+​
+ 
 ​
  
 
-Why
-Retail disruption accelerates nonlinearly after critical adoption thresholds.
+Why useful:
 
-Very realistic structural effect.
+detects hidden overheating or underperformance
 
-17. Consumption Channel Transition Regime
-Institutional macro feature.
+vacancy often responds to deviations from equilibrium, not levels
 
-Classify periods into:
+3. Service Employment Compression Indicator
+Measure whether growth is slowing despite still-positive levels.
 
-Regime	Description
-Stable retail	Low ecommerce penetration
-Hybrid transition	Omnichannel coexistence
-Digital dominance	Store rationalization phase
-Why important
-Vacancy dynamics differ completely across regimes.
-
-Tree models and HMMs benefit enormously.
-
-18. Retail Cap Rate Expansion Pressure
-Capital markets feature.
-
-E
-c
+C
 o
 m
-m
-e
+p
 r
-c
 e
+s
+s
+i
+o
+n
+=
 G
 r
 o
 w
 t
 h
-×
+t
+G
+r
+o
+w
+t
+h
+t
+−
+4
+Compression= 
+Growth 
+t−4
+​
+ 
+Growth 
+t
+​
+ 
+​
+ 
 C
-r
-e
-d
-i
-t
-S
+o
+m
 p
 r
 e
-a
-d
-EcommerceGrowth×CreditSpread
-Logic
-When ecommerce disruption rises during tighter credit:
-
-investors demand higher retail cap rates
-
-valuations fall
-
-refinancing stress increases
-
-Eventually impacting vacancy and leasing.
-
-19. Demand Redistribution Efficiency
-Cross-property intelligence feature.
-
-I
+s
+s
+i
+o
 n
-d
+=
+G
+r
+o
+w
+t
+h
+t
+G
+r
+o
+w
+t
+h
+t
+−
+4
+Compression= 
+Growth 
+t−4
+​
+ 
+Growth 
+t
+​
+ 
+​
+ 
+
+Interpretation:
+
+below 1 → slowing expansion
+
+early warning before vacancy deterioration
+
+Very realistic for cyclical turning points.
+
+4. Local Consumption Support Ratio
+C
+o
+n
+s
 u
-s
-t
-r
-i
-a
-l
-A
-b
-s
-o
-r
+m
 p
 t
 i
 o
 n
+S
+u
+p
+p
+o
+r
+t
+=
+O
+t
+h
+e
+r
+S
+e
+r
+v
+i
+c
+e
+s
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
 R
 e
 t
@@ -2955,56 +5005,314 @@ a
 n
 c
 y
-I
-n
-c
-r
-e
-a
-s
-e
-RetailVacancyIncrease
-IndustrialAbsorption
+ConsumptionSupport= 
+RetailVacancy
+OtherServicesEmployment
 ​
  
-conditioned on ecommerce acceleration.
-
-Why elite-level
-Measures how efficiently a market converts:
-
-retail disruption
-into
-
-logistics demand.
-
-Huge for multi-property global models.
-
-20. Spatial Ecommerce Diffusion Gradient
-Very sophisticated panel feature.
-
-N
-e
+C
+o
+n
+s
+u
+m
+p
+t
 i
-g
-h
-b
+o
+n
+S
+u
+p
+p
 o
 r
-M
-a
+t
+=
+O
+t
+h
+e
 r
-k
+S
+e
+r
+v
+i
+c
+e
+s
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+R
 e
 t
-E
+a
+i
+l
+V
+a
 c
+a
+n
+c
+y
+ConsumptionSupport= 
+RetailVacancy
+OtherServicesEmployment
+​
+ 
+
+Why strong:
+
+combines labor demand with retail stress
+
+higher ratio indicates healthier tenant ecosystem
+
+Especially useful in:
+
+neighborhood retail
+
+mixed-use corridors
+
+5. Employment-to-New-Supply Ratio
+S
+u
+p
+p
+l
+y
+A
+b
+s
 o
-m
-m
+r
+p
+t
+i
+o
+n
+C
+a
+p
+a
+c
+i
+t
+y
+=
+O
+t
+h
 e
 r
+S
+e
+r
+v
+i
 c
 e
+s
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+G
+r
+o
+w
+t
+h
+N
+e
+w
+S
+u
+p
+p
+l
+y
+G
+r
+o
+w
+t
+h
+SupplyAbsorptionCapacity= 
+NewSupplyGrowth
+OtherServicesEmploymentGrowth
+​
+ 
+S
+u
+p
+p
+l
+y
+A
+b
+s
+o
+r
+p
+t
+i
+o
+n
+C
+a
+p
+a
+c
+i
+t
+y
+=
+O
+t
+h
+e
+r
+S
+e
+r
+v
+i
+c
+e
+s
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+G
+r
+o
+w
+t
+h
+N
+e
+w
+S
+u
+p
+p
+l
+y
+G
+r
+o
+w
+t
+h
+SupplyAbsorptionCapacity= 
+NewSupplyGrowth
+OtherServicesEmploymentGrowth
+​
+ 
+
+Institutional relevance:
+
+determines whether local demand can absorb incoming inventory
+
+critical for forecasting vacancy spikes
+
+Very important in Sunbelt markets.
+
+6. Service Employment Duration Above Trend
+Instead of level, measure persistence.
+
+D
+u
+r
+a
+t
+i
+o
+n
+=
+C
+o
+n
+s
+e
+c
+u
+t
+i
+v
+e
+Q
+u
+a
+r
+t
+e
+r
+s
+(
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+>
+T
+r
+e
+n
+d
+)
+Duration=ConsecutiveQuarters(Employment>Trend)
+Why powerful:
+
+prolonged above-trend growth often precedes rent acceleration
+
+sustained economic strength matters more than temporary spikes
+
+CRE markets react to duration.
+
+7. Economic Friction Indicator
+F
+r
+i
+c
+t
+i
+o
+n
+=
+∣
+Q
+o
+Q
 G
 r
 o
@@ -3012,70 +5320,1506 @@ w
 t
 h
 −
-L
+Y
 o
-c
-a
-l
+Y
 G
 r
 o
 w
 t
 h
-NeighborMarketEcommerceGrowth−LocalGrowth
-Why
-Consumer behavior spreads geographically.
+∣
+∣
+Y
+o
+Y
+G
+r
+o
+w
+t
+h
+∣
+Friction= 
+∣YoYGrowth∣
+∣QoQGrowth−YoYGrowth∣
+​
+ 
+F
+r
+i
+c
+t
+i
+o
+n
+=
+∣
+Q
+o
+Q
+G
+r
+o
+w
+t
+h
+−
+Y
+o
+Y
+G
+r
+o
+w
+t
+h
+∣
+∣
+Y
+o
+Y
+G
+r
+o
+w
+t
+h
+∣
+Friction= 
+∣YoYGrowth∣
+∣QoQGrowth−YoYGrowth∣
+​
+ 
 
-Markets lagging nearby ecommerce adoption may face:
+Interpretation:
 
-delayed retail disruption
+high friction = unstable growth structure
 
-future warehouse expansion
+indicates transitional economic conditions
 
-Useful for:
+Vacancy tends to rise when labor trends become inconsistent.
 
-spatial ML
+8. Employment Concentration Drift
+Measure whether services are becoming disproportionately dominant.
 
-graph networks
+D
+r
+i
+f
+t
+=
+S
+h
+a
+r
+e
+t
+−
+S
+h
+a
+r
+e
+t
+−
+8
+Drift=Share 
+t
+​
+ −Share 
+t−8
+​
+ 
+Where:
 
-hierarchical forecasting
+S
+h
+a
+r
+e
+=
+O
+t
+h
+e
+r
+S
+e
+r
+v
+i
+c
+e
+s
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+T
+o
+t
+a
+l
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+Share= 
+TotalEmployment
+OtherServicesEmployment
+​
+ 
+S
+h
+a
+r
+e
+=
+O
+t
+h
+e
+r
+S
+e
+r
+v
+i
+c
+e
+s
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+T
+o
+t
+a
+l
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+Share= 
+TotalEmployment
+OtherServicesEmployment
+​
+ 
 
-Features Most Commonly Seen in Sophisticated CRE Systems
-The most “institutional-grade” ecommerce features usually fall into these categories:
+Why sophisticated:
 
-Category	What firms care about
-Retail stress	closures, productivity, margins
-Industrial pull-through	logistics demand transfer
-Market adaptability	omnichannel resilience
-Capital markets	cap rates, financing stress
-Structural transformation	long-term behavior shifts
-Spatial diffusion	regional adoption patterns
-Nonlinear thresholds	disruption regimes
-Inventory mismatch	obsolete retail stock
-Highest Alpha Features in Practice
-The features that often add the most predictive power are:
+captures structural transformation of local economies
 
-Retail inventory × ecommerce growth
+excessive drift may imply lower-quality economic expansion
 
-Ecommerce penetration acceleration
+9. Service Employment Mean-Reversion Pressure
+P
+r
+e
+s
+s
+u
+r
+e
+=
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+t
+−
+R
+o
+l
+l
+i
+n
+g
+M
+e
+a
+n
+20
+Q
+R
+o
+l
+l
+i
+n
+g
+S
+t
+d
+20
+Q
+Pressure= 
+RollingStd 
+20Q
+​
+ 
+Employment 
+t
+​
+ −RollingMean 
+20Q
+​
+ 
+​
+ 
+P
+r
+e
+s
+s
+u
+r
+e
+=
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+t
+−
+R
+o
+l
+l
+i
+n
+g
+M
+e
+a
+n
+20
+Q
+R
+o
+l
+l
+i
+n
+g
+S
+t
+d
+20
+Q
+Pressure= 
+RollingStd 
+20Q
+​
+ 
+Employment 
+t
+​
+ −RollingMean 
+20Q
+​
+ 
+​
+ 
 
-Lease expiry × ecommerce disruption
+This is essentially a macro z-score.
 
-Last-mile scarcity premium
+Why useful:
 
-Retail productivity compression
+extreme positive deviations often precede cooling
 
-Retail bifurcation signal
+extreme negative deviations often precede rebound
 
-Cannibalization pressure
+Very common in institutional cycle models.
 
-Demand redistribution efficiency
+10. Tenant Ecosystem Stability
+S
+t
+a
+b
+i
+l
+i
+t
+y
+=
+1
+−
+Q
+u
+a
+r
+t
+e
+r
+l
+y
+L
+a
+y
+o
+f
+f
+P
+r
+o
+x
+y
+O
+t
+h
+e
+r
+S
+e
+r
+v
+i
+c
+e
+s
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+Stability=1− 
+OtherServicesEmployment
+QuarterlyLayoffProxy
+​
+ 
+S
+t
+a
+b
+i
+l
+i
+t
+y
+=
+1
+−
+Q
+u
+a
+r
+t
+e
+r
+l
+y
+L
+a
+y
+o
+f
+f
+P
+r
+o
+x
+y
+O
+t
+h
+e
+r
+S
+e
+r
+v
+i
+c
+e
+s
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+Stability=1− 
+OtherServicesEmployment
+QuarterlyLayoffProxy
+​
+ 
 
-Obsolescence interaction
+Even approximate layoff proxies help.
 
-Ecommerce regime classification
+Why useful:
 
-These are much closer to how sophisticated CRE research and investment platforms model real-world property market transitions.
+stable service labor base supports occupancy durability
+
+unstable labor → tenant churn risk
+
+11. Economic Spillover Multiplier
+Measure spillover into real estate demand.
+
+S
+p
+i
+l
+l
+o
+v
+e
+r
+=
+Δ
+O
+c
+c
+u
+p
+i
+e
+d
+S
+F
+Δ
+O
+t
+h
+e
+r
+S
+e
+r
+v
+i
+c
+e
+s
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+Spillover= 
+ΔOtherServicesEmployment
+ΔOccupiedSF
+​
+ 
+S
+p
+i
+l
+l
+o
+v
+e
+r
+=
+Δ
+O
+c
+c
+u
+p
+i
+e
+d
+S
+F
+Δ
+O
+t
+h
+e
+r
+S
+e
+r
+v
+i
+c
+e
+s
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+Spillover= 
+ΔOtherServicesEmployment
+ΔOccupiedSF
+​
+ 
+
+Interpretation:
+
+how efficiently employment growth converts into occupancy demand
+
+Some markets generate:
+
+high employment
+but weak real estate absorption.
+
+This feature captures that disconnect.
+
+12. Service Employment Exhaustion Signal
+E
+x
+h
+a
+u
+s
+t
+i
+o
+n
+=
+R
+o
+l
+l
+i
+n
+g
+M
+a
+x
+12
+Q
+(
+G
+r
+o
+w
+t
+h
+)
+−
+C
+u
+r
+r
+e
+n
+t
+G
+r
+o
+w
+t
+h
+Exhaustion=RollingMax 
+12Q
+​
+ (Growth)−CurrentGrowth
+E
+x
+h
+a
+u
+s
+t
+i
+o
+n
+=
+R
+o
+l
+l
+i
+n
+g
+M
+a
+x
+12
+Q
+(
+G
+r
+o
+w
+t
+h
+)
+−
+C
+u
+r
+r
+e
+n
+t
+G
+r
+o
+w
+t
+h
+Exhaustion=RollingMax 
+12Q
+​
+ (Growth)−CurrentGrowth
+
+Why elite:
+
+identifies late-cycle deceleration
+
+useful before vacancy inflection
+
+13. Employment-to-Transit Dependency
+T
+r
+a
+n
+s
+i
+t
+D
+e
+p
+e
+n
+d
+e
+n
+c
+y
+=
+O
+t
+h
+e
+r
+S
+e
+r
+v
+i
+c
+e
+s
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+T
+r
+a
+n
+s
+i
+t
+R
+i
+d
+e
+r
+s
+h
+i
+p
+TransitDependency= 
+TransitRidership
+OtherServicesEmployment
+​
+ 
+T
+r
+a
+n
+s
+i
+t
+D
+e
+p
+e
+n
+d
+e
+n
+c
+y
+=
+O
+t
+h
+e
+r
+S
+e
+r
+v
+i
+c
+e
+s
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+T
+r
+a
+n
+s
+i
+t
+R
+i
+d
+e
+r
+s
+h
+i
+p
+TransitDependency= 
+TransitRidership
+OtherServicesEmployment
+​
+ 
+
+Powerful in:
+
+urban office
+
+mixed-use districts
+
+CBD retail
+
+Captures whether local service ecosystem depends heavily on commuter flows.
+
+14. Local Service Labor Tightness
+T
+i
+g
+h
+t
+n
+e
+s
+s
+=
+J
+o
+b
+O
+p
+e
+n
+i
+n
+g
+s
+O
+t
+h
+e
+r
+S
+e
+r
+v
+i
+c
+e
+s
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+Tightness= 
+OtherServicesEmployment
+JobOpenings
+​
+ 
+T
+i
+g
+h
+t
+n
+e
+s
+s
+=
+J
+o
+b
+O
+p
+e
+n
+i
+n
+g
+s
+O
+t
+h
+e
+r
+S
+e
+r
+v
+i
+c
+e
+s
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+Tightness= 
+OtherServicesEmployment
+JobOpenings
+​
+ 
+
+Why realistic:
+
+labor shortages can constrain business expansion
+
+affects future leasing demand
+
+Especially relevant post-2021.
+
+15. Demand Conversion Efficiency
+C
+o
+n
+v
+e
+r
+s
+i
+o
+n
+E
+f
+f
+i
+c
+i
+e
+n
+c
+y
+=
+N
+e
+t
+A
+b
+s
+o
+r
+p
+t
+i
+o
+n
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+G
+r
+o
+w
+t
+h
+ConversionEfficiency= 
+EmploymentGrowth
+NetAbsorption
+​
+ 
+C
+o
+n
+v
+e
+r
+s
+i
+o
+n
+E
+f
+f
+i
+c
+i
+e
+n
+c
+y
+=
+N
+e
+t
+A
+b
+s
+o
+r
+p
+t
+i
+o
+n
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+G
+r
+o
+w
+t
+h
+ConversionEfficiency= 
+EmploymentGrowth
+NetAbsorption
+​
+ 
+
+This measures:
+
+how effectively local economic growth converts into occupancy
+
+Institutional investors care deeply about this.
+
+Some markets:
+
+generate jobs but little occupancy
+Others:
+
+efficiently translate growth into leasing demand
+
+16. Employment Regime Transition Velocity
+V
+e
+l
+o
+c
+i
+t
+y
+=
+R
+e
+g
+i
+m
+e
+S
+c
+o
+r
+e
+t
+−
+R
+e
+g
+i
+m
+e
+S
+c
+o
+r
+e
+t
+−
+1
+Velocity=RegimeScore 
+t
+​
+ −RegimeScore 
+t−1
+​
+ 
+Why advanced:
+
+markets shifting rapidly between regimes have unstable vacancy dynamics
+
+transition speed matters more than regime alone
+
+17. Service Labor Saturation Risk
+S
+a
+t
+u
+r
+a
+t
+i
+o
+n
+R
+i
+s
+k
+=
+O
+t
+h
+e
+r
+S
+e
+r
+v
+i
+c
+e
+s
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+G
+r
+o
+w
+t
+h
+P
+o
+p
+u
+l
+a
+t
+i
+o
+n
+G
+r
+o
+w
+t
+h
+SaturationRisk= 
+PopulationGrowth
+OtherServicesEmploymentGrowth
+​
+ 
+S
+a
+t
+u
+r
+a
+t
+i
+o
+n
+R
+i
+s
+k
+=
+O
+t
+h
+e
+r
+S
+e
+r
+v
+i
+c
+e
+s
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+G
+r
+o
+w
+t
+h
+P
+o
+p
+u
+l
+a
+t
+i
+o
+n
+G
+r
+o
+w
+t
+h
+SaturationRisk= 
+PopulationGrowth
+OtherServicesEmploymentGrowth
+​
+ 
+
+Interpretation:
+
+employment growing much faster than population
+→ possible oversaturation
+→ lower long-term sustainability
+
+18. Occupancy Buffer Capacity
+B
+u
+f
+f
+e
+r
+=
+O
+c
+c
+u
+p
+i
+e
+d
+I
+n
+v
+e
+n
+t
+o
+r
+y
+G
+r
+o
+w
+t
+h
+−
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+G
+r
+o
+w
+t
+h
+Buffer=OccupiedInventoryGrowth−EmploymentGrowth
+B
+u
+f
+f
+e
+r
+=
+O
+c
+c
+u
+p
+i
+e
+d
+I
+n
+v
+e
+n
+t
+o
+r
+y
+G
+r
+o
+w
+t
+h
+−
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+G
+r
+o
+w
+t
+h
+Buffer=OccupiedInventoryGrowth−EmploymentGrowth
+
+Useful because:
+
+markets with shrinking occupancy buffer are vulnerable to vacancy spikes
+
+19. Service Economy Inefficiency Signal
+I
+n
+e
+f
+f
+i
+c
+i
+e
+n
+c
+y
+=
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+G
+r
+o
+w
+t
+h
+I
+n
+c
+o
+m
+e
+G
+r
+o
+w
+t
+h
+Inefficiency= 
+IncomeGrowth
+EmploymentGrowth
+​
+ 
+I
+n
+e
+f
+f
+i
+c
+i
+e
+n
+c
+y
+=
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+G
+r
+o
+w
+t
+h
+I
+n
+c
+o
+m
+e
+G
+r
+o
+w
+t
+h
+Inefficiency= 
+IncomeGrowth
+EmploymentGrowth
+​
+ 
+
+Interpretation:
+
+job growth without income growth may imply weak-quality expansion
+
+Can predict:
+
+fragile tenant demand
+
+weaker rent growth
+
+20. Local Economic Stickiness
+S
+t
+i
+c
+k
+i
+n
+e
+s
+s
+=
+1
+−
+T
+u
+r
+n
+o
+v
+e
+r
+R
+a
+t
+e
+Stickiness=1−TurnoverRate
+or approximate using employment stability.
+
+Why powerful:
+
+sticky labor markets create sticky occupancy
+
+transient labor markets increase vacancy volatility
+
+Very important for multifamily forecasting.
 
 
