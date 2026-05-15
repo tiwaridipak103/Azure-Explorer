@@ -8,5953 +8,1120 @@ Open
 This is a copy of a shared ChatGPT conversation
 
 Report conversation
-For Other_Services_Employment_Extended, the best feature engineering is usually not simple lags or growth rates.
-Top CRE and macro forecasting teams try to transform it into signals about:
+For Federal_Funds_Rate, basic lags are useful, but top-tier commercial real estate modeling usually focuses on:
 
-local economic resilience
+monetary regime shifts
 
-neighborhood commercial intensity
+refinancing stress
 
-labor fragility
+capital market freezes
 
-recovery persistence
+nonlinear policy shocks
 
-service-sector dependency
+delayed supply reactions
 
-urban vibrancy cycles
+asymmetric market responses
 
-Below are more advanced and realistic feature ideas specifically designed for quarterly real estate vacancy modeling.
+Below are more advanced and realistic feature engineering ideas specifically for quarterly CRE vacancy modeling.
 
-1. Service Employment Momentum Acceleration
-Not just growth — growth acceleration.
+1. Monetary Tightening Velocity
+Not the level — the speed of tightening.
 
-A
-c
-c
-e
-l
-e
-r
-a
-t
-i
-o
-n
-t
-=
-Y
-o
-Y
-G
-r
-o
-w
-t
-h
-t
-−
-Y
-o
-Y
-G
-r
-o
-w
-t
-h
-t
-−
-1
-Acceleration 
-t
-​
- =YoYGrowth 
-t
-​
- −YoYGrowth 
-t−1
-​
- 
-A
-c
-c
-e
-l
-e
-r
-a
-t
-i
-o
-n
-t
-=
-Y
-o
-Y
-G
-r
-o
-w
-t
-h
-t
-−
-Y
-o
-Y
-G
-r
-o
-w
-t
-h
-t
-−
-1
-Acceleration 
-t
-​
- =YoYGrowth 
-t
-​
- −YoYGrowth 
-t−1
-​
- 
+fedfunds_velocity_2q = (
+    federal_funds_rate -
+    federal_funds_rate.shift(2)
+) / 2
+Why it matters:
 
-Why useful:
+CRE breaks during rapid repricing cycles
 
-detects turning points early
-
-vacancy often reacts to second derivative changes
-
-leasing markets care about momentum shifts
-
-Interpretation:
-
-positive acceleration → improving local ecosystem
-
-negative acceleration → hidden slowdown before vacancy rises
-
-2. Local Service Economy Regime Score
-Create market states.
+sudden financing shock hurts transactions/leasing
 
 Example:
 
-Regime	Condition
-Expansion	growth > 4%
-Stable	1–4%
-Weakening	-2% to 1%
-Stress	< -2%
-Then encode regime.
+5% stable = manageable
 
-Why powerful:
+0% → 5% rapidly = dangerous
 
-vacancy behaves nonlinearly
+Very institutional-grade feature.
 
-recessionary service collapse impacts vacancy disproportionately
+2. Policy Acceleration Feature
+Second derivative of rates.
 
-This works very well with:
+fedfunds_acceleration = (
+    fedfunds_velocity_2q -
+    fedfunds_velocity_2q.shift(1)
+)
+Captures:
 
-XGBoost
+whether tightening is speeding up
 
-LightGBM
+panic phase of monetary cycle
 
-CatBoost
+Very useful around:
 
-3. Service Employment Relative to Population
-S
-e
-r
-v
-i
-c
-e
-D
-e
-n
-s
-i
-t
-y
-=
-O
-t
-h
-e
-r
-S
-e
-r
-v
-i
-c
-e
-s
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-P
-o
-p
-u
-l
-a
-t
-i
-o
-n
-ServiceDensity= 
-Population
-OtherServicesEmployment
-​
- 
-S
-e
-r
-v
-i
-c
-e
-D
-e
-n
-s
-i
-t
-y
-=
-O
-t
-h
-e
-r
-S
-e
-r
-v
-i
-c
-e
-s
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-P
-o
-p
-u
-l
-a
-t
-i
-o
-n
-ServiceDensity= 
-Population
-OtherServicesEmployment
-​
- 
+recession transitions
 
-This measures:
+banking stress periods
 
-local service intensity
+3. Rate Shock Persistence
+Measures how long restrictive policy persists.
 
-urban commercial depth
+high_rate_flag = (federal_funds_rate > 4).astype(int)
 
-neighborhood consumption infrastructure
+tightening_persistence = (
+    high_rate_flag
+    .rolling(4)
+    .sum()
+)
+Why important:
+CRE pain increases when high rates remain elevated for many quarters.
+
+Refinancing wall pressure accumulates slowly.
+
+4. Refinancing Stress Proxy
+Extremely relevant for CRE.
+
+refi_stress = (
+    federal_funds_rate *
+    commercial_total_liabilities
+)
+Markets with:
+
+large debt loads
+
+high floating-rate exposure
+
+experience major vacancy pressure later.
+
+Especially powerful for:
+
+office
+
+transitional assets
+
+5. Debt-Service Shock
+Approximate financing burden increase.
+
+debt_service_shock = (
+    federal_funds_rate.diff(4) *
+    commercial_total_liabilities
+)
+Captures:
+
+refinancing repricing risk
+
+debt rollover pressure
+
+This is closer to how REIT analysts think.
+
+6. Capital Freeze Indicator
+CRE transactions freeze during aggressive tightening.
+
+capital_freeze = (
+    (federal_funds_rate > 4) &
+    (fedfunds_4q_change > 1.5)
+).astype(int)
+Why useful:
+During freeze periods:
+
+deals collapse
+
+leasing weakens
+
+construction halts
+
+distress rises
+
+Vacancy often rises with lag.
+
+7. Supply Suppression Signal
+High rates kill future supply.
+
+supply_suppression = (
+    federal_funds_rate *
+    building_permits.diff(2)
+)
+Counterintuitive effect:
+
+high rates today
+
+lower construction tomorrow
+
+lower future vacancy later
 
 Very important for:
 
-retail
-
 multifamily
 
-mixed-use assets
+industrial
 
-Markets with high service density often have:
+8. Asymmetric Rate Impact
+Markets react differently to hikes vs cuts.
 
-lower structural vacancy
+Create separate features.
 
-stronger tenant retention
+rate_hikes_only = fedfunds_4q_change.clip(lower=0)
 
-4. Employment Efficiency Feature
-E
-f
-f
-i
-c
-i
-e
-n
-c
-y
-=
-O
-t
-h
-e
-r
-S
-e
-r
-v
-i
-c
-e
-s
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-R
-e
-t
-a
-i
-l
-S
-q
-u
-a
-r
-e
-F
-e
-e
-t
-Efficiency= 
-RetailSquareFeet
-OtherServicesEmployment
-​
- 
-E
-f
-f
-i
-c
-i
-e
-n
-c
-y
-=
-O
-t
-h
-e
-r
-S
-e
-r
-v
-i
-c
-e
-s
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-R
-e
-t
-a
-i
-l
-S
-q
-u
-a
-r
-e
-F
-e
-e
-t
-Efficiency= 
-RetailSquareFeet
-OtherServicesEmployment
-​
- 
-
-This estimates:
-
-how much service employment exists per retail inventory
-
-Why interesting:
-
-oversupplied retail markets show low efficiency
-
-dense productive markets show high efficiency
-
-Institutional retail models love inventory-normalized features.
-
-5. Service Employment Volatility
-Rolling instability matters more than average growth.
-
-V
-o
-l
-a
-t
-i
-l
-i
-t
-y
-t
-=
-S
-t
-d
-D
-e
-v
-(
-Y
-o
-Y
-G
-r
-o
-w
-t
-h
-l
-a
-s
-t
- 
-8
-Q
+rate_cuts_only = (
+    fedfunds_4q_change.clip(upper=0)
 )
-Volatility 
-t
-​
- =StdDev(YoYGrowth 
-last 8Q
-​
- )
-V
-o
-l
-a
-t
-i
-l
-i
-t
-y
-t
-=
-S
-t
-d
-D
-e
-v
-(
-Y
-o
-Y
-G
-r
-o
-w
-t
-h
-l
-a
-s
-t
- 
-8
-Q
-)
-Volatility 
-t
-​
- =StdDev(YoYGrowth 
-last 8Q
-​
- )
+Why?
+CRE responds asymmetrically:
 
+hikes hurt quickly
+
+cuts help slowly
+
+Institutional macro models often separate these.
+
+9. Restrictive Monetary Regime Duration
+restrictive_regime = (
+    federal_funds_rate > inflation_rate
+).astype(int)
+
+restrictive_duration = (
+    restrictive_regime
+    .groupby(market)
+    .cumsum()
+)
+This approximates:
+real restrictive policy duration.
+
+Long restrictive periods:
+
+reduce demand
+
+increase defaults
+
+pressure occupancy
+
+10. Market Sensitivity Beta
+Different markets react differently.
+
+Estimate historical sensitivity.
+
+market_rate_beta =
+    rolling_corr(
+        vacancy,
+        federal_funds_rate,
+        window=12
+    )
+Now your model learns:
+
+Austin office highly rate-sensitive
+
+NYC multifamily less sensitive
+
+Very advanced panel feature.
+
+11. Fed Funds Relative to Market Growth
+rate_vs_growth = (
+    federal_funds_rate -
+    employment_growth
+)
 Why powerful:
+High rates are dangerous only when growth weakens.
 
-unstable service employment → unstable tenant demand
+If:
 
-vacancy persistence rises in volatile economies
+rates = 5%
 
-Especially useful during:
+employment growth = 6%
 
-post-COVID normalization
+economy can absorb tightening.
 
-recession periods
-
-6. Employment Recovery Gap
-Measure distance from prior peak.
-
-R
-e
-c
-o
-v
-e
-r
-y
-G
-a
-p
-=
-C
-u
-r
-r
-e
-n
-t
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-H
-i
-s
-t
-o
-r
-i
-c
-a
-l
-P
-e
-a
-k
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-RecoveryGap= 
-HistoricalPeakEmployment
-CurrentEmployment
-​
- 
-R
-e
-c
-o
-v
-e
-r
-y
-G
-a
-p
-=
-C
-u
-r
-r
-e
-n
-t
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-H
-i
-s
-t
-o
-r
-i
-c
-a
-l
-P
-e
-a
-k
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-RecoveryGap= 
-HistoricalPeakEmployment
-CurrentEmployment
-​
- 
-
-Why strong:
-
-many markets never fully recover after shocks
-
-vacancy behaves differently in partially recovered cities
-
-Example:
-
-NYC office recovery
-
-SF retail recovery post-pandemic
-
-7. Service Employment Pressure Index
-Create labor pressure on local commercial space.
-
-P
-r
-e
-s
-s
-u
-r
-e
-=
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-G
-r
-o
-w
-t
-h
-V
-a
-c
-a
-n
-c
-y
-R
-a
-t
-e
-Pressure= 
-VacancyRate
-EmploymentGrowth
-​
- 
-P
-r
-e
-s
-s
-u
-r
-e
-=
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-G
-r
-o
-w
-t
-h
-V
-a
-c
-a
-n
-c
-y
-R
-a
-t
-e
-Pressure= 
-VacancyRate
-EmploymentGrowth
-​
- 
-
-Interpretation:
-
-strong employment growth + low vacancy
-→ leasing pressure building
-
-This often predicts:
-
-rent growth
-
-future occupancy tightening
-
-8. Local Consumer Activity Composite
-Combine:
-
-C
-o
-m
-p
-o
-s
-i
-t
-e
-=
-0.4
-(
-S
-e
-r
-v
-i
-c
-e
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-G
-r
-o
-w
-t
-h
+12. Real Estate Liquidity Stress
+liquidity_stress = (
+    federal_funds_rate *
+    cap_rate_expansion
 )
-+
-0.3
-(
-P
-e
-r
-s
-o
-n
-a
-l
-I
-n
-c
-o
-m
-e
-G
-r
-o
-w
-t
-h
+Captures:
+
+valuation pressure
+
+liquidity freeze
+
+transaction collapse
+
+Useful for vacancy turning points.
+
+13. Monetary Policy Surprise Proxy
+Markets react to unexpected tightening.
+
+unexpected_tightening = (
+    fedfunds_1q_change -
+    fedfunds_rolling_mean_4q
 )
-+
-0.3
-(
-R
-e
-t
-a
-i
-l
-S
-a
-l
-e
-s
-G
-r
-o
-w
-t
-h
+Measures deviation from normal path.
+
+Shock matters more than level.
+
+14. Construction Financing Stress
+construction_financing_stress = (
+    federal_funds_rate *
+    construction_cost_index
 )
-Composite=0.4(ServiceEmploymentGrowth)+0.3(PersonalIncomeGrowth)+0.3(RetailSalesGrowth)
-C
-o
-m
-p
-o
-s
-i
-t
-e
-=
-0.4
-(
-S
-e
-r
-v
-i
-c
-e
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-G
-r
-o
-w
-t
-h
+Developers get squeezed from:
+
+financing cost
+
+construction inflation
+
+Pipeline collapses afterward.
+
+15. Delayed Vacancy Transmission
+Very CRE-specific.
+
+fedfunds_lagged_pressure = (
+    federal_funds_rate.shift(4) *
+    unemployment_rate.shift(2)
 )
-+
-0.3
-(
-P
-e
-r
-s
-o
-n
-a
-l
-I
-n
-c
-o
-m
-e
-G
-r
-o
-w
-t
-h
+Because vacancy rises after:
+
+tightening
+
+labor weakness
+
+leasing slowdown
+
+The sequence matters.
+
+16. Yield Curve Inversion Stress
+More predictive than rates alone.
+
+yield_curve_stress = (
+    treasury_10y -
+    federal_funds_rate
 )
-+
-0.3
-(
-R
-e
-t
-a
-i
-l
-S
-a
-l
-e
-s
-G
-r
-o
-w
-t
-h
+Negative values:
+
+recession risk
+
+future vacancy increase
+
+Widely used in institutional macro models.
+
+17. Cap Rate Compression Risk
+caprate_risk = (
+    federal_funds_rate /
+    property_yield
 )
-Composite=0.4(ServiceEmploymentGrowth)+0.3(PersonalIncomeGrowth)+0.3(RetailSalesGrowth)
+Higher values imply:
 
-This creates:
+lower investment attractiveness
 
-local demand pulse
+pricing pressure
 
-urban vitality score
+reduced capital flows
 
-Very realistic institutional-style feature.
+18. Monetary Regime Transition Feature
+Transitions matter more than regimes.
 
-9. Structural Dependency Ratio
-D
-e
-p
-e
-n
-d
-e
-n
-c
-y
-R
-a
-t
-i
-o
-=
-O
-t
-h
-e
-r
-S
-e
-r
-v
-i
-c
-e
-s
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-T
-o
-t
-a
-l
-P
-r
-i
-v
-a
-t
-e
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-DependencyRatio= 
-TotalPrivateEmployment
-OtherServicesEmployment
-​
- 
-D
-e
-p
-e
-n
-d
-e
-n
-c
-y
-R
-a
-t
-i
-o
-=
-O
-t
-h
-e
-r
-S
-e
-r
-v
-i
-c
-e
-s
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-T
-o
-t
-a
-l
-P
-r
-i
-v
-a
-t
-e
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-DependencyRatio= 
-TotalPrivateEmployment
-OtherServicesEmployment
-​
- 
-
-This tells you:
-
-whether a market is overly dependent on small service jobs
-
-High dependency markets:
-
-recover fast in expansions
-
-crash harder during downturns
-
-This introduces cyclical sensitivity into vacancy forecasts.
-
-10. Market Divergence Feature
-Compare local market to national trend.
-
-D
-i
-v
-e
-r
-g
-e
-n
-c
-e
-=
-L
-o
-c
-a
-l
-G
-r
-o
-w
-t
-h
-−
-N
-a
-t
-i
-o
-n
-a
-l
-G
-r
-o
-w
-t
-h
-Divergence=LocalGrowth−NationalGrowth
-D
-i
-v
-e
-r
-g
-e
-n
-c
-e
-=
-L
-o
-c
-a
-l
-G
-r
-o
-w
-t
-h
-−
-N
-a
-t
-i
-o
-n
-a
-l
-G
-r
-o
-w
-t
-h
-Divergence=LocalGrowth−NationalGrowth
-
-Very important.
-
-Because investors care about:
-
-relative market strength
-not just absolute growth.
-
-A market outperforming national service employment trends often sees:
-
-stronger leasing
-
-cap rate compression
-
-lower vacancy
-
-11. Service Employment Saturation
-Detect mature markets.
-
-S
-a
-t
-u
-r
-a
-t
-i
-o
-n
-=
-C
-u
-r
-r
-e
-n
-t
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-R
-o
-l
-l
-i
-n
-g
-T
-r
-e
-n
-d
-20
-Q
-Saturation= 
-RollingTrend 
-20Q
-​
- 
-CurrentEmployment
-​
- 
-S
-a
-t
-u
-r
-a
-t
-i
-o
-n
-=
-C
-u
-r
-r
-e
-n
-t
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-R
-o
-l
-l
-i
-n
-g
-T
-r
-e
-n
-d
-20
-Q
-Saturation= 
-RollingTrend 
-20Q
-​
- 
-CurrentEmployment
-​
- 
-
-Interpretation:
-
-far above trend → overheating
-
-below trend → underutilized economy
-
-Can help predict:
-
-vacancy reversals
-
-mean reversion
-
-12. Service-to-Office Interaction
-For office vacancy models:
-
-I
-n
-t
-e
-r
-a
-c
-t
-i
-o
-n
-=
-O
-t
-h
-e
-r
-S
-e
-r
-v
-i
-c
-e
-s
-G
-r
-o
-w
-t
-h
-×
-O
-f
-f
-i
-c
-e
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-G
-r
-o
-w
-t
-h
-Interaction=OtherServicesGrowth×OfficeEmploymentGrowth
-I
-n
-t
-e
-r
-a
-c
-t
-i
-o
-n
-=
-O
-t
-h
-e
-r
-S
-e
-r
-v
-i
-c
-e
-s
-G
-r
-o
-w
-t
-h
-×
-O
-f
-f
-i
-c
-e
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-G
-r
-o
-w
-t
-h
-Interaction=OtherServicesGrowth×OfficeEmploymentGrowth
-
-Reason:
-
-downtown ecosystems require both
-
-office alone is insufficient now post-COVID
-
-This is extremely realistic.
-
-13. Neighborhood Economic Fragility
-F
-r
-a
-g
-i
-l
-i
-t
-y
-=
-V
-o
-l
-a
-t
-i
-l
-i
-t
-y
-T
-r
-e
-n
-d
-G
-r
-o
-w
-t
-h
-Fragility= 
-TrendGrowth
-Volatility
-​
- 
-F
-r
-a
-g
-i
-l
-i
-t
-y
-=
-V
-o
-l
-a
-t
-i
-l
-i
-t
-y
-T
-r
-e
-n
-d
-G
-r
-o
-w
-t
-h
-Fragility= 
-TrendGrowth
-Volatility
-​
- 
-
-High fragility markets:
-
-unstable leasing demand
-
-higher vacancy persistence
-
-weaker tenant quality
-
-14. Employment Elasticity to Vacancy
-Advanced panel feature:
-
-Estimate:
-
-E
-l
-a
-s
-t
-i
-c
-i
-t
-y
-=
-Δ
-V
-a
-c
-a
-n
-c
-y
-Δ
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-Elasticity= 
-ΔEmployment
-ΔVacancy
-​
- 
-E
-l
-a
-s
-t
-i
-c
-i
-t
-y
-=
-Δ
-V
-a
-c
-a
-n
-c
-y
-Δ
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-Elasticity= 
-ΔEmployment
-ΔVacancy
-​
- 
-
-Per market over rolling windows.
-
-This captures:
-
-sensitivity of occupancy to service economy
-
-Some markets are:
-
-highly employment-sensitive
-
-others structurally resilient
-
-Huge alpha feature for institutional forecasting.
-
-15. Hidden Recession Detector
-R
-e
-c
-e
-s
-s
-i
-o
-n
-S
-i
-g
-n
-a
-l
-=
-1
-(
-Y
-o
-Y
-G
-r
-o
-w
-t
-h
-<
-0
-∧
-R
-o
-l
-l
-i
-n
-g
-M
-e
-a
-n
-4
-Q
-<
-R
-o
-l
-l
-i
-n
-g
-M
-e
-a
-n
-12
-Q
+regime_transition = (
+    restrictive_regime -
+    restrictive_regime.shift(1)
 )
-RecessionSignal=1(YoYGrowth<0∧RollingMean 
-4Q
-​
- <RollingMean 
-12Q
-​
- )
-R
-e
-c
-e
-s
-s
-i
-o
-n
-S
-i
-g
-n
-a
-l
-=
-1
-(
-Y
-o
-Y
-G
-r
-o
-w
-t
-h
-<
-0
-∧
-R
-o
-l
-l
-i
-n
-g
-M
-e
-a
-n
-4
-Q
-<
-R
-o
-l
-l
-i
-n
-g
-M
-e
-a
-n
-12
-Q
+Captures:
+
+sudden shift into restrictive policy
+
+turning points in CRE cycle
+
+19. Rate-to-Rent-Growth Spread
+rate_rent_spread = (
+    federal_funds_rate -
+    rent_growth
 )
-RecessionSignal=1(YoYGrowth<0∧RollingMean 
-4Q
-​
- <RollingMean 
-12Q
-​
- )
+If rates exceed rent growth significantly:
 
-This acts like:
+valuations compress
 
-local economic deterioration detector
+investment slows
 
-Very useful for:
+vacancy risk rises
 
-early vacancy stress prediction
+20. Interaction with Property Type
+Very important in global models.
 
-regime-switching models
+fedfunds_x_office
+fedfunds_x_multifamily
+fedfunds_x_industrial
+fedfunds_x_retail
+Because transmission mechanism differs drastically.
 
-What Top CRE Teams Usually Prefer
-The most valuable features are usually:
+This often improves panel models substantially.
 
-Feature Type	Practical Power
-Relative-to-national	Very high
-Recovery gap	Very high
-Regime states	Very high
-Volatility	High
-Interaction features	High
-Density features	High
-Simple lagged growth	Moderate
-My Suggestion for Your Dataset
-For quarterly panel real estate data across markets, I would prioritize:
+Most Institutional-Grade Features From This List
+If I had to choose strongest practical ones for CRE vacancy:
 
-Relative market divergence
+fedfunds_4q_change
 
-Recovery gap
+tightening_persistence
 
-Volatility regime
+yield_curve_stress
 
-Population-normalized density
+refi_stress
 
-Interaction with income growth
+fedfunds_x_employment_growth
 
-Service pressure index
+supply_suppression
 
-Local fragility score
+market_rate_beta
 
-Market regime encoding
+rate_rent_spread
 
-Those are much closer to what sophisticated CRE forecasting systems actually use.
+capital_freeze
+
+fedfunds_lagged_pressure
+
+These are much closer to what sophisticated real estate research teams actually engineer than simple lag features.
 
 
 Sorry I was asking can you look for some more top notch features engineering which top real estate industry use
 
-Yes — if we think like top institutional CRE shops (Blackstone, Brookfield, Green Street, CBRE Econometric Advisors, Moody’s Analytics CRE, Clarion, PGIM, etc.), they usually do cross-market structural features, cycle-state signals, and spatial relative features, not just basic time-series transformations.
+For Federal_Funds_Rate, elite CRE research teams usually do capital markets engineering, not just macro lagging.
+The strongest features often model:
 
-For Other_Services_Employment_Extended, here are much more institutional-grade feature engineering ideas specifically for quarterly market-level vacancy forecasting.
+refinancing walls
 
-1. Service Employment Beta to National Economy
-Instead of raw growth, estimate:
+liquidity conditions
 
-β
-=
-C
-o
-v
-(
-L
-o
-c
-a
-l
-G
-r
-o
-w
-t
-h
-,
-N
-a
-t
-i
-o
-n
-a
-l
-G
-r
-o
-w
-t
-h
+supply destruction
+
+debt repricing
+
+market convexity
+
+monetary transmission asymmetry
+
+cyclical regime positioning
+
+Below are more sophisticated, institutional-style feature ideas that are genuinely used or closely resemble what large REITs, private equity shops, CMBS desks, and macro real estate teams engineer.
+
+1. Distance From Neutral Rate
+Markets care about how restrictive policy is relative to equilibrium.
+
+rate_restrictiveness = (
+    federal_funds_rate - neutral_rate_estimate
 )
-V
-a
-r
-(
-N
-a
-t
-i
-o
-n
-a
-l
-G
-r
-o
-w
-t
-h
-)
-β= 
-Var(NationalGrowth)
-Cov(LocalGrowth,NationalGrowth)
-​
- 
-β
-=
-C
-o
-v
-(
-L
-o
-c
-a
-l
-G
-r
-o
-w
-t
-h
-,
-N
-a
-t
-i
-o
-n
-a
-l
-G
-r
-o
-w
-t
-h
-)
-V
-a
-r
-(
-N
-a
-t
-i
-o
-n
-a
-l
-G
-r
-o
-w
-t
-h
-)
-β= 
-Var(NationalGrowth)
-Cov(LocalGrowth,NationalGrowth)
-​
- 
-
-This measures:
-
-“How cyclically sensitive is this market’s service economy?”
-
-Interpretation:
-
-high beta markets:
-
-boom harder
-
-crash harder
-
-vacancy volatility higher
-
-low beta markets:
-
-defensive markets
-
-stable occupancy
-
-This is heavily used in institutional portfolio allocation.
-
-2. Employment Breadth Diffusion Signal
-Instead of looking only at level growth:
-
-Create:
-
-B
-r
-e
-a
-d
-t
-h
-=
-#
-P
-o
-s
-i
-t
-i
-v
-e
-S
-u
-b
-S
-e
-c
-t
-o
-r
-s
-#
-T
-o
-t
-a
-l
-S
-u
-b
-S
-e
-c
-t
-o
-r
-s
-Breadth= 
-#TotalSubSectors
-#PositiveSubSectors
-​
- 
-B
-r
-e
-a
-d
-t
-h
-=
-#
-P
-o
-s
-i
-t
-i
-v
-e
-S
-u
-b
-S
-e
-c
-t
-o
-r
-s
-#
-T
-o
-t
-a
-l
-S
-u
-b
-S
-e
-c
-t
-o
-r
-s
-Breadth= 
-#TotalSubSectors
-#PositiveSubSectors
-​
- 
-
 Why elite:
 
-broad-based service growth is healthier
+5% may be restrictive in one era
 
-narrow growth is fragile
+but accommodative in another
 
+This is far superior to raw rates.
+
+2. Financing Regime Convexity
+CRE stress becomes nonlinear above thresholds.
+
+rate_convexity = np.maximum(
+    federal_funds_rate - 3.5,
+    0
+) ** 2
+Why powerful:
+Above certain levels:
+
+deal activity collapses
+
+refinancing risk explodes
+
+buyers disappear
+
+Top funds model this nonlinear pain.
+
+3. CRE Equity Risk Premium Compression
+Approximates whether real estate still offers attractive spread.
+
+cre_erp = (
+    property_cap_rate -
+    treasury_10y
+)
+Then interact with Fed policy:
+
+policy_erp_pressure = (
+    federal_funds_rate *
+    cre_erp
+)
+Why:
+When spreads compress:
+
+investment demand weakens
+
+liquidity dries up
+
+vacancy eventually rises
+
+4. Floating Rate Exposure Stress
+One of the biggest modern CRE risks.
+
+floating_rate_stress = (
+    floating_debt_share *
+    federal_funds_rate
+)
+Especially important for:
+
+office
+
+bridge loans
+
+value-add assets
+
+This became huge post-2022.
+
+5. Refinance Cliff Feature
+Institutional-grade distress predictor.
+
+refi_cliff = (
+    debt_maturing_next_2y *
+    federal_funds_rate
+)
+Why:
+High rates matter most when debt matures.
+
+Huge in:
+
+CMBS
+
+office distress
+
+PE real estate
+
+6. Monetary Shock Absorption Capacity
+Measures whether local economy can tolerate tightening.
+
+shock_absorption = (
+    income_growth /
+    federal_funds_rate
+)
+Markets with:
+
+strong wage growth
+
+tech expansion
+
+population inflow
+
+handle rates better.
+
+7. Policy-to-Leasing Transmission
+Extremely advanced feature.
+
+policy_leasing_stress = (
+    federal_funds_rate.shift(2) *
+    negative_net_absorption.shift(1)
+)
+Captures:
+
+monetary tightening already weakening leasing
+
+Very realistic CRE sequencing.
+
+8. Transaction Liquidity Collapse Signal
+Institutional investors monitor transaction freezes heavily.
+
+transaction_freeze = (
+    federal_funds_rate *
+    transaction_volume_decline
+)
+Why important:
+Liquidity collapse often precedes:
+
+valuation decline
+
+distress
+
+vacancy increase
+
+9. Policy Shock × Construction Pipeline
+Sophisticated supply-cycle modeling.
+
+pipeline_duration_risk = (
+    federal_funds_rate *
+    under_construction_sf
+)
+Why:
+Projects under construction during tightening cycles become vulnerable:
+
+leasing risk
+
+refinance risk
+
+delivery oversupply
+
+Huge for multifamily and office.
+
+10. Debt Yield Compression Risk
+Debt yield:
+
+N
+O
+I
+/
+L
+o
+a
+n
+ 
+A
+m
+o
+u
+n
+t
+NOI/Loan Amount
+Feature:
+
+debt_yield_stress = (
+    federal_funds_rate -
+    debt_yield
+)
+Higher values imply:
+
+financing becomes uneconomic
+
+defaults become more likely
+
+Very institutional.
+
+11. Monetary Tightening Saturation
+Markets become insensitive after certain stress level.
+
+tightening_saturation = np.tanh(
+    federal_funds_rate / 5
+)
+Captures diminishing marginal effect.
+
+Very advanced nonlinear feature engineering.
+
+12. Capital Availability Regime
+Not all rate hikes create same damage.
+
+capital_availability = (
+    bank_lending_growth -
+    federal_funds_rate
+)
+If lending collapses while rates rise:
+
+CRE gets severely constrained
+
+Very important after banking crises.
+
+13. Policy Dispersion Shock
+Measures instability in policy path.
+
+rate_volatility = (
+    federal_funds_rate
+    .rolling(8)
+    .std()
+)
+Why useful:
+CRE dislikes uncertainty more than high rates sometimes.
+
+Volatile policy:
+
+delays transactions
+
+pauses development
+
+reduces leasing confidence
+
+14. Capital Stack Stress Feature
+Elite private equity style feature.
+
+capital_stack_stress = (
+    mezzanine_debt_share *
+    federal_funds_rate
+)
+Assets with layered leverage become fragile during hikes.
+
+15. Spread Shock to Acquisition Market
+acquisition_spread_shock = (
+    acquisition_cap_rate -
+    federal_funds_rate
+)
+If spread becomes too tight:
+
+acquisitions stop
+
+pricing freezes
+
+transaction market dies
+
+This strongly impacts future vacancy cycles.
+
+16. Office Duration Risk
+Office leases create delayed stress.
+
+office_duration_risk = (
+    federal_funds_rate *
+    avg_lease_expiry_3y
+)
+Why:
+Office pain appears when leases roll over during restrictive policy.
+
+Very important post-COVID.
+
+17. Real Estate Risk Appetite Factor
+Proxy institutional investor sentiment.
+
+risk_appetite = (
+    REIT_equity_returns -
+    federal_funds_rate
+)
+When negative:
+
+capital exits CRE
+
+valuations compress
+
+leasing weakens later
+
+18. Policy Stress × Migration
+Migration can offset rate pain.
+
+migration_offset = (
+    net_population_inflow /
+    federal_funds_rate
+)
 Example:
 
-only salons growing = weak
+Sunbelt markets stayed resilient despite hikes.
 
-all service subsectors growing = strong ecosystem
+Very useful cross-market feature.
 
-This predicts:
+19. Duration-Weighted Policy Exposure
+Advanced temporal feature.
 
-sustainability of occupancy recovery
-
-3. Local Urban Vitality Factor
-One of the most powerful modern CRE concepts post-COVID.
-
-Build latent factor:
-
-V
-i
-t
-a
-l
-i
-t
-y
-=
-f
-(
-S
-e
-r
-v
-i
-c
-e
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-G
-r
-o
-w
-t
-h
-,
-T
-r
-a
-n
-s
-i
-t
-M
-o
-b
-i
-l
-i
-t
-y
-,
-R
-e
-s
-t
-a
-u
-r
-a
-n
-t
-T
-r
-a
-f
-f
-i
-c
-,
-R
-e
-t
-a
-i
-l
-S
-a
-l
-e
-s
+duration_weighted_rate = (
+    0.4 * fedfunds_lag_1q +
+    0.3 * fedfunds_lag_2q +
+    0.2 * fedfunds_lag_4q +
+    0.1 * fedfunds_lag_6q
 )
-Vitality=f(ServiceEmploymentGrowth,TransitMobility,RestaurantTraffic,RetailSales)
-V
-i
-t
-a
-l
-i
-t
-y
-=
-f
-(
-S
-e
-r
-v
-i
-c
-e
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-G
-r
-o
-w
-t
-h
-,
-T
-r
-a
-n
-s
-i
-t
-M
-o
-b
-i
-l
-i
-t
-y
-,
-R
-e
-s
-t
-a
-u
-r
-a
-n
-t
-T
-r
-a
-f
-f
-i
-c
-,
-R
-e
-t
-a
-i
-l
-S
-a
-l
-e
-s
+This mimics real-world gradual transmission.
+
+Better than single lag.
+
+20. Supply Elasticity Under Tightening
+Captures which markets stop building fastest.
+
+supply_elasticity_stress = (
+    permits_decline /
+    federal_funds_rate
 )
-Vitality=f(ServiceEmploymentGrowth,TransitMobility,RestaurantTraffic,RetailSales)
+Why elite:
+Some markets:
 
-This captures:
+instantly cut construction
 
-downtown activation
+stabilize vacancy later
 
-mixed-use vibrancy
+Others keep overbuilding.
 
-neighborhood attractiveness
+21. Monetary Policy Fragility Score
+Composite institutional feature.
 
-Especially predictive for:
+fragility_score = (
+    0.35 * normalized_refi_cliff +
+    0.25 * normalized_rate_convexity +
+    0.20 * normalized_transaction_freeze +
+    0.20 * normalized_yield_curve_inversion
+)
+This resembles how macro risk teams build internal stress indicators.
+
+22. Vacancy Regime Interaction
+Rate hikes matter differently by vacancy level.
+
+policy_vacancy_interaction = (
+    federal_funds_rate *
+    current_vacancy_rate
+)
+High vacancy + high rates:
+
+leasing deteriorates sharply
+
+concessions rise
+
+distress accelerates
+
+23. Policy Misalignment Feature
+Very sophisticated macro signal.
+
+policy_misalignment = (
+    federal_funds_rate -
+    nominal_gdp_growth
+)
+If rates exceed nominal growth significantly:
+
+recession probability rises
+
+CRE weakens
+
+Macro hedge funds use similar concepts.
+
+24. Real Estate Duration Exposure
+Long-duration assets suffer more from rates.
+
+duration_exposure = (
+    WALE * federal_funds_rate
+)
+Where:
+
+WALE = weighted average lease expiry
+
+Useful for:
+
+office
+
+net lease
+
+logistics
+
+25. Fed Tightening Spillover Feature
+Cross-market contagion.
+
+spillover_stress = (
+    national_office_vacancy *
+    federal_funds_rate
+)
+Why:
+Capital markets are national even if leasing is local.
+
+Important in global panel models.
+
+Features Most Likely Used by Sophisticated CRE Teams
+These are closest to institutional-quality modeling:
+
+Feature	Why Powerful
+refi_cliff	Captures real debt maturity stress
+rate_convexity	Nonlinear tightening damage
+transaction_freeze	Liquidity collapse predictor
+policy_leasing_stress	Real leasing transmission
+pipeline_duration_risk	Construction vulnerability
+cre_erp	Investment attractiveness
+duration_weighted_rate	Better macro transmission
+policy_misalignment	Macro recession signal
+floating_rate_stress	Modern refinancing risk
+fragility_score	Portfolio-level systemic risk
+These are much closer to how large institutional real estate investors think about macro transmission than traditional econometric lag features.
+
+
+Show me some more features engineering with Federal_Funds_Rate which are realistic and don't try to keep the earlier feature
+
+1. Rate Pressure Relative to Local Rent Affordability
+rate_affordability_pressure = (
+    federal_funds_rate /
+    median_market_rent_growth
+)
+Logic:
+If borrowing costs rise faster than rent growth:
+
+acquisitions slow
+
+development margins compress
+
+occupancy weakens later
+
+Very realistic for multifamily.
+
+2. Leasing Friction Index
+leasing_friction = (
+    federal_funds_rate *
+    tenant_improvement_cost_index
+)
+Why useful:
+High rates + expensive TI packages:
+
+reduce office leasing velocity
+
+increase renewal probability
+
+reduce new absorption
+
+Very office-market specific.
+
+3. Monetary Policy Fatigue
+policy_fatigue = (
+    federal_funds_rate
+    .rolling(6)
+    .mean()
+)
+Not measuring shock — measuring prolonged pressure.
+
+Why:
+CRE deteriorates slowly under sustained tightening.
+
+Particularly useful for:
+
+office
 
 retail
 
+4. Rate-Induced Development Cancellation Risk
+development_cancellation_risk = (
+    federal_funds_rate *
+    speculative_construction_share
+)
+Speculative pipelines become vulnerable during tightening cycles.
+
+Very realistic for:
+
+industrial
+
 multifamily
 
-CBD office recovery
-
-4. Service Employment Persistence Score
-CRE investors care more about persistence than one-quarter spikes.
-
-Estimate rolling autocorrelation:
-
-P
-e
-r
-s
-i
-s
-t
-e
-n
-c
-e
-=
-C
-o
-r
-r
-(
-G
-r
-o
-w
-t
-h
-t
-,
-G
-r
-o
-w
-t
-h
-t
-−
-1
+5. Debt Repricing Intensity
+debt_repricing_intensity = (
+    federal_funds_rate *
+    variable_rate_loan_share
 )
-Persistence=Corr(Growth 
-t
-​
- ,Growth 
-t−1
-​
- )
-P
-e
-r
-s
-i
-s
-t
-e
-n
-c
-e
-=
-C
-o
-r
-r
-(
-G
-r
-o
-w
-t
-h
-t
-,
-G
-r
-o
-w
-t
-h
-t
-−
-1
-)
-Persistence=Corr(Growth 
-t
-​
- ,Growth 
-t−1
-​
- )
+Captures:
 
+immediate financing pain
+
+DSCR deterioration
+
+refinance instability
+
+Especially important after 2022.
+
+6. Institutional Exit Probability Proxy
+institutional_exit_risk = (
+    federal_funds_rate /
+    transaction_volume_growth
+)
+Why:
+When rates rise and liquidity falls:
+
+institutions pause acquisitions
+
+bid-ask spreads widen
+
+vacancy eventually increases
+
+7. Real Yield Dominance Signal
+real_yield_dominance = (
+    treasury_10y_real_yield -
+    property_cap_rate
+)
+If real yields exceed cap rates:
+
+CRE loses relative attractiveness
+
+capital reallocates away from real estate
+
+Very institutional concept.
+
+8. Delayed Occupier Stress
+occupier_stress = (
+    federal_funds_rate.shift(3) *
+    corporate_profit_decline.shift(1)
+)
+Captures:
+
+policy tightening
+
+earnings deterioration
+
+future space contraction
+
+Very realistic office/industrial signal.
+
+9. Rate-Driven Supply Reset
+supply_reset = (
+    construction_starts.diff(4) /
+    federal_funds_rate
+)
 Why useful:
+High rates destroy future supply pipeline.
 
-persistent employment trends drive leasing confidence
+Can later reduce vacancy.
 
-unstable trends hurt tenant decision-making
+Useful nonlinear effect.
 
-5. Employment-to-Housing Imbalance
-Very institutional.
-
-I
-m
-b
-a
-l
-a
-n
-c
-e
-=
-S
-e
-r
-v
-i
-c
-e
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-G
-r
-o
-w
-t
-h
-−
-H
-o
-u
-s
-i
-n
-g
-S
-u
-p
-p
-l
-y
-G
-r
-o
-w
-t
-h
-Imbalance=ServiceEmploymentGrowth−HousingSupplyGrowth
-I
-m
-b
-a
-l
-a
-n
-c
-e
-=
-S
-e
-r
-v
-i
-c
-e
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-G
-r
-o
-w
-t
-h
-−
-H
-o
-u
-s
-i
-n
-g
-S
-u
-p
-p
-l
-y
-G
-r
-o
-w
-t
-h
-Imbalance=ServiceEmploymentGrowth−HousingSupplyGrowth
-
-Interpretation:
-
-employment growing faster than housing
-→ tighter apartment markets
-→ lower vacancy
-
-Huge multifamily alpha feature.
-
-6. Real Estate Demand Intensity Signal
-Normalize employment by occupied space instead of total space.
-
-D
-e
-m
-a
-n
-d
-I
-n
-t
-e
-n
-s
-i
-t
-y
-=
-O
-t
-h
-e
-r
-S
-e
-r
-v
-i
-c
-e
-s
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-O
-c
-c
-u
-p
-i
-e
-d
-R
-e
-t
-a
-i
-l
-S
-F
-DemandIntensity= 
-OccupiedRetailSF
-OtherServicesEmployment
-​
- 
-D
-e
-m
-a
-n
-d
-I
-n
-t
-e
-n
-s
-i
-t
-y
-=
-O
-t
-h
-e
-r
-S
-e
-r
-v
-i
-c
-e
-s
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-O
-c
-c
-u
-p
-i
-e
-d
-R
-e
-t
-a
-i
-l
-S
-F
-DemandIntensity= 
-OccupiedRetailSF
-OtherServicesEmployment
-​
- 
-
-This detects:
-
-tenant saturation
-
-leasing pressure
-
-underutilized retail ecosystems
-
-Very sophisticated retail feature.
-
-7. Service Employment Shock Absorption Capacity
-Top firms model resilience.
-
-R
-e
-s
-i
-l
-i
-e
-n
-c
-e
-=
-P
-o
-s
-t
-S
-h
-o
-c
-k
-R
-e
-c
-o
-v
-e
-r
-y
-S
-p
-e
-e
-d
-S
-h
-o
-c
-k
-M
-a
-g
-n
-i
-t
-u
-d
-e
-Resilience= 
-ShockMagnitude
-PostShockRecoverySpeed
-​
- 
-R
-e
-s
-i
-l
-i
-e
-n
-c
-e
-=
-P
-o
-s
-t
-S
-h
-o
-c
-k
-R
-e
-c
-o
-v
-e
-r
-y
-S
-p
-e
-e
-d
-S
-h
-o
-c
-k
-M
-a
-g
-n
-i
-t
-u
-d
-e
-Resilience= 
-ShockMagnitude
-PostShockRecoverySpeed
-​
- 
-
-Markets recovering rapidly after shocks:
-
-sustain occupancy better
-
-attract capital faster
-
-experience lower distress
-
-8. Economic Complexity Proxy
-Not obvious — but extremely powerful.
-
-C
-o
-m
-p
-l
-e
-x
-i
-t
-y
-=
-1
-−
-(
-O
-t
-h
-e
-r
-S
-e
-r
-v
-i
-c
-e
-s
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-T
-o
-t
-a
-l
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
+10. Capital Rotation Pressure
+capital_rotation_pressure = (
+    federal_funds_rate -
+    dividend_yield_reits
 )
-Complexity=1−( 
-TotalEmployment
-OtherServicesEmployment
-​
- )
-C
-o
-m
-p
-l
-e
-x
-i
-t
-y
-=
-1
-−
-(
-O
-t
-h
-e
-r
-S
-e
-r
-v
-i
-c
-e
-s
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-T
-o
-t
-a
-l
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
+If risk-free rates exceed REIT yields:
+
+institutional capital rotates out
+
+pricing weakens
+
+CRE liquidity falls
+
+11. Refinancing Window Compression
+refi_window_compression = (
+    federal_funds_rate *
+    short_term_debt_ratio
 )
-Complexity=1−( 
-TotalEmployment
-OtherServicesEmployment
-​
- )
+Markets with heavy short-duration debt structures become fragile faster.
 
-Idea:
+Very realistic PE-style feature.
 
-overly service-dependent markets may lack diversified economic engines
-
-diversified markets have more resilient vacancy dynamics
-
-This becomes powerful in downturns.
-
-9. Labor Quality Migration Signal
-Use interaction:
-
-M
-i
-g
-r
-a
-t
-i
-o
-n
-S
-i
-g
-n
-a
-l
-=
-S
-e
-r
-v
-i
-c
-e
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-G
-r
-o
-w
-t
-h
-×
-W
-a
-g
-e
-G
-r
-o
-w
-t
-h
-MigrationSignal=ServiceEmploymentGrowth×WageGrowth
-M
-i
-g
-r
-a
-t
-i
-o
-n
-S
-i
-g
-n
-a
-l
-=
-S
-e
-r
-v
-i
-c
-e
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-G
-r
-o
-w
-t
-h
-×
-W
-a
-g
-e
-G
-r
-o
-w
-t
-h
-MigrationSignal=ServiceEmploymentGrowth×WageGrowth
-
-Why elite:
-
-job growth without wage growth may indicate weak labor quality
-
-high wage + service growth indicates affluent migration markets
-
-Very predictive for:
-
-Sunbelt multifamily
-
-mixed-use demand
-
-10. Spatial Competitive Advantage
-Institutional firms compare markets regionally.
-
-R
-e
-l
-a
-t
-i
-v
-e
-S
-t
-r
-e
-n
-g
-t
-h
-=
-L
-o
-c
-a
-l
-G
-r
-o
-w
-t
-h
-−
-R
-e
-g
-i
-o
-n
-a
-l
-A
-v
-e
-r
-a
-g
-e
-G
-r
-o
-w
-t
-h
-RelativeStrength=LocalGrowth−RegionalAverageGrowth
-R
-e
-l
-a
-t
-i
-v
-e
-S
-t
-r
-e
-n
-g
-t
-h
-=
-L
-o
-c
-a
-l
-G
-r
-o
-w
-t
-h
-−
-R
-e
-g
-i
-o
-n
-a
-l
-A
-v
-e
-r
-a
-g
-e
-G
-r
-o
-w
-t
-h
-RelativeStrength=LocalGrowth−RegionalAverageGrowth
-
-Capital flows toward:
-
-relative winners
-not absolute winners.
-
-This matters enormously for:
-
-cap rates
-
-leasing momentum
-
-vacancy compression
-
-11. Service Employment Cycle Position
-Estimate cyclical percentile:
-
-C
-y
-c
-l
-e
-P
-o
-s
-i
-t
-i
-o
-n
-=
-P
-e
-r
-c
-e
-n
-t
-i
-l
-e
-R
-a
-n
-k
-(
-C
-u
-r
-r
-e
-n
-t
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-,
-H
-i
-s
-t
-o
-r
-y
+12. Tenant Expansion Suppression
+tenant_expansion_suppression = (
+    federal_funds_rate *
+    negative_business_confidence
 )
-CyclePosition=PercentileRank(CurrentEmployment,History)
-C
-y
-c
-l
-e
-P
-o
-s
-i
-t
-i
-o
-n
-=
-P
-e
-r
-c
-e
-n
-t
-i
-l
-e
-R
-a
-n
-k
-(
-C
-u
-r
-r
-e
-n
-t
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-,
-H
-i
-s
-t
-o
-r
-y
+High rates suppress:
+
+hiring
+
+expansion
+
+new store openings
+
+Eventually impacts vacancy.
+
+13. Capital Market Sentiment Divergence
+capital_sentiment_divergence = (
+    reit_returns -
+    federal_funds_rate_change
 )
-CyclePosition=PercentileRank(CurrentEmployment,History)
+Why:
+If REITs weaken despite stable property fundamentals:
+future CRE stress may be emerging.
 
-Why important:
-
-late-cycle markets behave differently
-
-vacancy mean reversion increases at extremes
-
-This is heavily used in tactical allocation.
-
-12. Tenant Formation Probability
-Small businesses create tenancy demand.
-
-Estimate:
-
-F
-o
-r
-m
-a
-t
-i
-o
-n
-P
-r
-o
-x
-y
-=
-Δ
-O
-t
-h
-e
-r
-S
-e
-r
-v
-i
-c
-e
-s
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-×
-S
-m
-a
-l
-l
-B
-u
-s
-i
-n
-e
-s
-s
-G
-r
-o
-w
-t
-h
-FormationProxy=ΔOtherServicesEmployment×SmallBusinessGrowth
-F
-o
-r
-m
-a
-t
-i
-o
-n
-P
-r
-o
-x
-y
-=
-Δ
-O
-t
-h
-e
-r
-S
-e
-r
-v
-i
-c
-e
-s
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-×
-S
-m
-a
-l
-l
-B
-u
-s
-i
-n
-e
-s
-s
-G
-r
-o
-w
-t
-h
-FormationProxy=ΔOtherServicesEmployment×SmallBusinessGrowth
-
-This predicts:
-
-strip retail absorption
-
-neighborhood leasing demand
-
-Very realistic.
-
-13. Service Employment Convexity
-Institutional models increasingly use nonlinear dynamics.
-
-C
-o
-n
-v
-e
-x
-i
-t
-y
-=
-G
-r
-o
-w
-t
-h
-t
-−
-2
-G
-r
-o
-w
-t
-h
-t
-−
-1
-+
-G
-r
-o
-w
-t
-h
-t
-−
-2
-Convexity=Growth 
-t
-​
- −2Growth 
-t−1
-​
- +Growth 
-t−2
-​
- 
-C
-o
-n
-v
-e
-x
-i
-t
-y
-=
-G
-r
-o
-w
-t
-h
-t
-−
-2
-G
-r
-o
-w
-t
-h
-t
-−
-1
-+
-G
-r
-o
-w
-t
-h
-t
-−
-2
-Convexity=Growth 
-t
-​
- −2Growth 
-t−1
-​
- +Growth 
-t−2
-​
- 
-
-This captures:
-
-acceleration curvature
-
-inflection points
-
-regime transitions
-
-Excellent for early turning-point detection.
-
-14. Vacancy Sensitivity Regime
-Create market-specific sensitivity score.
-
-S
-e
-n
-s
-i
-t
-i
-v
-i
-t
-y
-=
-C
-o
-r
-r
-(
-S
-e
-r
-v
-i
-c
-e
-G
-r
-o
-w
-t
-h
-,
-V
-a
-c
-a
-n
-c
-y
-C
-h
-a
-n
-g
-e
+14. Rate Sensitivity by Market Density
+density_rate_sensitivity = (
+    federal_funds_rate *
+    urban_density_score
 )
-Sensitivity=Corr(ServiceGrowth,VacancyChange)
-S
-e
-n
-s
-i
-t
-i
-v
-i
-t
-y
-=
-C
-o
-r
-r
-(
-S
-e
-r
-v
-i
-c
-e
-G
-r
-o
-w
-t
-h
-,
-V
-a
-c
-a
-n
-c
-y
-C
-h
-a
-n
-g
-e
+Dense gateway markets often react differently than spread-out Sunbelt markets.
+
+Useful cross-market panel feature.
+
+15. Monetary Tightening Occupancy Decay
+occupancy_decay_signal = (
+    federal_funds_rate.shift(2) *
+    lease_renewal_decline
 )
-Sensitivity=Corr(ServiceGrowth,VacancyChange)
+Captures deterioration in tenant retention under tightening conditions.
 
-Some markets:
-
-highly reactive to local services
-Others:
-
-driven by finance/tech/manufacturing
-
-This becomes a meta-feature across markets.
-
-15. Economic Recovery Synchronization
-Very advanced institutional feature.
-
-S
-y
-n
-c
-h
-r
-o
-n
-i
-z
-a
-t
-i
-o
-n
-=
-C
-o
-r
-r
-(
-L
-o
-c
-a
-l
-S
-e
-r
-v
-i
-c
-e
-G
-r
-o
-w
-t
-h
-,
-N
-a
-t
-i
-o
-n
-a
-l
-C
-R
-E
-C
-y
-c
-l
-e
+16. Rate-Adjusted Absorption Efficiency
+absorption_efficiency = (
+    net_absorption /
+    federal_funds_rate
 )
-Synchronization=Corr(LocalServiceGrowth,NationalCRECycle)
-S
-y
-n
-c
-h
-r
-o
-n
-i
-z
-a
-t
-i
-o
-n
-=
-C
-o
-r
-r
-(
-L
-o
-c
-a
-l
-S
-e
-r
-v
-i
-c
-e
-G
-r
-o
-w
-t
-h
-,
-N
-a
-t
-i
-o
-n
-a
-l
-C
-R
-E
-C
-y
-c
-l
-e
+Markets maintaining absorption despite high rates are structurally resilient.
+
+Excellent ranking feature.
+
+17. Equity Multiple Compression Proxy
+equity_multiple_pressure = (
+    federal_funds_rate /
+    expected_cashflow_growth
 )
-Synchronization=Corr(LocalServiceGrowth,NationalCRECycle)
+Higher values imply:
 
-Markets highly synchronized with national CRE cycles:
+weaker investment returns
 
-reprice faster
+declining acquisition appetite
 
-vacancy deteriorates faster during downturns
+Very private-equity style thinking.
 
-Low synchronization:
-
-diversification benefits
-
-The Features That Actually Create Alpha
-In real institutional forecasting, the biggest gains usually come from:
-
-Feature Class	Importance
-Relative market strength	Extremely high
-Regime/state features	Extremely high
-Recovery/resilience metrics	Extremely high
-Interaction terms	Very high
-Cross-market normalization	Very high
-Spatial features	Very high
-Simple lag growth	Low
-What I Would Personally Build First
-For your quarterly panel dataset:
-
-Tier 1
-RelativeStrength
-
-RecoveryGap
-
-Persistence
-
-CyclePosition
-
-VolatilityRegime
-
-Tier 2
-MigrationSignal
-
-VitalityFactor
-
-Resilience
-
-Imbalance
-
-DemandIntensity
-
-Tier 3
-Convexity
-
-BetaToNational
-
-Synchronization
-
-Fragility
-
-BreadthDiffusion
-
-These are much closer to what sophisticated CRE macro forecasting systems actually use internally.
-
-
-Show me some more features engineering with Other_Services_Employment_Extended which are realistic and don't try to keep the earlier feature.
-
-Absolutely — let’s move into a different class of feature engineering entirely and avoid repeating earlier concepts.
-
-For Other_Services_Employment_Extended, sophisticated CRE teams often think about:
-
-labor market structure
-
-hidden tenant demand
-
-elasticity of local spending
-
-service-sector saturation
-
-macro transmission mechanisms
-
-occupancy friction
-
-cyclical asymmetry
-
-Below are fresh, realistic, institutional-style feature ideas that are materially different from the previous ones.
-
-1. Service Employment Per Household
-S
-e
-r
-v
-i
-c
-e
-P
-e
-r
-H
-o
-u
-s
-e
-h
-o
-l
-d
-=
-O
-t
-h
-e
-r
-S
-e
-r
-v
-i
-c
-e
-s
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-H
-o
-u
-s
-e
-h
-o
-l
-d
-s
-ServicePerHousehold= 
-Households
-OtherServicesEmployment
-​
- 
-S
-e
-r
-v
-i
-c
-e
-P
-e
-r
-H
-o
-u
-s
-e
-h
-o
-l
-d
-=
-O
-t
-h
-e
-r
-S
-e
-r
-v
-i
-c
-e
-s
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-H
-o
-u
-s
-e
-h
-o
-l
-d
-s
-ServicePerHousehold= 
-Households
-OtherServicesEmployment
-​
- 
-
-Why important:
-
-measures local service penetration
-
-stronger proxy for neighborhood commercial intensity than raw population
-
-Higher values often indicate:
-
-denser consumption ecosystems
-
-stronger strip retail utilization
-
-lower neighborhood retail vacancy
-
-2. Employment Utilization Gap
-Measure deviation from expected employment.
-
-First estimate trend:
-
-E
-x
-p
-e
-c
-t
-e
-d
-t
-=
-R
-o
-l
-l
-i
-n
-g
-T
-r
-e
-n
-d
-(
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
+18. Rate-Induced Vacancy Momentum
+vacancy_momentum_stress = (
+    federal_funds_rate *
+    vacancy_growth_2q
 )
-Expected 
-t
-​
- =RollingTrend(Employment)
-Then:
+High rates during already-rising vacancy regimes create accelerating stress.
 
-G
-a
-p
-t
-=
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-t
-−
-E
-x
-p
-e
-c
-t
-e
-d
-t
-E
-x
-p
-e
-c
-t
-e
-d
-t
-Gap 
-t
-​
- = 
-Expected 
-t
-​
- 
-Employment 
-t
-​
- −Expected 
-t
-​
- 
-​
- 
-G
-a
-p
-t
-=
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-t
-−
-E
-x
-p
-e
-c
-t
-e
-d
-t
-E
-x
-p
-e
-c
-t
-e
-d
-t
-Gap 
-t
-​
- = 
-Expected 
-t
-​
- 
-Employment 
-t
-​
- −Expected 
-t
-​
- 
-​
- 
+Very predictive in office downturns.
 
-Why useful:
-
-detects hidden overheating or underperformance
-
-vacancy often responds to deviations from equilibrium, not levels
-
-3. Service Employment Compression Indicator
-Measure whether growth is slowing despite still-positive levels.
-
-C
-o
-m
-p
-r
-e
-s
-s
-i
-o
-n
-=
-G
-r
-o
-w
-t
-h
-t
-G
-r
-o
-w
-t
-h
-t
-−
-4
-Compression= 
-Growth 
-t−4
-​
- 
-Growth 
-t
-​
- 
-​
- 
-C
-o
-m
-p
-r
-e
-s
-s
-i
-o
-n
-=
-G
-r
-o
-w
-t
-h
-t
-G
-r
-o
-w
-t
-h
-t
-−
-4
-Compression= 
-Growth 
-t−4
-​
- 
-Growth 
-t
-​
- 
-​
- 
-
-Interpretation:
-
-below 1 → slowing expansion
-
-early warning before vacancy deterioration
-
-Very realistic for cyclical turning points.
-
-4. Local Consumption Support Ratio
-C
-o
-n
-s
-u
-m
-p
-t
-i
-o
-n
-S
-u
-p
-p
-o
-r
-t
-=
-O
-t
-h
-e
-r
-S
-e
-r
-v
-i
-c
-e
-s
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-R
-e
-t
-a
-i
-l
-V
-a
-c
-a
-n
-c
-y
-ConsumptionSupport= 
-RetailVacancy
-OtherServicesEmployment
-​
- 
-C
-o
-n
-s
-u
-m
-p
-t
-i
-o
-n
-S
-u
-p
-p
-o
-r
-t
-=
-O
-t
-h
-e
-r
-S
-e
-r
-v
-i
-c
-e
-s
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-R
-e
-t
-a
-i
-l
-V
-a
-c
-a
-n
-c
-y
-ConsumptionSupport= 
-RetailVacancy
-OtherServicesEmployment
-​
- 
-
-Why strong:
-
-combines labor demand with retail stress
-
-higher ratio indicates healthier tenant ecosystem
-
-Especially useful in:
-
-neighborhood retail
-
-mixed-use corridors
-
-5. Employment-to-New-Supply Ratio
-S
-u
-p
-p
-l
-y
-A
-b
-s
-o
-r
-p
-t
-i
-o
-n
-C
-a
-p
-a
-c
-i
-t
-y
-=
-O
-t
-h
-e
-r
-S
-e
-r
-v
-i
-c
-e
-s
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-G
-r
-o
-w
-t
-h
-N
-e
-w
-S
-u
-p
-p
-l
-y
-G
-r
-o
-w
-t
-h
-SupplyAbsorptionCapacity= 
-NewSupplyGrowth
-OtherServicesEmploymentGrowth
-​
- 
-S
-u
-p
-p
-l
-y
-A
-b
-s
-o
-r
-p
-t
-i
-o
-n
-C
-a
-p
-a
-c
-i
-t
-y
-=
-O
-t
-h
-e
-r
-S
-e
-r
-v
-i
-c
-e
-s
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-G
-r
-o
-w
-t
-h
-N
-e
-w
-S
-u
-p
-p
-l
-y
-G
-r
-o
-w
-t
-h
-SupplyAbsorptionCapacity= 
-NewSupplyGrowth
-OtherServicesEmploymentGrowth
-​
- 
-
-Institutional relevance:
-
-determines whether local demand can absorb incoming inventory
-
-critical for forecasting vacancy spikes
-
-Very important in Sunbelt markets.
-
-6. Service Employment Duration Above Trend
-Instead of level, measure persistence.
-
-D
-u
-r
-a
-t
-i
-o
-n
-=
-C
-o
-n
-s
-e
-c
-u
-t
-i
-v
-e
-Q
-u
-a
-r
-t
-e
-r
-s
-(
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
->
-T
-r
-e
-n
-d
+19. Cross-Market Capital Competition
+capital_competition = (
+    federal_funds_rate /
+    market_cap_rate_rank
 )
-Duration=ConsecutiveQuarters(Employment>Trend)
-Why powerful:
+Markets with compressed cap rates become less competitive when rates rise.
 
-prolonged above-trend growth often precedes rent acceleration
+Capital reallocates elsewhere.
 
-sustained economic strength matters more than temporary spikes
-
-CRE markets react to duration.
-
-7. Economic Friction Indicator
-F
-r
-i
-c
-t
-i
-o
-n
-=
-∣
-Q
-o
-Q
-G
-r
-o
-w
-t
-h
-−
-Y
-o
-Y
-G
-r
-o
-w
-t
-h
-∣
-∣
-Y
-o
-Y
-G
-r
-o
-w
-t
-h
-∣
-Friction= 
-∣YoYGrowth∣
-∣QoQGrowth−YoYGrowth∣
-​
- 
-F
-r
-i
-c
-t
-i
-o
-n
-=
-∣
-Q
-o
-Q
-G
-r
-o
-w
-t
-h
-−
-Y
-o
-Y
-G
-r
-o
-w
-t
-h
-∣
-∣
-Y
-o
-Y
-G
-r
-o
-w
-t
-h
-∣
-Friction= 
-∣YoYGrowth∣
-∣QoQGrowth−YoYGrowth∣
-​
- 
-
-Interpretation:
-
-high friction = unstable growth structure
-
-indicates transitional economic conditions
-
-Vacancy tends to rise when labor trends become inconsistent.
-
-8. Employment Concentration Drift
-Measure whether services are becoming disproportionately dominant.
-
-D
-r
-i
-f
-t
-=
-S
-h
-a
-r
-e
-t
-−
-S
-h
-a
-r
-e
-t
-−
-8
-Drift=Share 
-t
-​
- −Share 
-t−8
-​
- 
-Where:
-
-S
-h
-a
-r
-e
-=
-O
-t
-h
-e
-r
-S
-e
-r
-v
-i
-c
-e
-s
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-T
-o
-t
-a
-l
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-Share= 
-TotalEmployment
-OtherServicesEmployment
-​
- 
-S
-h
-a
-r
-e
-=
-O
-t
-h
-e
-r
-S
-e
-r
-v
-i
-c
-e
-s
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-T
-o
-t
-a
-l
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-Share= 
-TotalEmployment
-OtherServicesEmployment
-​
- 
-
-Why sophisticated:
-
-captures structural transformation of local economies
-
-excessive drift may imply lower-quality economic expansion
-
-9. Service Employment Mean-Reversion Pressure
-P
-r
-e
-s
-s
-u
-r
-e
-=
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-t
-−
-R
-o
-l
-l
-i
-n
-g
-M
-e
-a
-n
-20
-Q
-R
-o
-l
-l
-i
-n
-g
-S
-t
-d
-20
-Q
-Pressure= 
-RollingStd 
-20Q
-​
- 
-Employment 
-t
-​
- −RollingMean 
-20Q
-​
- 
-​
- 
-P
-r
-e
-s
-s
-u
-r
-e
-=
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-t
-−
-R
-o
-l
-l
-i
-n
-g
-M
-e
-a
-n
-20
-Q
-R
-o
-l
-l
-i
-n
-g
-S
-t
-d
-20
-Q
-Pressure= 
-RollingStd 
-20Q
-​
- 
-Employment 
-t
-​
- −RollingMean 
-20Q
-​
- 
-​
- 
-
-This is essentially a macro z-score.
-
-Why useful:
-
-extreme positive deviations often precede cooling
-
-extreme negative deviations often precede rebound
-
-Very common in institutional cycle models.
-
-10. Tenant Ecosystem Stability
-S
-t
-a
-b
-i
-l
-i
-t
-y
-=
-1
-−
-Q
-u
-a
-r
-t
-e
-r
-l
-y
-L
-a
-y
-o
-f
-f
-P
-r
-o
-x
-y
-O
-t
-h
-e
-r
-S
-e
-r
-v
-i
-c
-e
-s
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-Stability=1− 
-OtherServicesEmployment
-QuarterlyLayoffProxy
-​
- 
-S
-t
-a
-b
-i
-l
-i
-t
-y
-=
-1
-−
-Q
-u
-a
-r
-t
-e
-r
-l
-y
-L
-a
-y
-o
-f
-f
-P
-r
-o
-x
-y
-O
-t
-h
-e
-r
-S
-e
-r
-v
-i
-c
-e
-s
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-Stability=1− 
-OtherServicesEmployment
-QuarterlyLayoffProxy
-​
- 
-
-Even approximate layoff proxies help.
-
-Why useful:
-
-stable service labor base supports occupancy durability
-
-unstable labor → tenant churn risk
-
-11. Economic Spillover Multiplier
-Measure spillover into real estate demand.
-
-S
-p
-i
-l
-l
-o
-v
-e
-r
-=
-Δ
-O
-c
-c
-u
-p
-i
-e
-d
-S
-F
-Δ
-O
-t
-h
-e
-r
-S
-e
-r
-v
-i
-c
-e
-s
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-Spillover= 
-ΔOtherServicesEmployment
-ΔOccupiedSF
-​
- 
-S
-p
-i
-l
-l
-o
-v
-e
-r
-=
-Δ
-O
-c
-c
-u
-p
-i
-e
-d
-S
-F
-Δ
-O
-t
-h
-e
-r
-S
-e
-r
-v
-i
-c
-e
-s
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-Spillover= 
-ΔOtherServicesEmployment
-ΔOccupiedSF
-​
- 
-
-Interpretation:
-
-how efficiently employment growth converts into occupancy demand
-
-Some markets generate:
-
-high employment
-but weak real estate absorption.
-
-This feature captures that disconnect.
-
-12. Service Employment Exhaustion Signal
-E
-x
-h
-a
-u
-s
-t
-i
-o
-n
-=
-R
-o
-l
-l
-i
-n
-g
-M
-a
-x
-12
-Q
-(
-G
-r
-o
-w
-t
-h
+20. Financing Elasticity of Demand
+financing_elasticity = (
+    leasing_volume_pct_change /
+    federal_funds_rate_change
 )
-−
-C
-u
-r
-r
-e
-n
-t
-G
-r
-o
-w
-t
-h
-Exhaustion=RollingMax 
-12Q
-​
- (Growth)−CurrentGrowth
-E
-x
-h
-a
-u
-s
-t
-i
-o
-n
-=
-R
-o
-l
-l
-i
-n
-g
-M
-a
-x
-12
-Q
-(
-G
-r
-o
-w
-t
-h
+Measures how sensitive occupier demand is to financing conditions.
+
+Very advanced dynamic feature.
+
+21. Monetary Tightening Migration Offset
+migration_offset_strength = (
+    net_migration_growth -
+    federal_funds_rate
 )
-−
-C
-u
-r
-r
-e
-n
-t
-G
-r
-o
-w
-t
-h
-Exhaustion=RollingMax 
-12Q
-​
- (Growth)−CurrentGrowth
+Some markets offset tightening via:
 
-Why elite:
+population inflows
 
-identifies late-cycle deceleration
+corporate relocations
 
-useful before vacancy inflection
+demographic tailwinds
 
-13. Employment-to-Transit Dependency
-T
-r
-a
-n
-s
-i
-t
-D
-e
-p
-e
-n
-d
-e
-n
-c
-y
-=
-O
-t
-h
-e
-r
-S
-e
-r
-v
-i
-c
-e
-s
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-T
-r
-a
-n
-s
-i
-t
-R
-i
-d
-e
-r
-s
-h
-i
-p
-TransitDependency= 
-TransitRidership
-OtherServicesEmployment
-​
- 
-T
-r
-a
-n
-s
-i
-t
-D
-e
-p
-e
-n
-d
-e
-n
-c
-y
-=
-O
-t
-h
-e
-r
-S
-e
-r
-v
-i
-c
-e
-s
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-T
-r
-a
-n
-s
-i
-t
-R
-i
-d
-e
-r
-s
-h
-i
-p
-TransitDependency= 
-TransitRidership
-OtherServicesEmployment
-​
- 
+Very realistic Sunbelt feature.
 
-Powerful in:
+22. CRE Confidence Breakdown Signal
+confidence_breakdown = (
+    federal_funds_rate *
+    architecture_billings_decline
+)
+Architecture billings often lead CRE demand cycles.
 
-urban office
+This is surprisingly powerful.
 
-mixed-use districts
+23. Rate-to-Wage Pressure
+rate_wage_pressure = (
+    federal_funds_rate -
+    wage_growth
+)
+If financing cost grows faster than wages:
+tenant affordability weakens.
 
-CBD retail
+Good for:
 
-Captures whether local service ecosystem depends heavily on commuter flows.
+apartments
 
-14. Local Service Labor Tightness
-T
-i
-g
-h
-t
-n
-e
-s
-s
-=
-J
-o
-b
-O
-p
-e
-n
-i
-n
-g
-s
-O
-t
-h
-e
-r
-S
-e
-r
-v
-i
-c
-e
-s
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-Tightness= 
-OtherServicesEmployment
-JobOpenings
-​
- 
-T
-i
-g
-h
-t
-n
-e
-s
-s
-=
-J
-o
-b
-O
-p
-e
-n
-i
-n
-g
-s
-O
-t
-h
-e
-r
-S
-e
-r
-v
-i
-c
-e
-s
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-Tightness= 
-OtherServicesEmployment
-JobOpenings
-​
- 
+retail
 
-Why realistic:
+24. Policy Tightening Exhaustion
+tightening_exhaustion = (
+    federal_funds_rate_change /
+    unemployment_rate_change
+)
+Measures whether policy is creating labor stress yet.
 
-labor shortages can constrain business expansion
+Macro-cycle timing feature.
 
-affects future leasing demand
+25. Monetary Policy Fragility Interaction
+fragility_interaction = (
+    federal_funds_rate *
+    delinquency_rate
+)
+High rates matter much more in already fragile markets.
 
-Especially relevant post-2021.
+Very realistic distress-cycle feature.
 
-15. Demand Conversion Efficiency
-C
-o
-n
-v
-e
-r
-s
-i
-o
-n
-E
-f
-f
-i
-c
-i
-e
-n
-c
-y
-=
-N
-e
-t
-A
-b
-s
-o
-r
-p
-t
-i
-o
-n
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-G
-r
-o
-w
-t
-h
-ConversionEfficiency= 
-EmploymentGrowth
-NetAbsorption
-​
- 
-C
-o
-n
-v
-e
-r
-s
-i
-o
-n
-E
-f
-f
-i
-c
-i
-e
-n
-c
-y
-=
-N
-e
-t
-A
-b
-s
-o
-r
-p
-t
-i
-o
-n
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-G
-r
-o
-w
-t
-h
-ConversionEfficiency= 
-EmploymentGrowth
-NetAbsorption
-​
- 
+Particularly Sophisticated Features From This Set
+These are especially close to institutional CRE modeling:
 
-This measures:
-
-how effectively local economic growth converts into occupancy
-
-Institutional investors care deeply about this.
-
-Some markets:
-
-generate jobs but little occupancy
-Others:
-
-efficiently translate growth into leasing demand
-
-16. Employment Regime Transition Velocity
-V
-e
-l
-o
-c
-i
-t
-y
-=
-R
-e
-g
-i
-m
-e
-S
-c
-o
-r
-e
-t
-−
-R
-e
-g
-i
-m
-e
-S
-c
-o
-r
-e
-t
-−
-1
-Velocity=RegimeScore 
-t
-​
- −RegimeScore 
-t−1
-​
- 
-Why advanced:
-
-markets shifting rapidly between regimes have unstable vacancy dynamics
-
-transition speed matters more than regime alone
-
-17. Service Labor Saturation Risk
-S
-a
-t
-u
-r
-a
-t
-i
-o
-n
-R
-i
-s
-k
-=
-O
-t
-h
-e
-r
-S
-e
-r
-v
-i
-c
-e
-s
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-G
-r
-o
-w
-t
-h
-P
-o
-p
-u
-l
-a
-t
-i
-o
-n
-G
-r
-o
-w
-t
-h
-SaturationRisk= 
-PopulationGrowth
-OtherServicesEmploymentGrowth
-​
- 
-S
-a
-t
-u
-r
-a
-t
-i
-o
-n
-R
-i
-s
-k
-=
-O
-t
-h
-e
-r
-S
-e
-r
-v
-i
-c
-e
-s
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-G
-r
-o
-w
-t
-h
-P
-o
-p
-u
-l
-a
-t
-i
-o
-n
-G
-r
-o
-w
-t
-h
-SaturationRisk= 
-PopulationGrowth
-OtherServicesEmploymentGrowth
-​
- 
-
-Interpretation:
-
-employment growing much faster than population
-→ possible oversaturation
-→ lower long-term sustainability
-
-18. Occupancy Buffer Capacity
-B
-u
-f
-f
-e
-r
-=
-O
-c
-c
-u
-p
-i
-e
-d
-I
-n
-v
-e
-n
-t
-o
-r
-y
-G
-r
-o
-w
-t
-h
-−
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-G
-r
-o
-w
-t
-h
-Buffer=OccupiedInventoryGrowth−EmploymentGrowth
-B
-u
-f
-f
-e
-r
-=
-O
-c
-c
-u
-p
-i
-e
-d
-I
-n
-v
-e
-n
-t
-o
-r
-y
-G
-r
-o
-w
-t
-h
-−
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-G
-r
-o
-w
-t
-h
-Buffer=OccupiedInventoryGrowth−EmploymentGrowth
-
-Useful because:
-
-markets with shrinking occupancy buffer are vulnerable to vacancy spikes
-
-19. Service Economy Inefficiency Signal
-I
-n
-e
-f
-f
-i
-c
-i
-e
-n
-c
-y
-=
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-G
-r
-o
-w
-t
-h
-I
-n
-c
-o
-m
-e
-G
-r
-o
-w
-t
-h
-Inefficiency= 
-IncomeGrowth
-EmploymentGrowth
-​
- 
-I
-n
-e
-f
-f
-i
-c
-i
-e
-n
-c
-y
-=
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-G
-r
-o
-w
-t
-h
-I
-n
-c
-o
-m
-e
-G
-r
-o
-w
-t
-h
-Inefficiency= 
-IncomeGrowth
-EmploymentGrowth
-​
- 
-
-Interpretation:
-
-job growth without income growth may imply weak-quality expansion
-
-Can predict:
-
-fragile tenant demand
-
-weaker rent growth
-
-20. Local Economic Stickiness
-S
-t
-i
-c
-k
-i
-n
-e
-s
-s
-=
-1
-−
-T
-u
-r
-n
-o
-v
-e
-r
-R
-a
-t
-e
-Stickiness=1−TurnoverRate
-or approximate using employment stability.
-
-Why powerful:
-
-sticky labor markets create sticky occupancy
-
-transient labor markets increase vacancy volatility
-
-Very important for multifamily forecasting.
+Feature	Why Sophisticated
+development_cancellation_risk	Models supply destruction
+debt_repricing_intensity	Captures floating-rate pain
+occupier_stress	Correct macro transmission sequence
+confidence_breakdown	Forward CRE demand indicator
+equity_multiple_pressure	PE underwriting logic
+institutional_exit_risk	Capital market liquidity stress
+absorption_efficiency	Structural resilience measure
+refi_window_compression	Debt maturity vulnerability
+vacancy_momentum_stress	Nonlinear downturn acceleration
+capital_rotation_pressure	Asset allocation dynamics
+These kinds of features are much closer to how sophisticated CRE investment and research teams think than traditional econometric transformations.
 
 
