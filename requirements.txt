@@ -3,3931 +3,2421 @@ This is a copy of a shared ChatGPT conversation
 
 Report conversation
 We are working on Moody's dataset with multiple features and responses for each market.It is quarterly data that means, that every quarter, new record come for each market .It is real estate dataset.
-I am currently working with feature name Other_Services_Employment_Extended and response vacancy. Help me understand how it worked 
+I am currently working with feature name Secured_Overnight_Financing_Rate and response vacancy. Help me understand how it worked 
 
-Other_Services_Employment_Extended is actually a very interesting macro feature for real estate vacancy modeling because it captures the health of the local service economy outside the major sectors like manufacturing, finance, tech, retail, or government.
+Secured_Overnight_Financing_Rate (SOFR) is one of the most important macro-financial variables for commercial real estate modeling, especially for vacancy forecasting.
 
-In Moody’s and similar macro datasets, this variable usually includes employment in categories such as:
+You can think of it as the base short-term cost of money in the US financial system.
 
-repair & maintenance services
+Secured Overnight Financing Rate
 
-salons/personal care
+In real estate, SOFR affects:
 
-religious organizations
+borrowing cost
 
-laundry services
+refinancing risk
 
-parking services
+cap rates
 
-civic organizations
+transaction activity
 
-private household services
+construction financing
 
-small local service businesses
+tenant expansion behavior
 
-miscellaneous neighborhood services
+ultimately vacancy
 
-It represents the “local economic activity density” of a market.
+Intuition First
+When SOFR rises:
 
-Why this matters for vacancy
-The relationship depends heavily on property type.
+loans become expensive
 
-1. Apartment Vacancy
-This feature often has a negative relationship with apartment vacancy.
+floating-rate debt payments jump
 
-Meaning:
+developers slow construction
 
-Higher Other_Services_Employment_Extended
-→ more local workers
-→ stronger neighborhood economy
-→ more renters
-→ lower apartment vacancy
+companies reduce expansion
 
-Why?
+leasing activity weakens
 
-These jobs are usually:
+distressed properties increase
 
-local
+This usually increases vacancy after some lag.
 
-labor intensive
+When SOFR falls:
 
-less remote-work friendly
+financing becomes cheaper
 
-geographically sticky
+investment activity rises
 
-A city with strong miscellaneous service employment means:
+tenants expand
 
-restaurants operate
+absorption improves
 
-local commerce survives
+Vacancy often declines later.
 
-neighborhood demand remains healthy
+Why SOFR Matters More After 2021
+Historically many CRE loans used LIBOR.
 
-That supports apartment occupancy.
+After LIBOR transition, SOFR became the dominant benchmark for:
 
-Example
-Suppose:
+bridge loans
 
-Market	Other Services Employment	Apartment Vacancy
-Austin	High	Low
-Detroit	Weak	High
-Austin may have:
+floating-rate CRE debt
 
-active urban consumption
+construction loans
 
-lifestyle economy
+CMBS floating structures
 
-local services growth
+syndicated real estate financing
 
-This creates housing demand.
+So your dataset likely captures:
 
-2. Office Vacancy
-This feature may have:
+monetary tightening
 
-weak relationship
-OR
+liquidity stress
 
-lagged indirect relationship
+refinancing pressure
 
-Because office demand is more driven by:
+through SOFR.
 
-finance
+How SOFR Impacts Different Property Types
+Apartments
+Higher SOFR:
 
-tech
+multifamily acquisitions slow
 
-professional services
+refinancing stress increases
 
-corporate hiring
+new construction slows
 
-However, if “other services employment” collapses badly, it may indicate:
+renters may stay longer (positive)
 
-weak downtown ecosystem
+but economic slowdown hurts household formation
 
-declining foot traffic
+Net effect:
 
-reduced urban vitality
+short-term stable
 
-That can indirectly increase office vacancy later.
+medium-term vacancy can rise
 
-3. Retail Vacancy
-This is where the feature becomes VERY useful.
+Office
+Office is highly SOFR-sensitive because:
 
-Retail properties depend heavily on:
+office values depend heavily on cap rates
 
-neighborhood activity
+refinancing risk is huge
 
-consumer movement
+tenants cut expansion during high-rate periods
 
-local employment ecosystem
+Typical pattern:
 
-If other service employment rises:
+SOFR ↑ → office leasing ↓ → vacancy ↑
 
-salons rent retail space
+This became extremely visible after 2022.
 
-repair shops occupy strip centers
+Industrial
+Industrial is less rate-sensitive operationally, but:
 
-local businesses survive longer
+e-commerce expansion slows
 
-So:
+warehouse construction financing weakens
 
-retail occupancy improves
+Usually moderate delayed effect.
 
-vacancy declines
+Retail
+Retail reacts indirectly:
 
-This feature can be a hidden proxy for:
+consumers spend less
 
-small business formation
+retailers close weak stores
 
-neighborhood commercial health
+expansion pauses
 
-4. Industrial Vacancy
-Usually weaker relationship.
+Vacancy rises mainly during prolonged high-rate regimes.
 
-Industrial depends more on:
+Core Economic Transmission Mechanism
+The chain usually looks like:
 
-logistics
+SOFR ↑
+→ Treasury yields ↑
+→ CRE loan coupons ↑
+→ Debt service burden ↑
+→ Cap rates ↑
+→ Property values ↓
+→ Transaction volume ↓
+→ Construction slowdown
+→ Tenant expansion slows
+→ Vacancy ↑
 
-manufacturing
+Important Timing Insight
+SOFR rarely impacts vacancy immediately.
 
-imports/exports
+Real estate reacts slowly.
 
-warehousing demand
+Typical lag:
 
-But in some local economies:
-
-service growth indirectly boosts local distribution demand.
-
-Important Statistical Behavior
-This variable often behaves like a:
-
-“Late-cycle local economy indicator”
-Why?
-
-Other services employment is:
-
-cyclical
-
-discretionary
-
-sensitive to local spending
-
-During recession:
-
-consumers cut discretionary services
-
-small businesses close
-
-employment falls quickly
-
-So the variable can act as an early warning signal for:
-
-weakening occupancy
-
-rising future vacancy
-
-Very Important Real Estate Interpretation
-Institutional CRE firms often use variables like this to measure:
-
-neighborhood economic resilience
-
-urban vibrancy
-
-consumer activity depth
-
-local labor stickiness
-
-This is especially valuable in:
-
-multifamily
-
-neighborhood retail
-
-mixed-use assets
-
-How It Usually Appears in Models
-A. Growth Rate Features
-Instead of raw level:
-
-Y
-o
-Y
- 
-G
-r
-o
-w
-t
-h
-=
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-t
-−
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-t
-−
-4
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-t
-−
-4
-YoY Growth= 
-Employment 
-t−4
-​
- 
-Employment 
-t
-​
- −Employment 
-t−4
-​
- 
-​
- 
-This captures economic momentum better.
-
-Y
-o
-Y
- 
-G
-r
-o
-w
-t
-h
-=
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-t
-−
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-t
-−
-4
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-t
-−
-4
-YoY Growth= 
-Employment 
-t−4
-​
- 
-Employment 
-t
-​
- −Employment 
-t−4
-​
- 
-​
- 
-
-B. Employment Shock Features
-Real estate reacts strongly to sudden declines.
-
-Example:
-
-S
-h
-o
-c
-k
-t
-=
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-t
-−
-R
-o
-l
-l
-i
-n
-g
-M
-e
-a
-n
-8
-Q
-Shock 
-t
-​
- =Employment 
-t
-​
- −RollingMean 
-8Q
-​
- 
-Negative shock:
-
-signals local stress
-
-vacancy may rise 2–4 quarters later
-
-C. Share of Total Employment
-Very powerful feature:
-
-O
-t
-h
-e
-r
-S
-e
-r
-v
-i
-c
-e
-s
-S
-h
-a
-r
-e
-=
-O
-t
-h
-e
-r
-S
-e
-r
-v
-i
-c
-e
-s
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-T
-o
-t
-a
-l
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-OtherServicesShare= 
-TotalEmployment
-OtherServicesEmployment
-​
- 
-O
-t
-h
-e
-r
-S
-e
-r
-v
-i
-c
-e
-s
-S
-h
-a
-r
-e
-=
-O
-t
-h
-e
-r
-S
-e
-r
-v
-i
-c
-e
-s
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-T
-o
-t
-a
-l
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-OtherServicesShare= 
-TotalEmployment
-OtherServicesEmployment
-​
- 
-
-This measures:
-
-economic composition
-
-service economy dependence
-
-Markets overly dependent on low-margin local services may become fragile during downturns.
-
-Why Extended Version Matters
-The word “Extended” usually means:
-
-broader NAICS coverage
-
-revised historical continuity
-
-smoother benchmark adjustments
-
-Moody’s often creates extended series to:
-
-backfill history
-
-reduce discontinuities
-
-improve forecasting stability
-
-This is important for quarterly forecasting models because:
-
-standard employment series may have revisions/breaks
-
-extended versions improve time-series consistency
-
-What Top CRE Firms Usually Do With It
-Top institutional real estate firms rarely use this feature alone.
-
-Instead they combine it with:
-
-Combine With	Why
-Retail sales	consumer strength
-Personal income	spending power
-Population growth	demand base
-Small business formation	leasing demand
-Transit mobility	urban activity
-Wage growth	affordability
-Most Important Practical Insight
-This variable is usually NOT a direct driver of vacancy.
-
-It is more of a:
-
-“local economic ecosystem health indicator”
-
-That’s why it becomes powerful in:
-
-lagged features
-
-interaction features
-
-regime models
-
-downturn prediction
-
-Realistic Relationship by Property Type
-Property Type	Expected Impact on Vacancy
-Apartment	Strong negative
-Retail	Strong negative
-Office	Mild negative
-Industrial	Weak/indirect
-Very Strong Advanced Feature Ideas
-1. Service Employment Stress
-S
-t
-r
-e
-s
-s
-=
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-t
-R
-o
-l
-l
-i
-n
-g
-M
-a
-x
-12
-Q
-Stress= 
-RollingMax 
-12Q
-​
- 
-Employment 
-t
-​
- 
-​
- 
-Low value indicates local economy deterioration.
-
-S
-t
-r
-e
-s
-s
-=
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-t
-R
-o
-l
-l
-i
-n
-g
-M
-a
-x
-12
-Q
-Stress= 
-RollingMax 
-12Q
-​
- 
-Employment 
-t
-​
- 
-​
- 
-
-2. Local Service Recovery Speed
-After recession:
-
-R
-e
-c
-o
-v
-e
-r
-y
-=
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-t
-−
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-r
-e
-c
-e
-s
-s
-i
-o
-n
- 
-l
-o
-w
-Recovery=Employment 
-t
-​
- −Employment 
-recession low
-​
- 
-Markets recovering faster usually see:
-
-faster leasing recovery
-
-lower vacancy persistence
-
-3. Interaction With Consumer Income
-Very realistic institutional feature:
-
-I
-n
-t
-e
-r
-a
-c
-t
-i
-o
-n
-=
-O
-t
-h
-e
-r
-S
-e
-r
-v
-i
-c
-e
-s
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-G
-r
-o
-w
-t
-h
-×
-I
-n
-c
-o
-m
-e
-G
-r
-o
-w
-t
-h
-Interaction=OtherServicesEmploymentGrowth×IncomeGrowth
-I
-n
-t
-e
-r
-a
-c
-t
-i
-o
-n
-=
-O
-t
-h
-e
-r
-S
-e
-r
-v
-i
-c
-e
-s
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-G
-r
-o
-w
-t
-h
-×
-I
-n
-c
-o
-m
-e
-G
-r
-o
-w
-t
-h
-Interaction=OtherServicesEmploymentGrowth×IncomeGrowth
+2 to 8 quarters
 
 Because:
 
-employment without income growth may be low-quality growth
+leases are sticky
 
-income + services growth together indicate strong local demand
+projects take time
 
-Final Intuition
-Think of Other_Services_Employment_Extended as:
+refinancing cycles are delayed
 
-“How alive and economically active the local neighborhood ecosystem is.”
+This is extremely important for feature engineering.
 
-If this ecosystem strengthens:
+What You Should Expect in Your Data
+During Rapid SOFR Increases
+Example:
+2022–2023 tightening cycle.
 
-people stay employed locally
+You may observe:
 
-neighborhoods remain active
+office vacancy surge
 
-small businesses survive
+transaction freeze
 
-retail traffic improves
+lower absorption
 
-apartment demand stabilizes
+refinancing stress
 
-And eventually:
+But:
+vacancy may rise with delay.
 
-vacancy tends to decline.
+So contemporaneous correlation may look weak.
 
+Lagged correlation is often stronger.
 
-For Other_Services_Employment_Extended, the best feature engineering is usually not simple lags or growth rates.
-Top CRE and macro forecasting teams try to transform it into signals about:
+What Sophisticated CRE Models Usually Do
+Top institutional real estate models rarely use raw SOFR directly.
 
-local economic resilience
+Instead they engineer:
 
-neighborhood commercial intensity
-
-labor fragility
-
-recovery persistence
-
-service-sector dependency
-
-urban vibrancy cycles
-
-Below are more advanced and realistic feature ideas specifically designed for quarterly real estate vacancy modeling.
-
-1. Service Employment Momentum Acceleration
-Not just growth — growth acceleration.
-
-A
-c
-c
-e
-l
-e
-r
-a
-t
-i
-o
-n
-t
-=
-Y
-o
-Y
-G
-r
-o
-w
-t
-h
-t
-−
-Y
-o
-Y
-G
-r
-o
-w
-t
-h
-t
-−
-1
-Acceleration 
-t
-​
- =YoYGrowth 
-t
-​
- −YoYGrowth 
-t−1
-​
- 
-A
-c
-c
-e
-l
-e
-r
-a
-t
-i
-o
-n
-t
-=
-Y
-o
-Y
-G
-r
-o
-w
-t
-h
-t
-−
-Y
-o
-Y
-G
-r
-o
-w
-t
-h
-t
-−
-1
-Acceleration 
-t
-​
- =YoYGrowth 
-t
-​
- −YoYGrowth 
-t−1
-​
- 
-
-Why useful:
-
-detects turning points early
-
-vacancy often reacts to second derivative changes
-
-leasing markets care about momentum shifts
-
-Interpretation:
-
-positive acceleration → improving local ecosystem
-
-negative acceleration → hidden slowdown before vacancy rises
-
-2. Local Service Economy Regime Score
-Create market states.
-
+1. SOFR Regime
 Example:
 
-Regime	Condition
-Expansion	growth > 4%
-Stable	1–4%
-Weakening	-2% to 1%
-Stress	< -2%
-Then encode regime.
+low-rate regime
 
-Why powerful:
+neutral regime
 
-vacancy behaves nonlinearly
+restrictive regime
 
-recessionary service collapse impacts vacancy disproportionately
+Because markets behave differently under each regime.
 
-This works very well with:
-
-XGBoost
-
-LightGBM
-
-CatBoost
-
-3. Service Employment Relative to Population
-S
-e
-r
-v
-i
-c
-e
-D
-e
-n
-s
-i
-t
-y
-=
-O
-t
-h
-e
-r
-S
-e
-r
-v
-i
-c
-e
-s
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-P
-o
-p
-u
-l
-a
-t
-i
-o
-n
-ServiceDensity= 
-Population
-OtherServicesEmployment
-​
- 
-S
-e
-r
-v
-i
-c
-e
-D
-e
-n
-s
-i
-t
-y
-=
-O
-t
-h
-e
-r
-S
-e
-r
-v
-i
-c
-e
-s
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-P
-o
-p
-u
-l
-a
-t
-i
-o
-n
-ServiceDensity= 
-Population
-OtherServicesEmployment
-​
- 
-
-This measures:
-
-local service intensity
-
-urban commercial depth
-
-neighborhood consumption infrastructure
-
-Very important for:
-
-retail
-
-multifamily
-
-mixed-use assets
-
-Markets with high service density often have:
-
-lower structural vacancy
-
-stronger tenant retention
-
-4. Employment Efficiency Feature
-E
-f
-f
-i
-c
-i
-e
-n
-c
-y
-=
-O
-t
-h
-e
-r
-S
-e
-r
-v
-i
-c
-e
-s
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-R
-e
-t
-a
-i
-l
-S
-q
-u
-a
-r
-e
-F
-e
-e
-t
-Efficiency= 
-RetailSquareFeet
-OtherServicesEmployment
-​
- 
-E
-f
-f
-i
-c
-i
-e
-n
-c
-y
-=
-O
-t
-h
-e
-r
-S
-e
-r
-v
-i
-c
-e
-s
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-R
-e
-t
-a
-i
-l
-S
-q
-u
-a
-r
-e
-F
-e
-e
-t
-Efficiency= 
-RetailSquareFeet
-OtherServicesEmployment
-​
- 
-
-This estimates:
-
-how much service employment exists per retail inventory
-
-Why interesting:
-
-oversupplied retail markets show low efficiency
-
-dense productive markets show high efficiency
-
-Institutional retail models love inventory-normalized features.
-
-5. Service Employment Volatility
-Rolling instability matters more than average growth.
-
-V
-o
-l
-a
-t
-i
-l
-i
-t
-y
-t
-=
-S
-t
-d
-D
-e
-v
-(
-Y
-o
-Y
-G
-r
-o
-w
-t
-h
-l
-a
-s
-t
- 
-8
-Q
-)
-Volatility 
-t
-​
- =StdDev(YoYGrowth 
-last 8Q
-​
- )
-V
-o
-l
-a
-t
-i
-l
-i
-t
-y
-t
-=
-S
-t
-d
-D
-e
-v
-(
-Y
-o
-Y
-G
-r
-o
-w
-t
-h
-l
-a
-s
-t
- 
-8
-Q
-)
-Volatility 
-t
-​
- =StdDev(YoYGrowth 
-last 8Q
-​
- )
-
-Why powerful:
-
-unstable service employment → unstable tenant demand
-
-vacancy persistence rises in volatile economies
-
-Especially useful during:
-
-post-COVID normalization
-
-recession periods
-
-6. Employment Recovery Gap
-Measure distance from prior peak.
-
-R
-e
-c
-o
-v
-e
-r
-y
-G
-a
-p
-=
-C
-u
-r
-r
-e
-n
-t
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-H
-i
-s
-t
-o
-r
-i
-c
-a
-l
-P
-e
-a
-k
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-RecoveryGap= 
-HistoricalPeakEmployment
-CurrentEmployment
-​
- 
-R
-e
-c
-o
-v
-e
-r
-y
-G
-a
-p
-=
-C
-u
-r
-r
-e
-n
-t
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-H
-i
-s
-t
-o
-r
-i
-c
-a
-l
-P
-e
-a
-k
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-RecoveryGap= 
-HistoricalPeakEmployment
-CurrentEmployment
-​
- 
-
-Why strong:
-
-many markets never fully recover after shocks
-
-vacancy behaves differently in partially recovered cities
-
-Example:
-
-NYC office recovery
-
-SF retail recovery post-pandemic
-
-7. Service Employment Pressure Index
-Create labor pressure on local commercial space.
-
-P
-r
-e
-s
-s
-u
-r
-e
-=
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-G
-r
-o
-w
-t
-h
-V
-a
-c
-a
-n
-c
-y
-R
-a
-t
-e
-Pressure= 
-VacancyRate
-EmploymentGrowth
-​
- 
-P
-r
-e
-s
-s
-u
-r
-e
-=
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-G
-r
-o
-w
-t
-h
-V
-a
-c
-a
-n
-c
-y
-R
-a
-t
-e
-Pressure= 
-VacancyRate
-EmploymentGrowth
-​
- 
-
-Interpretation:
-
-strong employment growth + low vacancy
-→ leasing pressure building
-
-This often predicts:
-
-rent growth
-
-future occupancy tightening
-
-8. Local Consumer Activity Composite
-Combine:
-
-C
-o
-m
-p
-o
-s
-i
-t
-e
-=
-0.4
-(
-S
-e
-r
-v
-i
-c
-e
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-G
-r
-o
-w
-t
-h
-)
-+
-0.3
-(
-P
-e
-r
-s
-o
-n
-a
-l
-I
-n
-c
-o
-m
-e
-G
-r
-o
-w
-t
-h
-)
-+
-0.3
-(
-R
-e
-t
-a
-i
-l
-S
-a
-l
-e
-s
-G
-r
-o
-w
-t
-h
-)
-Composite=0.4(ServiceEmploymentGrowth)+0.3(PersonalIncomeGrowth)+0.3(RetailSalesGrowth)
-C
-o
-m
-p
-o
-s
-i
-t
-e
-=
-0.4
-(
-S
-e
-r
-v
-i
-c
-e
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-G
-r
-o
-w
-t
-h
-)
-+
-0.3
-(
-P
-e
-r
-s
-o
-n
-a
-l
-I
-n
-c
-o
-m
-e
-G
-r
-o
-w
-t
-h
-)
-+
-0.3
-(
-R
-e
-t
-a
-i
-l
-S
-a
-l
-e
-s
-G
-r
-o
-w
-t
-h
-)
-Composite=0.4(ServiceEmploymentGrowth)+0.3(PersonalIncomeGrowth)+0.3(RetailSalesGrowth)
-
-This creates:
-
-local demand pulse
-
-urban vitality score
-
-Very realistic institutional-style feature.
-
-9. Structural Dependency Ratio
-D
-e
-p
-e
-n
-d
-e
-n
-c
-y
-R
-a
-t
-i
-o
-=
-O
-t
-h
-e
-r
-S
-e
-r
-v
-i
-c
-e
-s
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-T
-o
-t
-a
-l
-P
-r
-i
-v
-a
-t
-e
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-DependencyRatio= 
-TotalPrivateEmployment
-OtherServicesEmployment
-​
- 
-D
-e
-p
-e
-n
-d
-e
-n
-c
-y
-R
-a
-t
-i
-o
-=
-O
-t
-h
-e
-r
-S
-e
-r
-v
-i
-c
-e
-s
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-T
-o
-t
-a
-l
-P
-r
-i
-v
-a
-t
-e
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-DependencyRatio= 
-TotalPrivateEmployment
-OtherServicesEmployment
-​
- 
-
-This tells you:
-
-whether a market is overly dependent on small service jobs
-
-High dependency markets:
-
-recover fast in expansions
-
-crash harder during downturns
-
-This introduces cyclical sensitivity into vacancy forecasts.
-
-10. Market Divergence Feature
-Compare local market to national trend.
-
-D
-i
-v
-e
-r
-g
-e
-n
-c
-e
-=
-L
-o
-c
-a
-l
-G
-r
-o
-w
-t
-h
-−
-N
-a
-t
-i
-o
-n
-a
-l
-G
-r
-o
-w
-t
-h
-Divergence=LocalGrowth−NationalGrowth
-D
-i
-v
-e
-r
-g
-e
-n
-c
-e
-=
-L
-o
-c
-a
-l
-G
-r
-o
-w
-t
-h
-−
-N
-a
-t
-i
-o
-n
-a
-l
-G
-r
-o
-w
-t
-h
-Divergence=LocalGrowth−NationalGrowth
-
-Very important.
-
-Because investors care about:
-
-relative market strength
-not just absolute growth.
-
-A market outperforming national service employment trends often sees:
-
-stronger leasing
-
-cap rate compression
-
-lower vacancy
-
-11. Service Employment Saturation
-Detect mature markets.
-
-S
-a
-t
-u
-r
-a
-t
-i
-o
-n
-=
-C
-u
-r
-r
-e
-n
-t
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-R
-o
-l
-l
-i
-n
-g
-T
-r
-e
-n
-d
-20
-Q
-Saturation= 
-RollingTrend 
-20Q
-​
- 
-CurrentEmployment
-​
- 
-S
-a
-t
-u
-r
-a
-t
-i
-o
-n
-=
-C
-u
-r
-r
-e
-n
-t
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-R
-o
-l
-l
-i
-n
-g
-T
-r
-e
-n
-d
-20
-Q
-Saturation= 
-RollingTrend 
-20Q
-​
- 
-CurrentEmployment
-​
- 
-
-Interpretation:
-
-far above trend → overheating
-
-below trend → underutilized economy
-
-Can help predict:
-
-vacancy reversals
-
-mean reversion
-
-12. Service-to-Office Interaction
-For office vacancy models:
-
-I
-n
-t
-e
-r
-a
-c
-t
-i
-o
-n
-=
-O
-t
-h
-e
-r
-S
-e
-r
-v
-i
-c
-e
-s
-G
-r
-o
-w
-t
-h
-×
-O
-f
-f
-i
-c
-e
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-G
-r
-o
-w
-t
-h
-Interaction=OtherServicesGrowth×OfficeEmploymentGrowth
-I
-n
-t
-e
-r
-a
-c
-t
-i
-o
-n
-=
-O
-t
-h
-e
-r
-S
-e
-r
-v
-i
-c
-e
-s
-G
-r
-o
-w
-t
-h
-×
-O
-f
-f
-i
-c
-e
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-G
-r
-o
-w
-t
-h
-Interaction=OtherServicesGrowth×OfficeEmploymentGrowth
+2. Rate Shock
+Quarter-over-quarter change.
 
 Reason:
+markets react more to surprises than absolute levels.
 
-downtown ecosystems require both
+Example:
 
-office alone is insufficient now post-COVID
+SOFR rising from 0.25% → 4% rapidly
+creates panic.
 
-This is extremely realistic.
+3. Debt Stress Indicator
+SOFR combined with:
 
-13. Neighborhood Economic Fragility
-F
-r
-a
-g
-i
-l
-i
-t
-y
+cap rate
+
+NOI growth
+
+debt coverage
+
+This captures refinancing pressure.
+
+4. Lagged SOFR
+Very important.
+
+Examples:
+
+SOFR lag 2Q
+
+SOFR lag 4Q
+
+distributed lag averages
+
+Because vacancy reacts slowly.
+
+5. Yield Curve Relationships
+SOFR relative to:
+
+10Y Treasury
+
+mortgage spread
+
+credit spread
+
+Institutional investors care about spreads more than standalone rates.
+
+How to Interpret Model Coefficient
+Suppose your model says:
+
+SOFR coefficient = +0.8
+
+Interpretation:
+
+Holding everything else constant,
+a rise in SOFR is associated with higher vacancy.
+
+But interpretation depends on:
+
+property type
+
+market
+
+lag structure
+
+regime
+
+Why Relationship Can Sometimes Look Opposite
+Very important in CRE.
+
+Sometimes:
+SOFR ↑ while vacancy ↓
+
+Why?
+
+Because:
+
+economy may still be strong
+
+employment booming
+
+tenants expanding despite higher rates
+
+This happened early in tightening cycles.
+
+So SOFR often acts as:
+
+a delayed stress variable
+rather than immediate recession variable.
+
+Real Estate Industry Insight
+Institutional CRE investors often monitor:
+
+“higher for longer” rate environment
+
+refinancing wall
+
+floating-rate exposure
+
+debt maturity schedules
+
+All of these are directly connected to SOFR.
+
+That is why SOFR became one of the most important variables in post-2021 CRE analytics.
+
+Best Practical Advice For Your Vacancy Model
+For quarterly market-level vacancy forecasting, the most realistic setup is usually:
+
+lagged SOFR
+
+SOFR change
+
+rolling average SOFR
+
+interaction with property type
+
+interaction with leverage-sensitive markets
+
+because raw contemporaneous SOFR alone often underperforms.
+
+Example of a Very Strong Realistic Feature
+Instead of:
+
+SOFR
+
+Use:
+
+DebtStress
 =
-V
-o
-l
-a
+SOFR
 t
-i
-l
-i
-t
-y
-T
-r
-e
-n
-d
-G
-r
-o
-w
-t
-h
-Fragility= 
-TrendGrowth
-Volatility
+−
+2
+×
+CapRateSpreadCompression
+DebtStress=SOFR 
+t−2
 ​
- 
-F
-r
-a
-g
-i
-l
-i
-t
-y
+ ×CapRateSpreadCompression
+or
+
+RateShock
 =
-V
-o
-l
-a
+SOFR
 t
-i
-l
-i
+−
+SOFR
 t
-y
-T
-r
-e
-n
-d
-G
-r
-o
-w
-t
-h
-Fragility= 
-TrendGrowth
-Volatility
-​
- 
-
-High fragility markets:
-
-unstable leasing demand
-
-higher vacancy persistence
-
-weaker tenant quality
-
-14. Employment Elasticity to Vacancy
-Advanced panel feature:
-
-Estimate:
-
-E
-l
-a
-s
-t
-i
-c
-i
-t
-y
-=
-Δ
-V
-a
-c
-a
-n
-c
-y
-Δ
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-Elasticity= 
-ΔEmployment
-ΔVacancy
-​
- 
-E
-l
-a
-s
-t
-i
-c
-i
-t
-y
-=
-Δ
-V
-a
-c
-a
-n
-c
-y
-Δ
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-Elasticity= 
-ΔEmployment
-ΔVacancy
-​
- 
-
-Per market over rolling windows.
-
-This captures:
-
-sensitivity of occupancy to service economy
-
-Some markets are:
-
-highly employment-sensitive
-
-others structurally resilient
-
-Huge alpha feature for institutional forecasting.
-
-15. Hidden Recession Detector
-R
-e
-c
-e
-s
-s
-i
-o
-n
-S
-i
-g
-n
-a
-l
-=
-1
-(
-Y
-o
-Y
-G
-r
-o
-w
-t
-h
-<
-0
-∧
-R
-o
-l
-l
-i
-n
-g
-M
-e
-a
-n
+−
 4
-Q
-<
-R
-o
-l
-l
-i
-n
-g
-M
-e
-a
-n
-12
-Q
-)
-RecessionSignal=1(YoYGrowth<0∧RollingMean 
-4Q
-​
- <RollingMean 
-12Q
-​
- )
-R
-e
-c
-e
-s
-s
-i
-o
-n
-S
-i
-g
-n
-a
-l
-=
-1
-(
-Y
-o
-Y
-G
-r
-o
-w
+RateShock=SOFR 
 t
-h
-<
-0
-∧
+​
+ −SOFR 
+t−4
+​
+ 
+These often capture CRE stress much better than raw rates.
+
+y
+=
+S
+O
+F
 R
-o
-l
-l
-i
-n
-g
-M
-e
-a
-n
+t
+−
+S
+O
+F
+R
+t
+−
 4
-Q
-<
+y=SOFR 
+t
+​
+ −SOFR 
+t−4
+​
+ 
+
+What You Should Test Empirically
+For each property type and market:
+
+contemporaneous SOFR
+
+lagged SOFR (1Q–8Q)
+
+rolling mean SOFR
+
+SOFR volatility
+
+SOFR regime buckets
+
+SOFR × unemployment interaction
+
+SOFR × construction pipeline interaction
+
+SOFR × office exposure interaction
+
+You will likely discover:
+
+office reacts strongest
+
+gateway markets react faster
+
+Sunbelt multifamily reacts differently
+
+industrial reacts with longer lag
+
+That kind of heterogeneity is exactly what institutional CRE forecasting systems try to capture.
+
+
+For Secured_Overnight_Financing_Rate (SOFR) in a quarterly CRE vacancy forecasting setup, the best feature engineering is usually not rate level itself, but how financing stress propagates through capital markets, refinancing cycles, and leasing behavior.
+
+Below are more advanced and realistic features that institutional CRE and macro-financial teams often build.
+
+1. Monetary Tightening Shock
+Captures sudden financing stress.
+
+Δ
+S
+O
+F
 R
+Y
 o
-l
-l
-i
-n
-g
-M
-e
-a
-n
-12
-Q
-)
-RecessionSignal=1(YoYGrowth<0∧RollingMean 
-4Q
+Y
+=
+S
+O
+F
+R
+t
+−
+S
+O
+F
+R
+t
+−
+4
+ΔSOFR 
+YoY
 ​
- <RollingMean 
-12Q
+ =SOFR 
+t
 ​
- )
+ −SOFR 
+t−4
+​
+ 
+Why it works:
 
-This acts like:
+CRE reacts violently to rapid rate increases
 
-local economic deterioration detector
+refinancing models break during sharp hikes
+
+transaction activity freezes
 
 Very useful for:
 
-early vacancy stress prediction
+office
 
-regime-switching models
+leveraged multifamily
 
-What Top CRE Teams Usually Prefer
-The most valuable features are usually:
+transitional assets
 
-Feature Type	Practical Power
-Relative-to-national	Very high
-Recovery gap	Very high
-Regime states	Very high
-Volatility	High
-Interaction features	High
-Density features	High
-Simple lagged growth	Moderate
+y
+=
+S
+O
+F
+R
+t
+−
+S
+O
+F
+R
+t
+−
+4
+y=SOFR 
+t
+​
+ −SOFR 
+t−4
+​
+ 
+
+2. Higher-for-Longer Persistence
+Measures prolonged restrictive environment.
+
+H
+F
+L
+S
+t
+=
+∑
+i
+=
+0
+3
+1
+(
+S
+O
+F
+R
+t
+−
+i
+>
+4
+%
+)
+HFLS 
+t
+​
+ = 
+i=0
+∑
+3
+​
+ 1(SOFR 
+t−i
+​
+ >4%)
+Interpretation:
+
+counts consecutive high-rate quarters
+
+prolonged stress matters more than temporary spikes
+
+Why powerful:
+CRE breaks from sustained high rates, not one-quarter jumps.
+
+3. Refinancing Wall Pressure
+Captures refinancing pain.
+
+R
+e
+f
+i
+S
+t
+r
+e
+s
+s
+t
+=
+S
+O
+F
+R
+t
+×
+D
+e
+b
+t
+M
+a
+t
+u
+r
+i
+t
+y
+S
+h
+a
+r
+e
+t
+RefiStress 
+t
+​
+ =SOFR 
+t
+​
+ ×DebtMaturityShare 
+t
+​
+ 
+If market-level debt maturity unavailable:
+approximate using:
+
+construction-heavy markets
+
+high transaction volume markets
+
+high cap-rate compression markets
+
+Why important:
+floating-rate loans explode during refinancing.
+
+4. Cap Rate Expansion Pressure
+Institutional-grade feature.
+
+C
+a
+p
+P
+r
+e
+s
+s
+u
+r
+e
+t
+=
+S
+O
+F
+R
+t
+−
+C
+a
+p
+R
+a
+t
+e
+t
+CapPressure 
+t
+​
+ =SOFR 
+t
+​
+ −CapRate 
+t
+​
+ 
+Why it matters:
+When financing cost approaches/exceeds property yield:
+
+acquisitions stop
+
+values correct
+
+vacancies eventually rise
+
+Negative spread regimes are extremely dangerous.
+
+5. Financing Volatility Regime
+Not level — volatility.
+
+S
+O
+F
+R
+V
+o
+l
+t
+=
+S
+t
+d
+D
+e
+v
+(
+S
+O
+F
+R
+t
+−
+3
+:
+t
+)
+SOFRVol 
+t
+​
+ =StdDev(SOFR 
+t−3:t
+​
+ )
+Why:
+markets hate uncertainty more than rates themselves.
+
+High volatility causes:
+
+delayed transactions
+
+lender caution
+
+underwriting freezes
+
+Often stronger than raw SOFR.
+
+6. Real Financing Cost
+Adjust for inflation.
+
+R
+e
+a
+l
+S
+O
+F
+R
+t
+=
+S
+O
+F
+R
+t
+−
+I
+n
+f
+l
+a
+t
+i
+o
+n
+t
+RealSOFR 
+t
+​
+ =SOFR 
+t
+​
+ −Inflation 
+t
+​
+ 
+Why:
+5% SOFR during 7% inflation ≠ 5% during 2% inflation.
+
+Real financing burden matters more.
+
+7. Credit Availability Proxy
+Measures liquidity tightening.
+
+L
+i
+q
+u
+i
+d
+i
+t
+y
+S
+t
+r
+e
+s
+s
+t
+=
+S
+O
+F
+R
+t
+×
+C
+r
+e
+d
+i
+t
+S
+p
+r
+e
+a
+d
+t
+LiquidityStress 
+t
+​
+ =SOFR 
+t
+​
+ ×CreditSpread 
+t
+​
+ 
+If no spreads available:
+use:
+
+BBB spread
+
+CMBS spread
+
+mortgage spread
+
+Extremely predictive during stressed cycles.
+
+8. Leasing Freeze Indicator
+Captures behavioral slowdown.
+
+L
+e
+a
+s
+i
+n
+g
+F
+r
+e
+e
+z
+e
+t
+=
+1
+(
+S
+O
+F
+R
+t
+>
+P
+90
+h
+i
+s
+t
+o
+r
+i
+c
+a
+l
+)
+LeasingFreeze 
+t
+​
+ =1(SOFR 
+t
+​
+ >P90 
+historical
+​
+ )
+Why:
+Above certain thresholds:
+
+tenants delay expansion
+
+landlords pause development
+
+lenders tighten underwriting
+
+Threshold effects are huge in CRE.
+
+9. Construction Pipeline Suppression
+Very realistic for apartments/industrial.
+
+P
+i
+p
+e
+l
+i
+n
+e
+S
+u
+p
+p
+r
+e
+s
+s
+i
+o
+n
+t
+=
+S
+O
+F
+R
+t
+×
+C
+o
+n
+s
+t
+r
+u
+c
+t
+i
+o
+n
+S
+t
+a
+r
+t
+s
+t
+−
+2
+PipelineSuppression 
+t
+​
+ =SOFR 
+t
+​
+ ×ConstructionStarts 
+t−2
+​
+ 
+Logic:
+projects initiated during cheap debt become unviable later.
+
+Can predict future oversupply + vacancy stress.
+
+10. Market Sensitivity Beta
+Create market-specific SOFR sensitivity.
+
+Step:
+Estimate rolling regression:
+
+V
+a
+c
+a
+n
+c
+y
+t
+=
+β
+×
+S
+O
+F
+R
+t
+−
+4
+Vacancy 
+t
+​
+ =β×SOFR 
+t−4
+​
+ 
+Then use rolling beta as feature.
+
+Why elite:
+Different markets react differently.
+
+Examples:
+
+NYC office highly rate sensitive
+
+Houston industrial less sensitive
+
+Very institutional-style modeling.
+
+11. Debt-Service Coverage Compression
+Excellent for distressed CRE prediction.
+
+D
+S
+C
+R
+S
+t
+r
+e
+s
+s
+t
+=
+N
+O
+I
+G
+r
+o
+w
+t
+h
+t
+S
+O
+F
+R
+t
+DSCRStress 
+t
+​
+ = 
+SOFR 
+t
+​
+ 
+NOIGrowth 
+t
+​
+ 
+​
+ 
+Low ratio means:
+income growth cannot offset financing burden.
+
+Usually predicts:
+
+defaults
+
+distress sales
+
+rising vacancy
+
+12. Capital Market Freeze Regime
+A nonlinear feature.
+
+F
+r
+e
+e
+z
+e
+t
+=
+1
+(
+S
+O
+F
+R
+t
+>
+4.5
+%
+∧
+T
+r
+a
+n
+s
+a
+c
+t
+i
+o
+n
+V
+o
+l
+u
+m
+e
+t
+<
+P
+25
+)
+Freeze 
+t
+​
+ =1(SOFR 
+t
+​
+ >4.5%∧TransactionVolume 
+t
+​
+ <P25)
+Why:
+Vacancy often rises when capital markets stop functioning.
+
+This is highly realistic post-2022.
+
+13. SOFR Acceleration
+Second derivative effect.
+
+A
+c
+c
+e
+l
+e
+r
+a
+t
+i
+o
+n
+t
+=
+(
+S
+O
+F
+R
+t
+−
+S
+O
+F
+R
+t
+−
+1
+)
+−
+(
+S
+O
+F
+R
+t
+−
+1
+−
+S
+O
+F
+R
+t
+−
+2
+)
+Acceleration 
+t
+​
+ =(SOFR 
+t
+​
+ −SOFR 
+t−1
+​
+ )−(SOFR 
+t−1
+​
+ −SOFR 
+t−2
+​
+ )
+Markets panic when hikes accelerate unexpectedly.
+
+y
+=
+(
+S
+O
+F
+R
+t
+−
+S
+O
+F
+R
+t
+−
+1
+)
+−
+(
+S
+O
+F
+R
+t
+−
+1
+−
+S
+O
+F
+R
+t
+−
+2
+)
+y=(SOFR 
+t
+​
+ −SOFR 
+t−1
+​
+ )−(SOFR 
+t−1
+​
+ −SOFR 
+t−2
+​
+ )
+
+14. Occupier Stress Interaction
+Connect financing to tenant health.
+
+O
+c
+c
+u
+p
+i
+e
+r
+S
+t
+r
+e
+s
+s
+t
+=
+S
+O
+F
+R
+t
+×
+U
+n
+e
+m
+p
+l
+o
+y
+m
+e
+n
+t
+t
+OccupierStress 
+t
+​
+ =SOFR 
+t
+​
+ ×Unemployment 
+t
+​
+ 
+Why:
+high rates + weak labor markets
+usually accelerate vacancy.
+
+15. Equity Market Wealth Shock
+Useful for tech-heavy office markets.
+
+W
+e
+a
+l
+t
+h
+S
+h
+o
+c
+k
+t
+=
+S
+O
+F
+R
+t
+×
+E
+q
+u
+i
+t
+y
+D
+r
+a
+w
+d
+o
+w
+n
+t
+WealthShock 
+t
+​
+ =SOFR 
+t
+​
+ ×EquityDrawdown 
+t
+​
+ 
+Why:
+higher rates crush growth-company expansion.
+
+Important for:
+
+San Francisco
+
+Seattle
+
+Austin office
+
+16. Delayed Transmission Feature
+Distributed lag representation.
+
+D
+L
+_
+S
+O
+F
+R
+t
+=
+0.4
+S
+O
+F
+R
+t
+−
+2
++
+0.3
+S
+O
+F
+R
+t
+−
+3
++
+0.2
+S
+O
+F
+R
+t
+−
+4
++
+0.1
+S
+O
+F
+R
+t
+−
+5
+DL_SOFR 
+t
+​
+ =0.4SOFR 
+t−2
+​
+ +0.3SOFR 
+t−3
+​
+ +0.2SOFR 
+t−4
+​
+ +0.1SOFR 
+t−5
+​
+ 
+This often outperforms raw lag variables.
+
+y
+=
+0.4
+S
+O
+F
+R
+t
+−
+2
++
+0.3
+S
+O
+F
+R
+t
+−
+3
++
+0.2
+S
+O
+F
+R
+t
+−
+4
++
+0.1
+S
+O
+F
+R
+t
+−
+5
+y=0.4SOFR 
+t−2
+​
+ +0.3SOFR 
+t−3
+​
+ +0.2SOFR 
+t−4
+​
+ +0.1SOFR 
+t−5
+​
+ 
+
+17. Debt Regime Transition
+Captures transitions between policy eras.
+
+Examples:
+
+ZIRP regime
+
+normalization
+
+restrictive
+
+crisis
+
+Tree models love this.
+
+18. SOFR Relative to Trend
+Deviation-from-normal feature.
+
+S
+O
+F
+R
+G
+a
+p
+t
+=
+S
+O
+F
+R
+t
+−
+R
+o
+l
+l
+i
+n
+g
+M
+e
+a
+n
+12
+Q
+(
+S
+O
+F
+R
+)
+SOFRGap 
+t
+​
+ =SOFR 
+t
+​
+ −RollingMean 
+12Q
+​
+ (SOFR)
+Useful because markets adapt to trend levels over time.
+
+19. Tenant Expansion Capacity
+Especially useful for office and retail.
+
+E
+x
+p
+a
+n
+s
+i
+o
+n
+C
+a
+p
+a
+c
+i
+t
+y
+t
+=
+C
+o
+r
+p
+o
+r
+a
+t
+e
+P
+r
+o
+f
+i
+t
+s
+t
+S
+O
+F
+R
+t
+ExpansionCapacity 
+t
+​
+ = 
+SOFR 
+t
+​
+ 
+CorporateProfits 
+t
+​
+ 
+​
+ 
+High rates reduce expansion financing capacity.
+
+20. CRE Duration Risk Proxy
+Long-duration markets suffer more from rates.
+
+D
+u
+r
+a
+t
+i
+o
+n
+S
+t
+r
+e
+s
+s
+t
+=
+S
+O
+F
+R
+t
+×
+P
+r
+i
+c
+e
+T
+o
+R
+e
+n
+t
+R
+a
+t
+i
+o
+t
+DurationStress 
+t
+​
+ =SOFR 
+t
+​
+ ×PriceToRentRatio 
+t
+​
+ 
+High valuation markets react more violently to rates.
+
+Most Powerful Combination in Practice
+In many institutional CRE systems, strongest SOFR-related features are often:
+
+lagged SOFR
+
+rate shock
+
+financing volatility
+
+interaction with unemployment
+
+interaction with construction pipeline
+
+liquidity stress
+
+distributed lag features
+
+regime indicators
+
+rather than raw SOFR itself.
+
 My Suggestion for Your Dataset
-For quarterly panel real estate data across markets, I would prioritize:
+Since you have:
 
-Relative market divergence
+quarterly panel data
 
-Recovery gap
+multiple markets
 
-Volatility regime
+multiple property types
 
-Population-normalized density
+vacancy target
 
-Interaction with income growth
+I would prioritize:
 
-Service pressure index
+SOFR_YoY_Change
 
-Local fragility score
+SOFR_4Q_RollingAvg
 
-Market regime encoding
+SOFR_Volatility
 
-Those are much closer to what sophisticated CRE forecasting systems actually use.
+Lagged_SOFR_2Q
+
+Lagged_SOFR_4Q
+
+SOFR × Unemployment
+
+SOFR × ConstructionPipeline
+
+SOFR_Regime
+
+DistributedLag_SOFR
+
+SOFR × PropertyType
+
+These are highly realistic and aligned with how sophisticated CRE forecasting pipelines are designed.
 
 
 Sorry I was asking can you look for some more top notch features engineering which top real estate industry use
 
-Yes — if we think like top institutional CRE shops (Blackstone, Brookfield, Green Street, CBRE Econometric Advisors, Moody’s Analytics CRE, Clarion, PGIM, etc.), they usually do cross-market structural features, cycle-state signals, and spatial relative features, not just basic time-series transformations.
+Yes — if you want genuinely institutional-grade CRE feature engineering, then the focus shifts from simple macro transformations into:
 
-For Other_Services_Employment_Extended, here are much more institutional-grade feature engineering ideas specifically for quarterly market-level vacancy forecasting.
+capital market transmission
 
-1. Service Employment Beta to National Economy
-Instead of raw growth, estimate:
+refinancing convexity
 
-β
+liquidity fragility
+
+pricing dislocation
+
+duration sensitivity
+
+debt rollover exposure
+
+monetary-policy regime dynamics
+
+These are the kinds of features sophisticated REITs, private equity real estate firms, CMBS desks, and macro hedge funds actually build.
+
+Below are more advanced and “out-of-box” SOFR-driven features specifically for vacancy forecasting.
+
+1. Negative Leverage Regime
+One of the most important institutional CRE concepts.
+
+When borrowing cost exceeds acquisition yield:
+
+transactions collapse
+
+refinancing becomes toxic
+
+values reset
+
+vacancy rises later
+
+N
+e
+g
+a
+t
+i
+v
+e
+L
+e
+v
+e
+r
+a
+g
+e
+t
 =
 C
-o
-v
+a
+p
+R
+a
+t
+e
+t
+−
 (
-L
-o
-c
-a
-l
-G
-r
-o
-w
+S
+O
+F
+R
 t
-h
-,
-N
-a
-t
-i
-o
-n
-a
-l
-G
-r
-o
-w
-t
-h
-)
-V
-a
-r
-(
-N
-a
-t
-i
-o
-n
-a
-l
-G
-r
-o
-w
-t
-h
-)
-β= 
-Var(NationalGrowth)
-Cov(LocalGrowth,NationalGrowth)
-​
- 
-β
-=
++
 C
-o
-v
-(
-L
-o
-c
-a
-l
-G
 r
-o
-w
-t
-h
-,
-N
-a
-t
+e
+d
 i
-o
-n
-a
-l
-G
-r
-o
-w
 t
-h
-)
-V
-a
-r
-(
-N
-a
-t
-i
-o
-n
-a
-l
-G
-r
-o
-w
-t
-h
-)
-β= 
-Var(NationalGrowth)
-Cov(LocalGrowth,NationalGrowth)
-​
- 
-
-This measures:
-
-“How cyclically sensitive is this market’s service economy?”
-
-Interpretation:
-
-high beta markets:
-
-boom harder
-
-crash harder
-
-vacancy volatility higher
-
-low beta markets:
-
-defensive markets
-
-stable occupancy
-
-This is heavily used in institutional portfolio allocation.
-
-2. Employment Breadth Diffusion Signal
-Instead of looking only at level growth:
-
-Create:
-
-B
+S
+p
 r
 e
 a
 d
 t
-h
-=
-#
-P
-o
-s
-i
+)
+NegativeLeverage 
 t
-i
-v
-e
-S
-u
-b
-S
-e
-c
-t
-o
-r
-s
-#
-T
-o
-t
-a
-l
-S
-u
-b
-S
-e
-c
-t
-o
-r
-s
-Breadth= 
-#TotalSubSectors
-#PositiveSubSectors
 ​
- 
-B
+ =CapRate 
+t
+​
+ −(SOFR 
+t
+​
+ +CreditSpread 
+t
+​
+ )
+Critical insight:
+negative values are dangerous.
+
+This is heavily used in acquisitions and distress analytics.
+
+y
+=
+C
+a
+p
+R
+a
+t
+e
+t
+−
+(
+S
+O
+F
+R
+t
++
+C
+r
+e
+d
+i
+t
+S
+p
 r
 e
 a
 d
 t
-h
-=
-#
-P
-o
-s
-i
+)
+y=CapRate 
 t
+​
+ −(SOFR 
+t
+​
+ +CreditSpread 
+t
+​
+ )
+
+2. Refinance Convexity Stress
+Captures nonlinear refinancing pain.
+
+R
+e
+f
 i
+C
+o
+n
 v
 e
-S
-u
-b
-S
-e
-c
+x
+i
 t
-o
-r
+y
+t
+=
+D
+e
+b
+t
+O
+u
+t
 s
-#
-T
-o
 t
 a
-l
-S
-u
-b
-S
-e
-c
+n
+d
+i
+n
+g
 t
-o
-r
-s
-Breadth= 
-#TotalSubSectors
-#PositiveSubSectors
+N
+O
+I
+t
+×
+S
+O
+F
+R
+t
+2
+RefiConvexity 
+t
+​
+ = 
+NOI 
+t
 ​
  
-
+DebtOutstanding 
+t
+​
+ 
+​
+ ×SOFR 
+t
+2
+​
+ 
 Why elite:
+refinancing stress accelerates nonlinearly at high rates.
 
-broad-based service growth is healthier
+A jump from:
 
-narrow growth is fragile
+1% → 3% hurts
 
-Example:
+5% → 7% destroys marginal assets
 
-only salons growing = weak
+Very realistic post-2022 behavior.
 
-all service subsectors growing = strong ecosystem
+3. Floating-Rate Exposure Shock
+Massively important in modern CRE.
+
+F
+l
+o
+a
+t
+i
+n
+g
+E
+x
+p
+o
+s
+u
+r
+e
+t
+=
+F
+l
+o
+a
+t
+i
+n
+g
+D
+e
+b
+t
+S
+h
+a
+r
+e
+t
+×
+Δ
+S
+O
+F
+R
+t
+FloatingExposure 
+t
+​
+ =FloatingDebtShare 
+t
+​
+ ×ΔSOFR 
+t
+​
+ 
+Why:
+many bridge loans are floating-rate.
 
 This predicts:
 
-sustainability of occupancy recovery
+distress
 
-3. Local Urban Vitality Factor
-One of the most powerful modern CRE concepts post-COVID.
+forced sales
 
-Build latent factor:
+stalled lease-up
 
-V
+rising vacancy
+
+especially multifamily and office.
+
+4. Transaction Market Liquidity Collapse
+Institutional transaction freeze proxy.
+
+L
 i
-t
-a
-l
-i
-t
-y
-=
-f
-(
-S
-e
-r
-v
-i
-c
-e
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-G
-r
-o
-w
-t
-h
-,
-T
-r
-a
-n
-s
-i
-t
-M
-o
-b
-i
-l
-i
-t
-y
-,
-R
-e
-s
-t
-a
+q
 u
-r
-a
-n
-t
-T
-r
-a
-f
-f
 i
-c
-,
-R
-e
-t
-a
-i
-l
-S
-a
-l
-e
-s
-)
-Vitality=f(ServiceEmploymentGrowth,TransitMobility,RestaurantTraffic,RetailSales)
-V
-i
-t
-a
-l
+d
 i
 t
 y
-=
-f
-(
-S
-e
-r
-v
-i
-c
-e
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-G
-r
-o
-w
-t
-h
-,
-T
-r
-a
-n
-s
-i
-t
-M
-o
-b
-i
-l
-i
-t
-y
-,
-R
-e
-s
-t
-a
-u
-r
-a
-n
-t
-T
-r
-a
-f
-f
-i
-c
-,
-R
-e
-t
-a
-i
-l
-S
-a
-l
-e
-s
-)
-Vitality=f(ServiceEmploymentGrowth,TransitMobility,RestaurantTraffic,RetailSales)
-
-This captures:
-
-downtown activation
-
-mixed-use vibrancy
-
-neighborhood attractiveness
-
-Especially predictive for:
-
-retail
-
-multifamily
-
-CBD office recovery
-
-4. Service Employment Persistence Score
-CRE investors care more about persistence than one-quarter spikes.
-
-Estimate rolling autocorrelation:
-
-P
-e
-r
-s
-i
-s
-t
-e
-n
-c
-e
-=
 C
 o
-r
-r
-(
-G
-r
-o
-w
-t
-h
-t
-,
-G
-r
-o
-w
-t
-h
-t
-−
-1
-)
-Persistence=Corr(Growth 
-t
-​
- ,Growth 
-t−1
-​
- )
-P
-e
-r
+l
+l
+a
+p
 s
-i
-s
+e
 t
-e
-n
-c
-e
 =
-C
+T
+r
+a
+n
+s
+a
+c
+t
+i
 o
-r
-r
-(
-G
-r
+n
+V
 o
-w
+l
+u
+m
+e
 t
-h
+S
+O
+F
+R
 t
-,
-G
-r
-o
-w
-t
-h
-t
-−
-1
-)
-Persistence=Corr(Growth 
+LiquidityCollapse 
 t
 ​
- ,Growth 
-t−1
+ = 
+SOFR 
+t
 ​
- )
-
-Why useful:
-
-persistent employment trends drive leasing confidence
-
-unstable trends hurt tenant decision-making
-
-5. Employment-to-Housing Imbalance
-Very institutional.
-
-I
-m
-b
-a
-l
-a
-n
-c
-e
-=
-S
-e
-r
-v
-i
-c
-e
-E
-m
-p
-l
-o
-y
-m
-e
-n
+ 
+TransactionVolume 
 t
-G
-r
-o
-w
-t
-h
-−
-H
-o
-u
-s
-i
-n
-g
-S
-u
-p
-p
-l
-y
-G
-r
-o
-w
-t
-h
-Imbalance=ServiceEmploymentGrowth−HousingSupplyGrowth
-I
-m
-b
-a
-l
-a
-n
-c
-e
-=
-S
-e
-r
-v
-i
-c
-e
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-G
-r
-o
-w
-t
-h
-−
-H
-o
-u
-s
-i
-n
-g
-S
-u
-p
-p
-l
-y
-G
-r
-o
-w
-t
-h
-Imbalance=ServiceEmploymentGrowth−HousingSupplyGrowth
+​
+ 
+​
+ 
+When rates spike:
 
-Interpretation:
+buyers disappear
 
-employment growing faster than housing
-→ tighter apartment markets
-→ lower vacancy
+bid/ask spreads widen
 
-Huge multifamily alpha feature.
+leasing freezes later
 
-6. Real Estate Demand Intensity Signal
-Normalize employment by occupied space instead of total space.
+Low values indicate illiquid CRE markets.
+
+5. Debt Yield Compression
+A lender-style underwriting feature.
 
 D
 e
-m
-a
-n
+b
+t
+Y
+i
+e
+l
 d
+S
+p
+r
+e
+a
+d
+t
+=
+N
+O
 I
-n
 t
-e
-n
-s
-i
-t
-y
-=
-O
-t
-h
-e
-r
-S
-e
-r
-v
-i
-c
-e
-s
-E
-m
-p
-l
+L
 o
-y
-m
-e
-n
-t
-O
-c
-c
-u
-p
-i
-e
-d
-R
-e
-t
 a
-i
+n
+B
+a
 l
+a
+n
+c
+e
+t
+−
 S
+O
 F
-DemandIntensity= 
-OccupiedRetailSF
-OtherServicesEmployment
+R
+t
+DebtYieldSpread 
+t
+​
+ = 
+LoanBalance 
+t
 ​
  
-D
-e
-m
-a
-n
-d
-I
-n
+NOI 
 t
-e
-n
-s
-i
-t
-y
-=
-O
-t
-h
-e
-r
-S
-e
-r
-v
-i
-c
-e
-s
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-O
-c
-c
-u
-p
-i
-e
-d
-R
-e
-t
-a
-i
-l
-S
-F
-DemandIntensity= 
-OccupiedRetailSF
-OtherServicesEmployment
 ​
  
-
-This detects:
-
-tenant saturation
-
-leasing pressure
-
-underutilized retail ecosystems
-
-Very sophisticated retail feature.
-
-7. Service Employment Shock Absorption Capacity
-Top firms model resilience.
-
-R
-e
-s
-i
-l
-i
-e
-n
-c
-e
-=
-P
-o
-s
+​
+ −SOFR 
 t
-S
-h
-o
-c
-k
-R
-e
-c
-o
-v
-e
-r
-y
-S
-p
-e
-e
-d
-S
-h
-o
-c
-k
-M
-a
-g
-n
-i
-t
-u
-d
-e
-Resilience= 
-ShockMagnitude
-PostShockRecoverySpeed
 ​
  
-R
-e
-s
-i
-l
-i
-e
-n
-c
-e
-=
-P
-o
-s
-t
-S
-h
-o
-c
-k
-R
-e
-c
-o
-v
-e
-r
-y
-S
-p
-e
-e
-d
-S
-h
-o
-c
-k
-M
-a
-g
-n
-i
-t
-u
-d
-e
-Resilience= 
-ShockMagnitude
-PostShockRecoverySpeed
-​
- 
+Banks monitor this heavily.
 
-Markets recovering rapidly after shocks:
+Low spreads imply:
 
-sustain occupancy better
+weak refinancing viability
 
-attract capital faster
+capital stack instability
 
-experience lower distress
+Very predictive for distressed vacancy cycles.
 
-8. Economic Complexity Proxy
-Not obvious — but extremely powerful.
+6. Monetary Policy Shock Persistence
+Captures cumulative tightening burden.
 
 C
-o
+u
 m
-p
+u
 l
-e
-x
-i
+a
 t
-y
+i
+v
+e
+H
+i
+k
+e
+t
 =
-1
-−
-(
+∑
+i
+=
+0
+7
+Δ
+S
 O
+F
+R
 t
-h
-e
-r
-S
-e
-r
-v
-i
-c
-e
-s
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-T
-o
-t
-a
-l
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-)
-Complexity=1−( 
-TotalEmployment
-OtherServicesEmployment
-​
- )
-C
-o
-m
-p
-l
-e
-x
-i
-t
-y
-=
-1
 −
-(
-O
-t
-h
-e
-r
-S
-e
-r
-v
 i
-c
-e
-s
-E
-m
-p
-l
-o
-y
-m
-e
-n
+CumulativeHike 
 t
-T
-o
-t
-a
-l
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-)
-Complexity=1−( 
-TotalEmployment
-OtherServicesEmployment
 ​
- )
+ = 
+i=0
+∑
+7
+​
+ ΔSOFR 
+t−i
+​
+ 
+Why powerful:
+CRE reacts to accumulated tightening, not just current rates.
 
-Idea:
+Institutional models love cumulative stress variables.
 
-overly service-dependent markets may lack diversified economic engines
+7. Vacancy Sensitivity Surface
+Advanced panel feature.
 
-diversified markets have more resilient vacancy dynamics
+Estimate rolling elasticity:
 
-This becomes powerful in downturns.
-
-9. Labor Quality Migration Signal
-Use interaction:
-
-M
-i
-g
-r
-a
-t
-i
-o
-n
-S
-i
-g
-n
-a
+E
 l
-=
-S
-e
-r
-v
+a
+s
+t
 i
 c
-e
-E
-m
-p
-l
-o
+i
+t
 y
-m
-e
-n
 t
-G
-r
-o
-w
-t
-h
-×
-W
-a
-g
-e
-G
-r
-o
-w
-t
-h
-MigrationSignal=ServiceEmploymentGrowth×WageGrowth
-M
-i
-g
-r
-a
-t
-i
-o
-n
-S
-i
-g
-n
-a
-l
 =
-S
-e
-r
-v
-i
-c
-e
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-G
-r
-o
-w
-t
-h
-×
-W
+Δ
+V
 a
-g
-e
-G
-r
-o
-w
+c
+a
+n
+c
+y
 t
-h
-MigrationSignal=ServiceEmploymentGrowth×WageGrowth
+Δ
+S
+O
+F
+R
+t
+−
+4
+Elasticity 
+t
+​
+ = 
+ΔSOFR 
+t−4
+​
+ 
+ΔVacancy 
+t
+​
+ 
+​
+ 
+Then:
+cluster markets by sensitivity regime.
 
 Why elite:
+different cities structurally react differently.
 
-job growth without wage growth may indicate weak labor quality
+Examples:
 
-high wage + service growth indicates affluent migration markets
+Manhattan office → ultra-sensitive
 
-Very predictive for:
+logistics hubs → lower sensitivity
+
+8. Capitalization Freeze Indicator
+Captures when underwriting assumptions break.
+
+F
+r
+e
+e
+z
+e
+I
+n
+d
+i
+c
+a
+t
+o
+r
+t
+=
+1
+(
+S
+O
+F
+R
+t
+>
+C
+a
+p
+R
+a
+t
+e
+t
+)
+FreezeIndicator 
+t
+​
+ =1(SOFR 
+t
+​
+ >CapRate 
+t
+​
+ )
+This is extremely important.
+
+When financing cost exceeds asset yield:
+
+acquisitions stop
+
+development halts
+
+vacancy risk increases sharply later
+
+9. CRE Duration Fragility
+Sophisticated valuation-risk feature.
+
+D
+u
+r
+a
+t
+i
+o
+n
+F
+r
+a
+g
+i
+l
+i
+t
+y
+t
+=
+P
+r
+i
+c
+e
+A
+p
+p
+r
+e
+c
+i
+a
+t
+i
+o
+n
+t
+×
+S
+O
+F
+R
+t
+DurationFragility 
+t
+​
+ =PriceAppreciation 
+t
+​
+ ×SOFR 
+t
+​
+ 
+Logic:
+markets with aggressive appreciation are more rate-sensitive.
+
+Why?
+High-duration assets collapse harder during tightening.
+
+Very useful for:
+
+Austin
+
+SF
+
+NYC office
 
 Sunbelt multifamily
 
-mixed-use demand
+10. Distress Migration Probability Proxy
+Tracks movement toward distress.
 
-10. Spatial Competitive Advantage
-Institutional firms compare markets regionally.
-
-R
-e
-l
-a
-t
+D
 i
-v
-e
-S
-t
-r
-e
-n
-g
-t
-h
-=
-L
-o
-c
-a
-l
-G
-r
-o
-w
-t
-h
-−
-R
-e
-g
-i
-o
-n
-a
-l
-A
-v
-e
-r
-a
-g
-e
-G
-r
-o
-w
-t
-h
-RelativeStrength=LocalGrowth−RegionalAverageGrowth
-R
-e
-l
-a
-t
-i
-v
-e
-S
-t
-r
-e
-n
-g
-t
-h
-=
-L
-o
-c
-a
-l
-G
-r
-o
-w
-t
-h
-−
-R
-e
-g
-i
-o
-n
-a
-l
-A
-v
-e
-r
-a
-g
-e
-G
-r
-o
-w
-t
-h
-RelativeStrength=LocalGrowth−RegionalAverageGrowth
-
-Capital flows toward:
-
-relative winners
-not absolute winners.
-
-This matters enormously for:
-
-cap rates
-
-leasing momentum
-
-vacancy compression
-
-11. Service Employment Cycle Position
-Estimate cyclical percentile:
-
-C
-y
-c
-l
-e
-P
-o
 s
+t
+r
+e
+s
+s
+M
 i
+g
+r
+a
 t
 i
 o
 n
-=
-P
-e
-r
-c
-e
-n
 t
-i
-l
-e
+=
+S
+O
+F
 R
+t
+×
+V
+a
+c
 a
 n
+c
+y
+t
+×
+D
+e
+b
+t
+L
+o
+a
+d
+t
+DistressMigration 
+t
+​
+ =SOFR 
+t
+​
+ ×Vacancy 
+t
+​
+ ×DebtLoad 
+t
+​
+ 
+This simulates deterioration in asset quality.
+
+Very REIT/private-equity style feature.
+
+11. Rate Lock-In Effect
+One of the most underrated features.
+
+L
+o
+c
 k
-(
+I
+n
+E
+f
+f
+e
+c
+t
+t
+=
 C
 u
 r
@@ -3935,2891 +2425,2147 @@ r
 e
 n
 t
-E
-m
-p
-l
+M
 o
-y
-m
-e
-n
+r
 t
-,
+g
+a
+g
+e
+R
+a
+t
+e
+t
+−
 H
 i
 s
 t
 o
 r
-y
-)
-CyclePosition=PercentileRank(CurrentEmployment,History)
-C
-y
+i
 c
+a
 l
-e
-P
+A
+v
+g
+M
 o
-s
-i
-t
-i
-o
-n
-=
-P
-e
 r
-c
-e
-n
 t
-i
-l
+g
+a
+g
 e
 R
 a
-n
-k
-(
-C
-u
-r
-r
+t
 e
-n
 t
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-,
-H
-i
-s
-t
-o
-r
-y
-)
-CyclePosition=PercentileRank(CurrentEmployment,History)
-
-Why important:
-
-late-cycle markets behave differently
-
-vacancy mean reversion increases at extremes
-
-This is heavily used in tactical allocation.
-
-12. Tenant Formation Probability
-Small businesses create tenancy demand.
-
-Estimate:
-
-F
-o
-r
-m
-a
-t
-i
-o
-n
-P
-r
-o
-x
-y
-=
-Δ
-O
-t
-h
-e
-r
-S
-e
-r
-v
-i
-c
-e
-s
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-×
-S
-m
-a
-l
-l
-B
-u
-s
-i
-n
-e
-s
-s
-G
-r
-o
-w
-t
-h
-FormationProxy=ΔOtherServicesEmployment×SmallBusinessGrowth
-F
-o
-r
-m
-a
-t
-i
-o
-n
-P
-r
-o
-x
-y
-=
-Δ
-O
-t
-h
-e
-r
-S
-e
-r
-v
-i
-c
-e
-s
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-×
-S
-m
-a
-l
-l
-B
-u
-s
-i
-n
-e
-s
-s
-G
-r
-o
-w
-t
-h
-FormationProxy=ΔOtherServicesEmployment×SmallBusinessGrowth
-
-This predicts:
-
-strip retail absorption
-
-neighborhood leasing demand
-
-Very realistic.
-
-13. Service Employment Convexity
-Institutional models increasingly use nonlinear dynamics.
-
-C
-o
-n
-v
-e
-x
-i
-t
-y
-=
-G
-r
-o
-w
-t
-h
-t
-−
-2
-G
-r
-o
-w
-t
-h
-t
-−
-1
-+
-G
-r
-o
-w
-t
-h
-t
-−
-2
-Convexity=Growth 
+LockInEffect 
 t
 ​
- −2Growth 
-t−1
+ =CurrentMortgageRate 
+t
 ​
- +Growth 
-t−2
+ −HistoricalAvgMortgageRate 
+t
 ​
  
+Why:
+owners refuse refinancing/sales because legacy debt is cheap.
+
+This suppresses:
+
+transactions
+
+relocations
+
+leasing churn
+
+Huge post-2022 effect.
+
+12. Capital Stack Fragility
+Measures structural financing weakness.
+
 C
-o
-n
-v
-e
-x
+a
+p
+i
+t
+a
+l
+F
+r
+a
+g
+i
+l
 i
 t
 y
+t
 =
-G
-r
-o
-w
+S
+O
+F
+R
 t
-h
+×
+L
+T
+V
 t
-−
-2
-G
-r
-o
-w
+D
+S
+C
+R
 t
-h
-t
-−
-1
-+
-G
-r
-o
-w
-t
-h
-t
-−
-2
-Convexity=Growth 
+CapitalFragility 
 t
 ​
- −2Growth 
-t−1
-​
- +Growth 
-t−2
+ = 
+DSCR 
+t
 ​
  
-
+SOFR 
+t
+​
+ ×LTV 
+t
+​
+ 
+​
+ 
 This captures:
 
-acceleration curvature
+leverage
 
-inflection points
+debt burden
+
+refinancing sensitivity
+
+Extremely realistic institutional risk metric.
+
+13. CRE Risk Premium Compression
+Very macro-hedge-fund style.
+
+R
+i
+s
+k
+P
+r
+e
+m
+i
+u
+m
+t
+=
+C
+a
+p
+R
+a
+t
+e
+t
+−
+T
+r
+e
+a
+s
+u
+r
+y
+10
+Y
+t
+RiskPremium 
+t
+​
+ =CapRate 
+t
+​
+ −Treasury10Y 
+t
+​
+ 
+Then interact with SOFR:
+
+S
+t
+r
+e
+s
+s
+P
+r
+e
+m
+i
+u
+m
+t
+=
+S
+O
+F
+R
+t
+×
+R
+i
+s
+k
+P
+r
+e
+m
+i
+u
+m
+t
+StressPremium 
+t
+​
+ =SOFR 
+t
+​
+ ×RiskPremium 
+t
+​
+ 
+Compressed premiums during high SOFR periods often predict valuation resets and vacancy deterioration.
+
+14. Policy Regime Transition Dynamics
+Top firms explicitly model transitions.
+
+Examples:
+
+easing → tightening
+
+tightening → pause
+
+pause → cuts
+
+Feature:
+
+P
+o
+l
+i
+c
+y
+T
+r
+a
+n
+s
+i
+t
+i
+o
+n
+t
+=
+R
+e
+g
+i
+m
+e
+t
+−
+R
+e
+g
+i
+m
+e
+t
+−
+1
+PolicyTransition 
+t
+​
+ =Regime 
+t
+​
+ −Regime 
+t−1
+​
+ 
+Why:
+markets react hardest during transitions, not steady states.
+
+15. Shadow Financing Stress
+Captures private credit strain.
+
+S
+h
+a
+d
+o
+w
+S
+t
+r
+e
+s
+s
+t
+=
+S
+O
+F
+R
+t
+×
+P
+r
+i
+v
+a
+t
+e
+C
+r
+e
+d
+i
+t
+S
+p
+r
+e
+a
+d
+t
+ShadowStress 
+t
+​
+ =SOFR 
+t
+​
+ ×PrivateCreditSpread 
+t
+​
+ 
+Extremely useful after banks reduce CRE lending.
+
+This is becoming very important in modern CRE.
+
+16. Development Feasibility Gap
+Construction economics feature.
+
+F
+e
+a
+s
+i
+b
+i
+l
+i
+t
+y
+G
+a
+p
+t
+=
+E
+x
+p
+e
+c
+t
+e
+d
+Y
+i
+e
+l
+d
+O
+n
+C
+o
+s
+t
+t
+−
+(
+S
+O
+F
+R
+t
++
+C
+o
+n
+s
+t
+r
+u
+c
+t
+i
+o
+n
+S
+p
+r
+e
+a
+d
+t
+)
+FeasibilityGap 
+t
+​
+ =ExpectedYieldOnCost 
+t
+​
+ −(SOFR 
+t
+​
+ +ConstructionSpread 
+t
+​
+ )
+Negative values:
+new projects stop penciling.
+
+Predicts future supply collapse.
+
+Very institutional-development oriented.
+
+17. Market Freeze Contagion
+Cross-market transmission feature.
+
+C
+o
+n
+t
+a
+g
+i
+o
+n
+t
+=
+S
+O
+F
+R
+t
+×
+A
+v
+e
+r
+a
+g
+e
+V
+a
+c
+a
+n
+c
+y
+G
+a
+t
+e
+w
+a
+y
+M
+a
+r
+k
+e
+t
+s
+Contagion 
+t
+​
+ =SOFR 
+t
+​
+ ×AverageVacancy 
+GatewayMarkets
+​
+ 
+Why:
+capital markets transmit stress nationally.
+
+NYC/SF distress impacts secondary markets later.
+
+18. Rent-to-Financing Burden Ratio
+Tenant affordability stress.
+
+T
+e
+n
+a
+n
+t
+S
+t
+r
+e
+s
+s
+t
+=
+R
+e
+n
+t
+G
+r
+o
+w
+t
+h
+t
+S
+O
+F
+R
+t
+TenantStress 
+t
+​
+ = 
+SOFR 
+t
+​
+ 
+RentGrowth 
+t
+​
+ 
+​
+ 
+When financing cost grows faster than rent:
+landlords lose pricing power.
+
+19. Real Estate Equity Duration Factor
+A sophisticated valuation proxy.
+
+E
+q
+u
+i
+t
+y
+D
+u
+r
+a
+t
+i
+o
+n
+t
+=
+P
+r
+i
+c
+e
+I
+n
+d
+e
+x
+t
+N
+O
+I
+t
+×
+S
+O
+F
+R
+t
+EquityDuration 
+t
+​
+ = 
+NOI 
+t
+​
+ 
+PriceIndex 
+t
+​
+ 
+​
+ ×SOFR 
+t
+​
+ 
+High multiple markets behave like long-duration assets.
+
+Very rate-sensitive.
+
+20. Monetary Tightening Saturation
+Nonlinear stress threshold.
+
+S
+a
+t
+u
+r
+a
+t
+i
+o
+n
+t
+=
+max
+⁡
+(
+0
+,
+S
+O
+F
+R
+t
+−
+5
+%
+)
+Saturation 
+t
+​
+ =max(0,SOFR 
+t
+​
+ −5%)
+Why:
+above certain levels, incremental hikes cause disproportionate damage.
+
+Tree models often discover this automatically, but engineered saturation features improve stability.
+
+y
+=
+max
+⁡
+(
+0
+,
+S
+O
+F
+R
+t
+−
+5
+%
+)
+y=max(0,SOFR 
+t
+​
+ −5%)
+
+What Elite CRE Teams Actually Emphasize
+The strongest institutional features are usually NOT:
+
+raw rates
+
+simple lagged rates
+
+Instead they emphasize:
+
+Capital Markets
+negative leverage
+
+refinancing feasibility
+
+liquidity freeze
+
+spread compression
+
+Structural Fragility
+leverage
+
+DSCR stress
+
+floating-rate exposure
+
+duration sensitivity
+
+Nonlinear Regimes
+threshold stress
+
+cumulative hikes
 
 regime transitions
 
-Excellent for early turning-point detection.
+convexity effects
 
-14. Vacancy Sensitivity Regime
-Create market-specific sensitivity score.
+Interaction Effects
+SOFR × vacancy
 
-S
-e
-n
+SOFR × construction
+
+SOFR × transaction volume
+
+SOFR × debt maturity wall
+
+The Most Institutional Combination
+If I were building a serious CRE vacancy model, my SOFR block would likely include:
+
+Negative leverage spread
+
+Refinance convexity stress
+
+Floating-rate exposure shock
+
+Capital fragility metric
+
+Cumulative hike burden
+
+Transaction liquidity collapse
+
+Policy transition regime
+
+Development feasibility gap
+
+Distributed lag SOFR
+
+Duration fragility interaction
+
+Those are much closer to how sophisticated CRE investment/risk systems think about rates.
+
+
+Show me some more features engineering with Secured_Overnight_Financing_Rate which are realistic and don't try to keep the earlier feature.
+
+Absolutely — here are completely different, more realistic and institutionally inspired feature engineering ideas using Secured_Overnight_Financing_Rate (SOFR) for quarterly CRE vacancy forecasting.
+
+I’ll avoid repeating earlier concepts like:
+
+lagged SOFR
+
+volatility
+
+regime buckets
+
+refinancing stress
+
+negative leverage
+
+distributed lags
+
+convexity
+
+liquidity freeze
+
+Instead, these are newer angles that sophisticated real estate analytics teams may explore.
+
+1. Monetary Policy Whiplash
+Measures policy direction instability.
+
+W
+h
+i
+p
+l
+a
 s
-i
+h
 t
-i
-v
-i
-t
-y
 =
-C
-o
-r
-r
+∣
 (
 S
-e
-r
-v
-i
-c
-e
-G
-r
-o
-w
-t
-h
-,
-V
-a
-c
-a
-n
-c
-y
-C
-h
-a
-n
-g
-e
-)
-Sensitivity=Corr(ServiceGrowth,VacancyChange)
-S
-e
-n
-s
-i
-t
-i
-v
-i
-t
-y
-=
-C
-o
-r
-r
-(
-S
-e
-r
-v
-i
-c
-e
-G
-r
-o
-w
-t
-h
-,
-V
-a
-c
-a
-n
-c
-y
-C
-h
-a
-n
-g
-e
-)
-Sensitivity=Corr(ServiceGrowth,VacancyChange)
-
-Some markets:
-
-highly reactive to local services
-Others:
-
-driven by finance/tech/manufacturing
-
-This becomes a meta-feature across markets.
-
-15. Economic Recovery Synchronization
-Very advanced institutional feature.
-
-S
-y
-n
-c
-h
-r
-o
-n
-i
-z
-a
-t
-i
-o
-n
-=
-C
-o
-r
-r
-(
-L
-o
-c
-a
-l
-S
-e
-r
-v
-i
-c
-e
-G
-r
-o
-w
-t
-h
-,
-N
-a
-t
-i
-o
-n
-a
-l
-C
-R
-E
-C
-y
-c
-l
-e
-)
-Synchronization=Corr(LocalServiceGrowth,NationalCRECycle)
-S
-y
-n
-c
-h
-r
-o
-n
-i
-z
-a
-t
-i
-o
-n
-=
-C
-o
-r
-r
-(
-L
-o
-c
-a
-l
-S
-e
-r
-v
-i
-c
-e
-G
-r
-o
-w
-t
-h
-,
-N
-a
-t
-i
-o
-n
-a
-l
-C
-R
-E
-C
-y
-c
-l
-e
-)
-Synchronization=Corr(LocalServiceGrowth,NationalCRECycle)
-
-Markets highly synchronized with national CRE cycles:
-
-reprice faster
-
-vacancy deteriorates faster during downturns
-
-Low synchronization:
-
-diversification benefits
-
-The Features That Actually Create Alpha
-In real institutional forecasting, the biggest gains usually come from:
-
-Feature Class	Importance
-Relative market strength	Extremely high
-Regime/state features	Extremely high
-Recovery/resilience metrics	Extremely high
-Interaction terms	Very high
-Cross-market normalization	Very high
-Spatial features	Very high
-Simple lag growth	Low
-What I Would Personally Build First
-For your quarterly panel dataset:
-
-Tier 1
-RelativeStrength
-
-RecoveryGap
-
-Persistence
-
-CyclePosition
-
-VolatilityRegime
-
-Tier 2
-MigrationSignal
-
-VitalityFactor
-
-Resilience
-
-Imbalance
-
-DemandIntensity
-
-Tier 3
-Convexity
-
-BetaToNational
-
-Synchronization
-
-Fragility
-
-BreadthDiffusion
-
-These are much closer to what sophisticated CRE macro forecasting systems actually use internally.
-
-
-Show me some more features engineering with Other_Services_Employment_Extended which are realistic and don't try to keep the earlier feature.
-
-Absolutely — let’s move into a different class of feature engineering entirely and avoid repeating earlier concepts.
-
-For Other_Services_Employment_Extended, sophisticated CRE teams often think about:
-
-labor market structure
-
-hidden tenant demand
-
-elasticity of local spending
-
-service-sector saturation
-
-macro transmission mechanisms
-
-occupancy friction
-
-cyclical asymmetry
-
-Below are fresh, realistic, institutional-style feature ideas that are materially different from the previous ones.
-
-1. Service Employment Per Household
-S
-e
-r
-v
-i
-c
-e
-P
-e
-r
-H
-o
-u
-s
-e
-h
-o
-l
-d
-=
 O
-t
-h
-e
-r
-S
-e
-r
-v
-i
-c
-e
-s
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-H
-o
-u
-s
-e
-h
-o
-l
-d
-s
-ServicePerHousehold= 
-Households
-OtherServicesEmployment
-​
- 
-S
-e
-r
-v
-i
-c
-e
-P
-e
-r
-H
-o
-u
-s
-e
-h
-o
-l
-d
-=
-O
-t
-h
-e
-r
-S
-e
-r
-v
-i
-c
-e
-s
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-H
-o
-u
-s
-e
-h
-o
-l
-d
-s
-ServicePerHousehold= 
-Households
-OtherServicesEmployment
-​
- 
-
-Why important:
-
-measures local service penetration
-
-stronger proxy for neighborhood commercial intensity than raw population
-
-Higher values often indicate:
-
-denser consumption ecosystems
-
-stronger strip retail utilization
-
-lower neighborhood retail vacancy
-
-2. Employment Utilization Gap
-Measure deviation from expected employment.
-
-First estimate trend:
-
-E
-x
-p
-e
-c
-t
-e
-d
-t
-=
-R
-o
-l
-l
-i
-n
-g
-T
-r
-e
-n
-d
-(
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-)
-Expected 
-t
-​
- =RollingTrend(Employment)
-Then:
-
-G
-a
-p
-t
-=
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-t
-−
-E
-x
-p
-e
-c
-t
-e
-d
-t
-E
-x
-p
-e
-c
-t
-e
-d
-t
-Gap 
-t
-​
- = 
-Expected 
-t
-​
- 
-Employment 
-t
-​
- −Expected 
-t
-​
- 
-​
- 
-G
-a
-p
-t
-=
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-t
-−
-E
-x
-p
-e
-c
-t
-e
-d
-t
-E
-x
-p
-e
-c
-t
-e
-d
-t
-Gap 
-t
-​
- = 
-Expected 
-t
-​
- 
-Employment 
-t
-​
- −Expected 
-t
-​
- 
-​
- 
-
-Why useful:
-
-detects hidden overheating or underperformance
-
-vacancy often responds to deviations from equilibrium, not levels
-
-3. Service Employment Compression Indicator
-Measure whether growth is slowing despite still-positive levels.
-
-C
-o
-m
-p
-r
-e
-s
-s
-i
-o
-n
-=
-G
-r
-o
-w
-t
-h
-t
-G
-r
-o
-w
-t
-h
-t
-−
-4
-Compression= 
-Growth 
-t−4
-​
- 
-Growth 
-t
-​
- 
-​
- 
-C
-o
-m
-p
-r
-e
-s
-s
-i
-o
-n
-=
-G
-r
-o
-w
-t
-h
-t
-G
-r
-o
-w
-t
-h
-t
-−
-4
-Compression= 
-Growth 
-t−4
-​
- 
-Growth 
-t
-​
- 
-​
- 
-
-Interpretation:
-
-below 1 → slowing expansion
-
-early warning before vacancy deterioration
-
-Very realistic for cyclical turning points.
-
-4. Local Consumption Support Ratio
-C
-o
-n
-s
-u
-m
-p
-t
-i
-o
-n
-S
-u
-p
-p
-o
-r
-t
-=
-O
-t
-h
-e
-r
-S
-e
-r
-v
-i
-c
-e
-s
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-R
-e
-t
-a
-i
-l
-V
-a
-c
-a
-n
-c
-y
-ConsumptionSupport= 
-RetailVacancy
-OtherServicesEmployment
-​
- 
-C
-o
-n
-s
-u
-m
-p
-t
-i
-o
-n
-S
-u
-p
-p
-o
-r
-t
-=
-O
-t
-h
-e
-r
-S
-e
-r
-v
-i
-c
-e
-s
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-R
-e
-t
-a
-i
-l
-V
-a
-c
-a
-n
-c
-y
-ConsumptionSupport= 
-RetailVacancy
-OtherServicesEmployment
-​
- 
-
-Why strong:
-
-combines labor demand with retail stress
-
-higher ratio indicates healthier tenant ecosystem
-
-Especially useful in:
-
-neighborhood retail
-
-mixed-use corridors
-
-5. Employment-to-New-Supply Ratio
-S
-u
-p
-p
-l
-y
-A
-b
-s
-o
-r
-p
-t
-i
-o
-n
-C
-a
-p
-a
-c
-i
-t
-y
-=
-O
-t
-h
-e
-r
-S
-e
-r
-v
-i
-c
-e
-s
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-G
-r
-o
-w
-t
-h
-N
-e
-w
-S
-u
-p
-p
-l
-y
-G
-r
-o
-w
-t
-h
-SupplyAbsorptionCapacity= 
-NewSupplyGrowth
-OtherServicesEmploymentGrowth
-​
- 
-S
-u
-p
-p
-l
-y
-A
-b
-s
-o
-r
-p
-t
-i
-o
-n
-C
-a
-p
-a
-c
-i
-t
-y
-=
-O
-t
-h
-e
-r
-S
-e
-r
-v
-i
-c
-e
-s
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-G
-r
-o
-w
-t
-h
-N
-e
-w
-S
-u
-p
-p
-l
-y
-G
-r
-o
-w
-t
-h
-SupplyAbsorptionCapacity= 
-NewSupplyGrowth
-OtherServicesEmploymentGrowth
-​
- 
-
-Institutional relevance:
-
-determines whether local demand can absorb incoming inventory
-
-critical for forecasting vacancy spikes
-
-Very important in Sunbelt markets.
-
-6. Service Employment Duration Above Trend
-Instead of level, measure persistence.
-
-D
-u
-r
-a
-t
-i
-o
-n
-=
-C
-o
-n
-s
-e
-c
-u
-t
-i
-v
-e
-Q
-u
-a
-r
-t
-e
-r
-s
-(
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
->
-T
-r
-e
-n
-d
-)
-Duration=ConsecutiveQuarters(Employment>Trend)
-Why powerful:
-
-prolonged above-trend growth often precedes rent acceleration
-
-sustained economic strength matters more than temporary spikes
-
-CRE markets react to duration.
-
-7. Economic Friction Indicator
 F
-r
-i
-c
+R
 t
-i
-o
-n
-=
-∣
-Q
-o
-Q
-G
-r
-o
-w
-t
-h
 −
-Y
-o
-Y
-G
-r
-o
-w
-t
-h
-∣
-∣
-Y
-o
-Y
-G
-r
-o
-w
-t
-h
-∣
-Friction= 
-∣YoYGrowth∣
-∣QoQGrowth−YoYGrowth∣
-​
- 
+S
+O
 F
-r
-i
-c
-t
-i
-o
-n
-=
-∣
-Q
-o
-Q
-G
-r
-o
-w
-t
-h
-−
-Y
-o
-Y
-G
-r
-o
-w
-t
-h
-∣
-∣
-Y
-o
-Y
-G
-r
-o
-w
-t
-h
-∣
-Friction= 
-∣YoYGrowth∣
-∣QoQGrowth−YoYGrowth∣
-​
- 
-
-Interpretation:
-
-high friction = unstable growth structure
-
-indicates transitional economic conditions
-
-Vacancy tends to rise when labor trends become inconsistent.
-
-8. Employment Concentration Drift
-Measure whether services are becoming disproportionately dominant.
-
-D
-r
-i
-f
-t
-=
-S
-h
-a
-r
-e
-t
-−
-S
-h
-a
-r
-e
-t
-−
-8
-Drift=Share 
-t
-​
- −Share 
-t−8
-​
- 
-Where:
-
-S
-h
-a
-r
-e
-=
-O
-t
-h
-e
-r
-S
-e
-r
-v
-i
-c
-e
-s
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-T
-o
-t
-a
-l
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-Share= 
-TotalEmployment
-OtherServicesEmployment
-​
- 
-S
-h
-a
-r
-e
-=
-O
-t
-h
-e
-r
-S
-e
-r
-v
-i
-c
-e
-s
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-T
-o
-t
-a
-l
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-Share= 
-TotalEmployment
-OtherServicesEmployment
-​
- 
-
-Why sophisticated:
-
-captures structural transformation of local economies
-
-excessive drift may imply lower-quality economic expansion
-
-9. Service Employment Mean-Reversion Pressure
-P
-r
-e
-s
-s
-u
-r
-e
-=
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-t
-−
 R
-o
-l
-l
-i
-n
-g
-M
-e
-a
-n
-20
-Q
-R
-o
-l
-l
-i
-n
-g
-S
-t
-d
-20
-Q
-Pressure= 
-RollingStd 
-20Q
-​
- 
-Employment 
-t
-​
- −RollingMean 
-20Q
-​
- 
-​
- 
-P
-r
-e
-s
-s
-u
-r
-e
-=
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-t
-−
-R
-o
-l
-l
-i
-n
-g
-M
-e
-a
-n
-20
-Q
-R
-o
-l
-l
-i
-n
-g
-S
-t
-d
-20
-Q
-Pressure= 
-RollingStd 
-20Q
-​
- 
-Employment 
-t
-​
- −RollingMean 
-20Q
-​
- 
-​
- 
-
-This is essentially a macro z-score.
-
-Why useful:
-
-extreme positive deviations often precede cooling
-
-extreme negative deviations often precede rebound
-
-Very common in institutional cycle models.
-
-10. Tenant Ecosystem Stability
-S
-t
-a
-b
-i
-l
-i
-t
-y
-=
-1
-−
-Q
-u
-a
-r
-t
-e
-r
-l
-y
-L
-a
-y
-o
-f
-f
-P
-r
-o
-x
-y
-O
-t
-h
-e
-r
-S
-e
-r
-v
-i
-c
-e
-s
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-Stability=1− 
-OtherServicesEmployment
-QuarterlyLayoffProxy
-​
- 
-S
-t
-a
-b
-i
-l
-i
-t
-y
-=
-1
-−
-Q
-u
-a
-r
-t
-e
-r
-l
-y
-L
-a
-y
-o
-f
-f
-P
-r
-o
-x
-y
-O
-t
-h
-e
-r
-S
-e
-r
-v
-i
-c
-e
-s
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-Stability=1− 
-OtherServicesEmployment
-QuarterlyLayoffProxy
-​
- 
-
-Even approximate layoff proxies help.
-
-Why useful:
-
-stable service labor base supports occupancy durability
-
-unstable labor → tenant churn risk
-
-11. Economic Spillover Multiplier
-Measure spillover into real estate demand.
-
-S
-p
-i
-l
-l
-o
-v
-e
-r
-=
-Δ
-O
-c
-c
-u
-p
-i
-e
-d
-S
-F
-Δ
-O
-t
-h
-e
-r
-S
-e
-r
-v
-i
-c
-e
-s
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-Spillover= 
-ΔOtherServicesEmployment
-ΔOccupiedSF
-​
- 
-S
-p
-i
-l
-l
-o
-v
-e
-r
-=
-Δ
-O
-c
-c
-u
-p
-i
-e
-d
-S
-F
-Δ
-O
-t
-h
-e
-r
-S
-e
-r
-v
-i
-c
-e
-s
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-Spillover= 
-ΔOtherServicesEmployment
-ΔOccupiedSF
-​
- 
-
-Interpretation:
-
-how efficiently employment growth converts into occupancy demand
-
-Some markets generate:
-
-high employment
-but weak real estate absorption.
-
-This feature captures that disconnect.
-
-12. Service Employment Exhaustion Signal
-E
-x
-h
-a
-u
-s
-t
-i
-o
-n
-=
-R
-o
-l
-l
-i
-n
-g
-M
-a
-x
-12
-Q
-(
-G
-r
-o
-w
-t
-h
-)
-−
-C
-u
-r
-r
-e
-n
-t
-G
-r
-o
-w
-t
-h
-Exhaustion=RollingMax 
-12Q
-​
- (Growth)−CurrentGrowth
-E
-x
-h
-a
-u
-s
-t
-i
-o
-n
-=
-R
-o
-l
-l
-i
-n
-g
-M
-a
-x
-12
-Q
-(
-G
-r
-o
-w
-t
-h
-)
-−
-C
-u
-r
-r
-e
-n
-t
-G
-r
-o
-w
-t
-h
-Exhaustion=RollingMax 
-12Q
-​
- (Growth)−CurrentGrowth
-
-Why elite:
-
-identifies late-cycle deceleration
-
-useful before vacancy inflection
-
-13. Employment-to-Transit Dependency
-T
-r
-a
-n
-s
-i
-t
-D
-e
-p
-e
-n
-d
-e
-n
-c
-y
-=
-O
-t
-h
-e
-r
-S
-e
-r
-v
-i
-c
-e
-s
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-T
-r
-a
-n
-s
-i
-t
-R
-i
-d
-e
-r
-s
-h
-i
-p
-TransitDependency= 
-TransitRidership
-OtherServicesEmployment
-​
- 
-T
-r
-a
-n
-s
-i
-t
-D
-e
-p
-e
-n
-d
-e
-n
-c
-y
-=
-O
-t
-h
-e
-r
-S
-e
-r
-v
-i
-c
-e
-s
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-T
-r
-a
-n
-s
-i
-t
-R
-i
-d
-e
-r
-s
-h
-i
-p
-TransitDependency= 
-TransitRidership
-OtherServicesEmployment
-​
- 
-
-Powerful in:
-
-urban office
-
-mixed-use districts
-
-CBD retail
-
-Captures whether local service ecosystem depends heavily on commuter flows.
-
-14. Local Service Labor Tightness
-T
-i
-g
-h
-t
-n
-e
-s
-s
-=
-J
-o
-b
-O
-p
-e
-n
-i
-n
-g
-s
-O
-t
-h
-e
-r
-S
-e
-r
-v
-i
-c
-e
-s
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-Tightness= 
-OtherServicesEmployment
-JobOpenings
-​
- 
-T
-i
-g
-h
-t
-n
-e
-s
-s
-=
-J
-o
-b
-O
-p
-e
-n
-i
-n
-g
-s
-O
-t
-h
-e
-r
-S
-e
-r
-v
-i
-c
-e
-s
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-Tightness= 
-OtherServicesEmployment
-JobOpenings
-​
- 
-
-Why realistic:
-
-labor shortages can constrain business expansion
-
-affects future leasing demand
-
-Especially relevant post-2021.
-
-15. Demand Conversion Efficiency
-C
-o
-n
-v
-e
-r
-s
-i
-o
-n
-E
-f
-f
-i
-c
-i
-e
-n
-c
-y
-=
-N
-e
-t
-A
-b
-s
-o
-r
-p
-t
-i
-o
-n
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-G
-r
-o
-w
-t
-h
-ConversionEfficiency= 
-EmploymentGrowth
-NetAbsorption
-​
- 
-C
-o
-n
-v
-e
-r
-s
-i
-o
-n
-E
-f
-f
-i
-c
-i
-e
-n
-c
-y
-=
-N
-e
-t
-A
-b
-s
-o
-r
-p
-t
-i
-o
-n
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-G
-r
-o
-w
-t
-h
-ConversionEfficiency= 
-EmploymentGrowth
-NetAbsorption
-​
- 
-
-This measures:
-
-how effectively local economic growth converts into occupancy
-
-Institutional investors care deeply about this.
-
-Some markets:
-
-generate jobs but little occupancy
-Others:
-
-efficiently translate growth into leasing demand
-
-16. Employment Regime Transition Velocity
-V
-e
-l
-o
-c
-i
-t
-y
-=
-R
-e
-g
-i
-m
-e
-S
-c
-o
-r
-e
-t
-−
-R
-e
-g
-i
-m
-e
-S
-c
-o
-r
-e
 t
 −
 1
-Velocity=RegimeScore 
+)
+×
+(
+S
+O
+F
+R
+t
+−
+1
+−
+S
+O
+F
+R
+t
+−
+2
+)
+∣
+Whiplash 
 t
 ​
- −RegimeScore 
+ =∣(SOFR 
+t
+​
+ −SOFR 
 t−1
 ​
- 
-Why advanced:
+ )×(SOFR 
+t−1
+​
+ −SOFR 
+t−2
+​
+ )∣
+Why useful:
+rapid policy reversals create uncertainty in:
 
-markets shifting rapidly between regimes have unstable vacancy dynamics
+leasing
 
-transition speed matters more than regime alone
+acquisitions
 
-17. Service Labor Saturation Risk
+underwriting
+
+CRE markets dislike unstable central bank behavior.
+
+y
+=
+∣
+(
 S
-a
-t
-u
-r
-a
-t
-i
-o
-n
+O
+F
 R
-i
-s
-k
-=
+t
+−
+S
 O
-t
-h
-e
-r
-S
-e
-r
-v
-i
-c
-e
-s
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-G
-r
-o
-w
-t
-h
-P
-o
-p
-u
-l
-a
-t
-i
-o
-n
-G
-r
-o
-w
-t
-h
-SaturationRisk= 
-PopulationGrowth
-OtherServicesEmploymentGrowth
-​
- 
-S
-a
-t
-u
-r
-a
-t
-i
-o
-n
+F
 R
-i
-s
-k
-=
-O
 t
-h
-e
-r
-S
-e
-r
-v
-i
-c
-e
-s
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-G
-r
-o
-w
-t
-h
-P
-o
-p
-u
-l
-a
-t
-i
-o
-n
-G
-r
-o
-w
-t
-h
-SaturationRisk= 
-PopulationGrowth
-OtherServicesEmploymentGrowth
-​
- 
-
-Interpretation:
-
-employment growing much faster than population
-→ possible oversaturation
-→ lower long-term sustainability
-
-18. Occupancy Buffer Capacity
-B
-u
-f
-f
-e
-r
-=
-O
-c
-c
-u
-p
-i
-e
-d
-I
-n
-v
-e
-n
-t
-o
-r
-y
-G
-r
-o
-w
-t
-h
 −
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-G
-r
-o
-w
-t
-h
-Buffer=OccupiedInventoryGrowth−EmploymentGrowth
-B
-u
-f
-f
-e
-r
-=
-O
-c
-c
-u
-p
-i
-e
-d
-I
-n
-v
-e
-n
-t
-o
-r
-y
-G
-r
-o
-w
-t
-h
-−
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-G
-r
-o
-w
-t
-h
-Buffer=OccupiedInventoryGrowth−EmploymentGrowth
-
-Useful because:
-
-markets with shrinking occupancy buffer are vulnerable to vacancy spikes
-
-19. Service Economy Inefficiency Signal
-I
-n
-e
-f
-f
-i
-c
-i
-e
-n
-c
-y
-=
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-G
-r
-o
-w
-t
-h
-I
-n
-c
-o
-m
-e
-G
-r
-o
-w
-t
-h
-Inefficiency= 
-IncomeGrowth
-EmploymentGrowth
-​
- 
-I
-n
-e
-f
-f
-i
-c
-i
-e
-n
-c
-y
-=
-E
-m
-p
-l
-o
-y
-m
-e
-n
-t
-G
-r
-o
-w
-t
-h
-I
-n
-c
-o
-m
-e
-G
-r
-o
-w
-t
-h
-Inefficiency= 
-IncomeGrowth
-EmploymentGrowth
-​
- 
-
-Interpretation:
-
-job growth without income growth may imply weak-quality expansion
-
-Can predict:
-
-fragile tenant demand
-
-weaker rent growth
-
-20. Local Economic Stickiness
+1
+)
+(
 S
+O
+F
+R
 t
-i
-c
-k
-i
-n
-e
-s
-s
-=
+−
 1
 −
-T
-u
+S
+O
+F
+R
+t
+−
+2
+)
+∣
+y=∣(SOFR 
+t
+​
+ −SOFR 
+t−1
+​
+ )(SOFR 
+t−1
+​
+ −SOFR 
+t−2
+​
+ )∣
+
+2. Capital Waiting-on-the-Sidelines Feature
+Captures delayed deployment behavior.
+
+D
 r
-n
+y
+P
 o
-v
+w
+d
 e
 r
+D
+e
+l
+a
+y
+t
+=
+S
+O
+F
+R
+t
+×
+C
+a
+s
+h
+A
+l
+l
+o
+c
+a
+t
+i
+o
+n
+s
+t
+DryPowderDelay 
+t
+​
+ =SOFR 
+t
+​
+ ×CashAllocations 
+t
+​
+ 
+Logic:
+high rates increase investor preference for cash/T-bills over CRE.
+
+Result:
+
+lower acquisitions
+
+delayed leasing
+
+weaker absorption
+
+Very realistic for institutional capital flows.
+
+3. Rate-Induced Tenant Downsizing Risk
+Links financing to occupier behavior.
+
+T
+e
+n
+a
+n
+t
+D
+o
+w
+n
+s
+i
+z
+e
+t
+=
+S
+O
+F
+R
+t
+×
+C
+o
+r
+p
+o
+r
+a
+t
+e
+L
+a
+y
+o
+f
+f
+s
+t
+TenantDownsize 
+t
+​
+ =SOFR 
+t
+​
+ ×CorporateLayoffs 
+t
+​
+ 
+Why:
+high financing cost reduces corporate expansion budgets.
+
+Particularly powerful for:
+
+office
+
+R&D
+
+flex space
+
+4. Equity Substitution Effect
+Captures competition between bonds and CRE.
+
+B
+o
+n
+d
+C
+o
+m
+p
+e
+t
+i
+t
+i
+o
+n
+t
+=
+S
+O
+F
+R
+t
+−
+D
+i
+v
+i
+d
+e
+n
+d
+Y
+i
+e
+l
+d
+R
+E
+I
+T
+,
+t
+BondCompetition 
+t
+​
+ =SOFR 
+t
+​
+ −DividendYield 
+REIT,t
+​
+ 
+When cash yields exceed REIT yields:
+capital exits real estate.
+
+Institutional allocators actively monitor this.
+
+5. Lease Duration Mispricing Risk
+Sophisticated office/retail feature.
+
+L
+e
+a
+s
+e
+M
+i
+s
+m
+a
+t
+c
+h
+t
+=
+W
+e
+i
+g
+h
+t
+e
+d
+L
+e
+a
+s
+e
+T
+e
+r
+m
+t
+×
+S
+O
+F
+R
+t
+LeaseMismatch 
+t
+​
+ =WeightedLeaseTerm 
+t
+​
+ ×SOFR 
+t
+​
+ 
+Why:
+long lease structures become problematic during rapidly changing rate environments.
+
+Especially useful for office.
+
+6. Seller Anchoring Stress
+Behavioral real estate feature.
+
+S
+e
+l
+l
+e
+r
+G
+a
+p
+t
+=
+H
+i
+s
+t
+o
+r
+i
+c
+a
+l
+P
+r
+i
+c
+e
+G
+r
+o
+w
+t
+h
+t
+−
+S
+O
+F
+R
+t
+SellerGap 
+t
+​
+ =HistoricalPriceGrowth 
+t
+​
+ −SOFR 
+t
+​
+ 
+Why:
+owners anchored to past valuations resist repricing during tightening cycles.
+
+This delays transactions and price discovery.
+
+Very realistic post-2022 phenomenon.
+
+7. Institutional Allocation Rotation
+Capital allocation regime feature.
+
+A
+l
+l
+o
+c
+a
+t
+i
+o
+n
+R
+o
+t
+a
+t
+i
+o
+n
+t
+=
+S
+O
+F
+R
+t
+E
+q
+u
+i
+t
+y
+R
+i
+s
+k
+P
+r
+e
+m
+i
+u
+m
+t
+AllocationRotation 
+t
+​
+ = 
+EquityRiskPremium 
+t
+​
+ 
+SOFR 
+t
+​
+ 
+​
+ 
+When risk-free yield rises relative to equity premium:
+CRE allocations shrink.
+
+Useful for:
+
+pension-driven markets
+
+institutional-heavy metros
+
+8. Development Optionality Destruction
+Captures loss of future project viability.
+
+O
+p
+t
+i
+o
+n
+a
+l
+i
+t
+y
+L
+o
+s
+s
+t
+=
+L
+a
+n
+d
+V
+a
+l
+u
+e
+t
+×
+S
+O
+F
+R
+t
+OptionalityLoss 
+t
+​
+ =LandValue 
+t
+​
+ ×SOFR 
+t
+​
+ 
+Logic:
+higher financing costs reduce value of undeveloped land pipelines.
+
+Can predict future construction slowdown.
+
+9. Rate Friction Index
+Measures financing friction in transactions.
+
 R
 a
 t
 e
-Stickiness=1−TurnoverRate
-or approximate using employment stability.
+F
+r
+i
+c
+t
+i
+o
+n
+t
+=
+S
+O
+F
+R
+t
+T
+r
+a
+n
+s
+a
+c
+t
+i
+o
+n
+V
+e
+l
+o
+c
+i
+t
+y
+t
+RateFriction 
+t
+​
+ = 
+TransactionVelocity 
+t
+​
+ 
+SOFR 
+t
+​
+ 
+​
+ 
+Why:
+high rates + low transaction turnover
+signal frozen markets.
 
-Why powerful:
+Extremely realistic in CRE cycles.
 
-sticky labor markets create sticky occupancy
+10. Tenant Credit Fragility
+Combines occupier quality with financing environment.
 
-transient labor markets increase vacancy volatility
+T
+e
+n
+a
+n
+t
+F
+r
+a
+g
+i
+l
+i
+t
+y
+t
+=
+S
+O
+F
+R
+t
+×
+T
+e
+n
+a
+n
+t
+D
+e
+f
+a
+u
+l
+t
+R
+a
+t
+e
+t
+TenantFragility 
+t
+​
+ =SOFR 
+t
+​
+ ×TenantDefaultRate 
+t
+​
+ 
+Useful for:
 
-Very important for multifamily forecasting.
+retail
+
+office
+
+weaker suburban markets
+
+11. Repricing Inertia Score
+Captures delayed valuation adjustment.
+
+I
+n
+e
+r
+t
+i
+a
+t
+=
+A
+p
+p
+r
+a
+i
+s
+a
+l
+V
+a
+l
+u
+e
+t
+−
+M
+a
+r
+k
+e
+t
+I
+m
+p
+l
+i
+e
+d
+V
+a
+l
+u
+e
+t
+(
+S
+O
+F
+R
+t
+)
+Inertia 
+t
+​
+ =AppraisalValue 
+t
+​
+ −MarketImpliedValue 
+t
+​
+ (SOFR 
+t
+​
+ )
+Why:
+appraisals lag actual financing reality.
+
+This lag often precedes:
+
+distress
+
+vacancy deterioration
+
+forced repricing
+
+Institutional investors care a lot about this.
+
+12. Construction Equity Burn Rate
+Tracks developer capital erosion.
+
+B
+u
+r
+n
+R
+a
+t
+e
+t
+=
+S
+O
+F
+R
+t
+×
+C
+o
+n
+s
+t
+r
+u
+c
+t
+i
+o
+n
+C
+o
+s
+t
+G
+r
+o
+w
+t
+h
+t
+BurnRate 
+t
+​
+ =SOFR 
+t
+​
+ ×ConstructionCostGrowth 
+t
+​
+ 
+When both financing and materials rise:
+new supply pipelines deteriorate rapidly.
+
+Strong for:
+
+multifamily
+
+industrial
+
+13. Monetary Constraint Intensity
+Measures how restrictive financing is relative to market growth.
+
+C
+o
+n
+s
+t
+r
+a
+i
+n
+t
+I
+n
+t
+e
+n
+s
+i
+t
+y
+t
+=
+S
+O
+F
+R
+t
+G
+D
+P
+G
+r
+o
+w
+t
+h
+t
++
+E
+m
+p
+l
+o
+y
+m
+e
+n
+t
+G
+r
+o
+w
+t
+h
+t
+ConstraintIntensity 
+t
+​
+ = 
+GDPGrowth 
+t
+​
+ +EmploymentGrowth 
+t
+​
+ 
+SOFR 
+t
+​
+ 
+​
+ 
+Why:
+same SOFR level behaves differently in strong vs weak economies.
+
+14. Leasing Incentive Pressure
+Captures landlord concession risk.
+
+C
+o
+n
+c
+e
+s
+s
+i
+o
+n
+P
+r
+e
+s
+s
+u
+r
+e
+t
+=
+S
+O
+F
+R
+t
+×
+V
+a
+c
+a
+n
+c
+y
+t
+ConcessionPressure 
+t
+​
+ =SOFR 
+t
+​
+ ×Vacancy 
+t
+​
+ 
+High financing cost + high vacancy
+forces landlords into aggressive concessions.
+
+Very realistic operational feature.
+
+15. Capital Recycling Breakdown
+Institutional portfolio management feature.
+
+R
+e
+c
+y
+c
+l
+i
+n
+g
+S
+t
+r
+e
+s
+s
+t
+=
+S
+O
+F
+R
+t
+×
+D
+i
+s
+p
+o
+s
+i
+t
+i
+o
+n
+L
+a
+g
+t
+RecyclingStress 
+t
+​
+ =SOFR 
+t
+​
+ ×DispositionLag 
+t
+​
+ 
+Why:
+fund managers cannot recycle capital efficiently during high-rate environments.
+
+Leads to:
+
+stalled acquisitions
+
+delayed redevelopment
+
+16. Debt Origination Appetite
+Tracks lender willingness.
+
+O
+r
+i
+g
+i
+n
+a
+t
+i
+o
+n
+A
+p
+p
+e
+t
+i
+t
+e
+t
+=
+L
+o
+a
+n
+O
+r
+i
+g
+i
+n
+a
+t
+i
+o
+n
+V
+o
+l
+u
+m
+e
+t
+S
+O
+F
+R
+t
+OriginationAppetite 
+t
+​
+ = 
+SOFR 
+t
+​
+ 
+LoanOriginationVolume 
+t
+​
+ 
+​
+ 
+Very strong leading indicator.
+
+Falling appetite predicts:
+
+lower development
+
+weaker absorption
+
+future vacancy shifts
+
+17. Acquisition Spread Compression
+Private equity-style underwriting feature.
+
+A
+c
+q
+u
+i
+s
+i
+t
+i
+o
+n
+S
+p
+r
+e
+a
+d
+t
+=
+E
+x
+p
+e
+c
+t
+e
+d
+I
+R
+R
+t
+−
+S
+O
+F
+R
+t
+AcquisitionSpread 
+t
+​
+ =ExpectedIRR 
+t
+​
+ −SOFR 
+t
+​
+ 
+When spread compresses:
+buyers step away from market.
+
+This directly impacts CRE transaction ecosystems.
+
+18. Monetary Fracture Point
+Threshold-driven systemic stress.
+
+F
+r
+a
+c
+t
+u
+r
+e
+P
+o
+i
+n
+t
+t
+=
+1
+(
+S
+O
+F
+R
+t
+>
+N
+e
+u
+t
+r
+a
+l
+R
+a
+t
+e
+t
++
+2
+%
+)
+FracturePoint 
+t
+​
+ =1(SOFR 
+t
+​
+ >NeutralRate 
+t
+​
+ +2%)
+Why:
+beyond some threshold,
+normal underwriting assumptions stop working.
+
+This often creates structural market dislocation.
+
+19. Rent Duration Discounting
+DCF-oriented feature.
+
+D
+i
+s
+c
+o
+u
+n
+t
+e
+d
+R
+e
+n
+t
+S
+t
+r
+e
+s
+s
+t
+=
+F
+u
+t
+u
+r
+e
+R
+e
+n
+t
+G
+r
+o
+w
+t
+h
+t
+(
+1
++
+S
+O
+F
+R
+t
+)
+n
+DiscountedRentStress 
+t
+​
+ = 
+(1+SOFR 
+t
+​
+ ) 
+n
+ 
+FutureRentGrowth 
+t
+​
+ 
+​
+ 
+High SOFR heavily discounts future cash flows.
+
+Very valuation-sensitive.
+
+Especially important for growth markets.
+
+y
+=
+F
+u
+t
+u
+r
+e
+R
+e
+n
+t
+G
+r
+o
+w
+t
+h
+t
+(
+1
++
+S
+O
+F
+R
+t
+)
+n
+y= 
+(1+SOFR 
+t
+​
+ ) 
+n
+ 
+FutureRentGrowth 
+t
+​
+ 
+​
+ 
+
+20. Investor Patience Regime
+Behavioral capital market feature.
+
+P
+a
+t
+i
+e
+n
+c
+e
+t
+=
+H
+o
+l
+d
+P
+e
+r
+i
+o
+d
+E
+x
+p
+e
+c
+t
+a
+t
+i
+o
+n
+t
+×
+S
+O
+F
+R
+t
+Patience 
+t
+​
+ =HoldPeriodExpectation 
+t
+​
+ ×SOFR 
+t
+​
+ 
+Why:
+higher financing costs increase required hold periods.
+
+Changes transaction dynamics and leasing strategy.
+
+What Makes These “Top-Tier” Features
+These features move beyond:
+
+simple macro correlations
+
+basic lag engineering
+
+and instead model:
+
+investor psychology
+
+capital allocation
+
+underwriting behavior
+
+transaction mechanics
+
+appraisal lag
+
+leasing incentives
+
+institutional portfolio behavior
+
+That is much closer to how sophisticated CRE firms think internally.
 
 
